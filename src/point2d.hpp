@@ -2,10 +2,12 @@
 
 #include <cmath>
 #include <initializer_list>
+#include <iostream>
 #include <functional>
-#include <ostream>
 
-float const kEps = 1e-5;
+#include "constants.hpp"
+
+//float const kEps = 1e-5;
 
 class Point2D
 {
@@ -22,6 +24,8 @@ public:
   Point2D(float x, float y)
     : m_x(x), m_y(y)
   {}
+
+  void swap(Point2D & rhs);
 
   // Оператор логического равенства.
   bool operator == (Point2D const & obj) const
@@ -148,13 +152,13 @@ private:
 
   bool EqualWithEps(float v1, float v2) const
   {
-    return fabs(v1 - v2) < kEps;
+    return fabs(v1 - v2) < Constants::kEps;
   }
 
   float m_x = 0.0f, m_y = 0.0f;
 };
 
-std::ostream & operator << (std::ostream & os, Point2D const & obj)
+inline std::ostream & operator << (std::ostream & os, Point2D const & obj)
 {
   os << "Point2D {" << obj.x() << ", " << obj.y() << "}";
   return os;
