@@ -3769,7 +3769,7 @@
 											"height": 16,
 											"autoResize": false,
 											"underline": false,
-											"text": "Movable",
+											"text": "MovableInterface",
 											"horizontalAlignment": 2,
 											"verticalAlignment": 5
 										},
@@ -7298,7 +7298,7 @@
 					"_parent": {
 						"$ref": "AAAAAAFF+qBWK6M3Z8Y="
 					},
-					"name": "Movable",
+					"name": "MovableInterface",
 					"visibility": "public",
 					"operations": [
 						{

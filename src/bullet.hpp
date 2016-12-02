@@ -1,7 +1,7 @@
 #include "game_entity.hpp"
-#include "movable.hpp"
+#include "movable_interface.hpp"
 
-class Bullet: public GameEntity, public Movable
+class Bullet: public GameEntity, public MovableInterface
 {
 public:
   Bullet()

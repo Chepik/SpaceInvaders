@@ -77,3 +77,4 @@ CMakeLists.txt.user
 # Additional folders
 .vscode/
 build/
+bin/

@@ -1,6 +1,18 @@
 #pragma once
 
 #include <iostream>
+#include <fstream>
+
+#include "singleton.h"
+
+
+/// It is used to add function name, line number and file name if needed.
+#define LOG(level) \
+Logger::Instance(level, __func__, std::to_string(__LINE__), __FILE__)
+
+/// It is used to add function name, line number and file name if needed.
+#define LOG_MESSAGE(level, message) \
+Logger::Log(level, message, __func__, std::to_string(__LINE__), __FILE__)
 
 
 /// Log level.
@@ -17,49 +29,70 @@ enum class LogLevel
 
 /// It is used to output information
 /// to the screen or a file.
-class Logger
+class Logger : public Singleton<Logger>
 {
 public:
-  static Logger & GetLogger(LogLevel level)
+  Logger(LogLevel level,
+         std::string const & functionName = "",
+         std::string lineNumber = "",
+         std::string const & fileName = "");
+
+  static std::ofstream & GetFile(bool const & isReset = false)
   {
-    static Logger logger;
+    static std::ofstream m_outfile;
 
-    if (level >= m_msgLevel)
+    // If a file is opened then just return it.
+    if (m_outfile.is_open())
     {
-      m_isPrint = true;
+      return m_outfile;
+    }
 
-      std::cout << "[" << GetLabel(m_msgLevel) << "] ";
+    // Clean a file if needed otherwise just open it.
+    if (isReset)
+    {
+      m_outfile.open(m_fileName, std::ios::out | std::ios::trunc);
+      m_outfile.close();
     }
     else {
-      m_isPrint = false;
+      m_outfile.open(m_fileName, std::ios::out | std::ios::app);
     }
 
-    return logger;
+    return m_outfile;
   }
 
   /// Set the current log level.
-  static void SetLevel(LogLevel const & type)
-  {
-    m_msgLevel = type;
-  }
+  static void SetLogLevel(LogLevel const &type);
+
+  /// Set output option.
+  static void SetPrintToFile(std::string const & fileName,
+                             bool const & isPrintToFile = false);
+
+  /// Set output option.
+  static void SetPrintFunctionName(bool const & isPrintFunctionName);
+
+  /// Set output option.
+  static void SetPrintLineNumber(bool const & isPrintLineNumber);
+
+  /// Set output option.
+  static void SetPrintFileName(bool const & isPrintFileName);
 
   /// Get the current log level.
-  static std::string GetLabel(LogLevel const & type);
+  static std::string GetLogLevelAsString(LogLevel const &type);
+
+  /// Output a function name, line number and file name if needed.
+  static void PrintAdditionalParameters(
+          std::string const & functionName,
+          std::string lineNumber,
+          std::string const & fileName);
 
   /// It simply output a message with a log level.
   static void Log(LogLevel const & logLevel,
-                  std::string const & message)
-  {
-    if (logLevel >= m_msgLevel)
-    {
-      std::cout << message << std::endl;
-    }
-  }
+                  std::string const & message,
+                  std::string const & functionName = "",
+                  std::string lineNumber = "",
+                  std::string const & fileName = "");
 
-  static LogLevel GetLogLevel()
-  {
-    return m_msgLevel;
-  }
+  static LogLevel GetLogLevel();
 
   /// Output an object to the screen.
   template<class T>
@@ -67,7 +100,35 @@ public:
   {
     if (m_isPrint)
     {
-      std::cout << obj;
+      if (m_isPrintToFile)
+      {
+        GetFile() << obj;
+
+        GetFile().flush();
+      }
+      else
+      {
+        std::cout << obj;
+      }
+    }
+
+    return *this;
+  }
+
+  Logger & operator << (std::ostream & (*manip)(std::ostream &))
+  {
+    if (m_isPrint)
+    {
+      if (m_isPrintToFile)
+      {
+        manip(GetFile());
+
+        GetFile().flush();
+      }
+      else
+      {
+        manip(std::cout);
+      }
     }
 
     return *this;
@@ -89,10 +150,29 @@ public:
   }
 
 private:  
+  /// Otherwise it won't be accessible in parent class Singleton<Logger>.
+  friend class Singleton<Logger>;
+
   Logger() = default;
 
   /// It is used to store the current log level.
   static LogLevel m_msgLevel;
 
+  /// It is used to store the current output message flag.
   static bool m_isPrint;
+
+  /// It is used to store the current output function name flag.
+  static bool m_isPrintFunctionName;
+
+  /// It is used to store the current output line numer flag.
+  static bool m_isPrintLineNumber;
+
+  /// It is used to store the current output file name flag.
+  static bool m_isPrintFileName;
+
+  /// It is used to store the current file name.
+  static std::string m_fileName;
+
+  /// It is used to store the ability to output to a file.
+  static bool m_isPrintToFile;
 };
