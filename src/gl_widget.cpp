@@ -56,7 +56,9 @@ GLWidget::~GLWidget()
   makeCurrent();
   delete m_textureAlien;
   delete m_textureStar;
-  delete m_textureSpaceShip;
+  delete m_textureSpaceShip;  
+  delete m_textureBullet;
+  delete m_textureObstacle;
   delete m_texturedRect;
   doneCurrent();
 }
@@ -70,6 +72,8 @@ void GLWidget::initializeGL()
   m_textureAlien = new QOpenGLTexture(QImage("data/alien.png"));
   m_textureStar = new QOpenGLTexture(QImage("data/star.png"));
   m_textureSpaceShip = new QOpenGLTexture(QImage("data/space_ship.png"));
+  m_textureBullet = new QOpenGLTexture(QImage("data/bullet.png"));
+  m_textureObstacle = new QOpenGLTexture(QImage("data/obstacle.png"));
 
   m_time.start();
 }
@@ -95,6 +99,10 @@ void GLWidget::paintGL()
   Render();
 
   RenderSpaceShip();
+
+  RenderBullet();
+
+  RenderObstacle();
 
   /// Set to zero if it reaches the 1.0 .
   if (m_period < 1.0)
@@ -159,14 +167,24 @@ void GLWidget::Update(float elapsedSeconds)
 
 void GLWidget::Render()
 {
-  m_texturedRect->Render(m_textureAlien, QVector2D(200, 200), QSize(128, 128), m_screenSize, 1.0);
-  m_texturedRect->Render(m_textureAlien, QVector2D(400, 400), QSize(128, 128), m_screenSize, 1.0);
+  m_texturedRect->Render(m_textureAlien, QVector2D(200, 600), QSize(128, 128), m_screenSize, 1.0);
+  m_texturedRect->Render(m_textureAlien, QVector2D(400, 600), QSize(128, 128), m_screenSize, 1.0);
   m_texturedRect->Render(m_textureAlien, QVector2D(600, 600), QSize(128, 128), m_screenSize, 1.0);
 }
 
 void GLWidget::RenderSpaceShip()
 {
   m_texturedRect->Render(m_textureSpaceShip, m_position, QSize(128, 128), m_screenSize, 1.0);
+}
+
+void GLWidget::RenderBullet()
+{
+  m_texturedRect->Render(m_textureBullet, m_position + QVector2D(0, 100), QSize(128, 128), m_screenSize, 1.0);
+}
+
+void GLWidget::RenderObstacle()
+{
+  m_texturedRect->Render(m_textureObstacle, QVector2D(500, 300), QSize(128, 128), m_screenSize, 1.0);
 }
 
 void GLWidget::RenderStar(float blend)

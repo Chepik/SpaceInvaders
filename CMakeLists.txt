@@ -79,5 +79,11 @@ macro(copy_files GLOBPAT DESTINATION)
   endforeach(FILENAME)
 endmacro(copy_files)
 
-set(DATA_FILES_LIST data/alien.png data/star.png data/space_ship.png)
+set(DATA_FILES_LIST
+  data/alien.png
+  data/star.png
+  data/space_ship.png
+  data/bullet.png
+  data/obstacle.png)
+
 copy_files("${DATA_FILES_LIST}" ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
