@@ -54,7 +54,7 @@ GLWidget::GLWidget(GameWindow * mw, QColor const & background)
 GLWidget::~GLWidget()
 {
   makeCurrent();
-  delete m_texture;
+  delete m_textureAlien;
   delete m_textureStar;
   delete m_texturedRect;
   doneCurrent();
@@ -66,7 +66,7 @@ void GLWidget::initializeGL()
 
   m_texturedRect = new TexturedRect();
   m_texturedRect->Initialize(this);
-  m_texture = new QOpenGLTexture(QImage("data/alien.png"));
+  m_textureAlien = new QOpenGLTexture(QImage("data/alien.png"));
   m_textureStar = new QOpenGLTexture(QImage("data/star.png"));
 
   m_time.start();
@@ -154,9 +154,9 @@ void GLWidget::Update(float elapsedSeconds)
 
 void GLWidget::Render()
 {
-  m_texturedRect->Render(m_texture, m_position, QSize(128, 128), m_screenSize, 1.0);
-  m_texturedRect->Render(m_texture, QVector2D(400, 400), QSize(128, 128), m_screenSize, 1.0);
-  m_texturedRect->Render(m_texture, QVector2D(600, 600), QSize(128, 128), m_screenSize, 1.0);
+  m_texturedRect->Render(m_textureAlien, m_position, QSize(128, 128), m_screenSize, 1.0);
+  m_texturedRect->Render(m_textureAlien, QVector2D(400, 400), QSize(128, 128), m_screenSize, 1.0);
+  m_texturedRect->Render(m_textureAlien, QVector2D(600, 600), QSize(128, 128), m_screenSize, 1.0);
 }
 
 void GLWidget::RenderStar(float blend)

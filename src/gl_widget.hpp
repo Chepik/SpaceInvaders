@@ -58,16 +58,20 @@ private:
   QColor m_background;
   QSize m_screenSize;
 
-
   /// m_period is a value between 0.0 and 1.0 .
   /// It as a period.
   float m_period = 0.0f;
-  std::vector<std::pair<float,float>> m_random = {{0.2f, 0.2f}, {0.5f, 0.5}, {0.7f, 0.7f}};
 
-  QOpenGLTexture * m_texture = nullptr;
-  TexturedRect * m_texturedRect = nullptr;
+  std::vector<std::pair<float,float>> m_random = {
+    {0.2f, 0.2f}, {0.5f, 0.5}, {0.7f, 0.7f}};
+
+  QOpenGLTexture * m_textureAlien = nullptr;
   QOpenGLTexture * m_textureStar = nullptr;
+
+  TexturedRect * m_texturedRect = nullptr;
+
   QVector2D m_position = QVector2D(200, 200);
+
   std::array<bool, 4> m_directions = {{ false, false, false, false }};
 
   std::default_random_engine m_generator;
