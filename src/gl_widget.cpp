@@ -23,11 +23,6 @@ int constexpr kDownDirection = 3;
 int constexpr kWidth = 1024;
 int constexpr kHeight = 768;
 
-double random(double min, double max)
-{
-    return (double)(rand())/RAND_MAX*(max - min) + min;
-}
-
 bool IsLeftButton(Qt::MouseButtons buttons)
 {
   return buttons & Qt::LeftButton;
@@ -106,7 +101,7 @@ void GLWidget::paintGL()
     m_period = 0.0f;
     for (auto it = m_random.begin() ; it != m_random.end(); ++it)
     {
-      *it = std::make_pair(random(0,1),random(0,1));
+      *it = std::make_pair(Random(0,1), Random(0,1));
     }
   }
 
@@ -250,4 +245,15 @@ void GLWidget::keyReleaseEvent(QKeyEvent * e)
     m_directions[kLeftDirection] = false;
   else if (e->key() == Qt::Key_Right)
     m_directions[kRightDirection] = false;
+}
+
+double GLWidget::Random(double min, double max)
+{
+//    return (double)(rand())/RAND_MAX*(max - min) + min;
+
+  std::uniform_real_distribution<double> distribution(min, max);
+
+  double number = distribution(m_generator);
+
+  return number;
 }
