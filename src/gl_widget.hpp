@@ -32,6 +32,8 @@ protected:
   void Update(float elapsedSeconds);
   void Render();
   void RenderSpaceShip();
+  void RenderBullet();
+  void RenderObstacle();
   void RenderStar(float blend);
   void mousePressEvent(QMouseEvent * e) override;
   void mouseDoubleClickEvent(QMouseEvent * e) override;
@@ -69,6 +71,8 @@ private:
   QOpenGLTexture * m_textureAlien = nullptr;
   QOpenGLTexture * m_textureStar = nullptr;
   QOpenGLTexture * m_textureSpaceShip = nullptr;
+  QOpenGLTexture * m_textureBullet = nullptr;
+  QOpenGLTexture * m_textureObstacle = nullptr;
 
   TexturedRect * m_texturedRect = nullptr;
 
