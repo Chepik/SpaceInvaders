@@ -3,9 +3,11 @@
 #include <QGLWidget>
 #include <QOpenGLFunctions>
 #include <QTime>
-#include "textured_rect.hpp"
 
 #include <array>
+#include <random>
+
+#include "textured_rect.hpp"
 
 class GameWindow;
 
@@ -38,6 +40,14 @@ protected:
   void keyPressEvent(QKeyEvent * e) override;
   void keyReleaseEvent(QKeyEvent * e) override;
 
+  ///
+  /// Generate random number between min and max values.
+  ///
+  /// Look here for more info:
+  /// http://www.cplusplus.com/reference/random/uniform_real_distribution/
+  ///
+  double Random(double min, double max);
+
 private:
   int L2D(int px) const { return px * devicePixelRatio(); }
 
@@ -59,4 +69,6 @@ private:
   QOpenGLTexture * m_textureStar = nullptr;
   QVector2D m_position = QVector2D(200, 200);
   std::array<bool, 4> m_directions = {{ false, false, false, false }};
+
+  std::default_random_engine m_generator;
 };
