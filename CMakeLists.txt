@@ -80,4 +80,4 @@ macro(copy_files GLOBPAT DESTINATION)
 endmacro(copy_files)
 
 set(DATA_FILES_LIST data/alien.png data/star.png)
-copy_files("${DATA_FILES_LIST}" ${CMAKE_CURRENT_BINARY_DIR})
+copy_files("${DATA_FILES_LIST}" ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
