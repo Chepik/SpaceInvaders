@@ -492,3 +492,5 @@ build/
 .vscode/
 build/
 bin/
+3party/
+data/
