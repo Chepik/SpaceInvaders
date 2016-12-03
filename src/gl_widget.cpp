@@ -57,7 +57,6 @@ GLWidget::~GLWidget()
   delete m_textureAlien;
   delete m_textureStar;
   delete m_textureSpaceShip;  
-  delete m_textureBullet;
   delete m_textureObstacle;
   delete m_texturedRect;
   doneCurrent();
@@ -72,8 +71,9 @@ void GLWidget::initializeGL()
   m_textureAlien = new QOpenGLTexture(QImage("data/alien.png"));
   m_textureStar = new QOpenGLTexture(QImage("data/star.png"));
   m_textureSpaceShip = new QOpenGLTexture(QImage("data/space_ship.png"));
-  m_textureBullet = new QOpenGLTexture(QImage("data/bullet.png"));
   m_textureObstacle = new QOpenGLTexture(QImage("data/obstacle.png"));
+
+  m_image = new QImage("data/bullet.png");
 
   m_time.start();
 }
@@ -95,6 +95,10 @@ void GLWidget::paintGL()
   glEnable(GL_CULL_FACE);
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+  for (Bullet * bullet : m_bulletList) {
+    bullet->IncreaseY(100);
+  }
 
   Render();
 
@@ -179,7 +183,13 @@ void GLWidget::RenderSpaceShip()
 
 void GLWidget::RenderBullet()
 {
-  m_texturedRect->Render(m_textureBullet, m_position + QVector2D(0, 100), QSize(128, 128), m_screenSize, 1.0);
+  for (Bullet * bullet : m_bulletList) {
+    m_texturedRect->Render(bullet->GetTexture(),
+                           bullet->GetPos(),
+                           QSize(128, 128),
+                           m_screenSize,
+                           1.0);
+  }
 }
 
 void GLWidget::RenderObstacle()
@@ -261,6 +271,11 @@ void GLWidget::keyPressEvent(QKeyEvent * e)
     m_directions[kLeftDirection] = true;
   else if (e->key() == Qt::Key_Right)
     m_directions[kRightDirection] = true;
+  else if (e->key() == Qt::Key_Space)
+  {
+    Bullet * bullet = new Bullet(100, m_position, m_image);
+    m_bulletList.push_back(bullet);
+  }
 }
 
 void GLWidget::keyReleaseEvent(QKeyEvent * e)
