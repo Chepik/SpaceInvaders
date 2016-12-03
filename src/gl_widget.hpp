@@ -8,6 +8,7 @@
 #include <random>
 
 #include "textured_rect.hpp"
+#include "bullet.hpp"
 
 class GameWindow;
 
@@ -75,7 +76,7 @@ private:
 
   QImage * m_image = nullptr;
 
-  std::list<QOpenGLTexture*> m_bulletList;
+  std::list<Bullet*> m_bulletList;
 
   TexturedRect * m_texturedRect = nullptr;
 

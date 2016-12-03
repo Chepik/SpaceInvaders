@@ -96,6 +96,10 @@ void GLWidget::paintGL()
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+  for (Bullet * bullet : m_bulletList) {
+    bullet->IncreaseY(100);
+  }
+
   Render();
 
   RenderSpaceShip();
@@ -179,9 +183,9 @@ void GLWidget::RenderSpaceShip()
 
 void GLWidget::RenderBullet()
 {
-  for (QOpenGLTexture * bullet : m_bulletList) {
-    m_texturedRect->Render(bullet,
-                           m_position + QVector2D(0, 100),
+  for (Bullet * bullet : m_bulletList) {
+    m_texturedRect->Render(bullet->GetTexture(),
+                           bullet->GetPos(),
                            QSize(128, 128),
                            m_screenSize,
                            1.0);
@@ -269,7 +273,7 @@ void GLWidget::keyPressEvent(QKeyEvent * e)
     m_directions[kRightDirection] = true;
   else if (e->key() == Qt::Key_Space)
   {
-    QOpenGLTexture * bullet = new QOpenGLTexture(*m_image);
+    Bullet * bullet = new Bullet(100, m_position, m_image);
     m_bulletList.push_back(bullet);
   }
 }
