@@ -33,8 +33,6 @@ public:
   uint GetDamage() const;
   void SetDamage(uint const & damage);
 
-  QOpenGLTexture * GetTexture() const;
-
   const QVector2D & GetPos() const;
   void IncreaseY(float const & value);
 
