@@ -10,18 +10,21 @@ class Space
 {
 public:
   Space() = default;
+
   virtual ~Space();
+
   std::list<TAlienPtr> const & GetAliens() const;
-  void AddAlien(TAlienPtr alien);
   std::list<TObstaclePtr> const & GetObstacles() const;
-  void AddObstacle(TObstaclePtr obstacle);
   std::list<TStarPtr> const & GetStars() const;
-  void AddStar(TStarPtr star);
   std::list<TBulletPtr> const & GetAlienBullets() const;
-  void AddAlienBullet(TBulletPtr bullet);
   std::list<TBulletPtr> const & GetSpaceShipBullets() const;
-  void AddSpaceShipBullet(TBulletPtr bullet);
   TSpaceShipPtr const & GetSpaceShip() const;
+
+  void AddAlien(TAlienPtr alien);
+  void AddObstacle(TObstaclePtr obstacle);
+  void AddStar(TStarPtr star);
+  void AddAlienBullet(TBulletPtr bullet);
+  void AddSpaceShipBullet(TBulletPtr bullet);
   void SetSpaceShip(TSpaceShipPtr spaceShip);
   
 private:
@@ -31,7 +34,6 @@ private:
   std::list<TStarPtr> m_starList;
   std::list<TBulletPtr> m_spaceShipBulletList;
   std::list<TBulletPtr> m_alienBulletList;
-
 };
 
 std::ostream & operator << (std::ostream & os,

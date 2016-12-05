@@ -174,50 +174,22 @@ void GLWidget::Update(float elapsedSeconds)
 {
   float const kSpeed = 20.0f; // pixels per second.
 
-  // Create temporary coordinates.
-  float new_position_y = m_position.y();
-  float new_position_x = m_position.x();
-
   if (m_directions[kUpDirection])
   {
-    new_position_y += kSpeed * elapsedSeconds;
-
-    // Set top wall.
-    if (new_position_y > Globals::Height) {
-      new_position_y -= 10.0;
-    }
+    m_space->GetSpaceShip()->IncreaseY(kSpeed * elapsedSeconds);
   }
   if (m_directions[kDownDirection])
   {
-    new_position_y -= kSpeed * elapsedSeconds;
-
-    // Set bottom wall.
-    if (new_position_y < 0) {
-      new_position_y += 10.0;
-    }
+    m_space->GetSpaceShip()->DecreaseY(kSpeed * elapsedSeconds);
   }
   if (m_directions[kLeftDirection])
   {
-    new_position_x -= kSpeed * elapsedSeconds;
-
-    // Set left wall.
-    if (new_position_x < 0) {
-      new_position_x += 10.0;
-    }
+    m_space->GetSpaceShip()->DecreaseX(kSpeed * elapsedSeconds);
   }
   if (m_directions[kRightDirection])
   {
-    new_position_x += kSpeed * elapsedSeconds;
-
-    // Set right wall.
-    if (new_position_x > Globals::Width) {
-      new_position_x -= 10.0;
-    }
+    m_space->GetSpaceShip()->IncreaseX(kSpeed * elapsedSeconds);
   }
-
-  // Set m_position to updated coordinates.
-  m_position.setY(new_position_y);
-  m_position.setX(new_position_x);
 }
 
 void GLWidget::Render()
@@ -234,7 +206,7 @@ void GLWidget::Render()
 void GLWidget::RenderSpaceShip()
 {
   m_texturedRect->Render(m_space->GetSpaceShip()->GetTexture(),
-                         m_position,
+                         m_space->GetSpaceShip()->GetPosition(),
                          QSize(128, 128),
                          m_screenSize,
                          1.0);
@@ -361,7 +333,9 @@ void GLWidget::keyPressEvent(QKeyEvent * e)
   else if (e->key() == Qt::Key_Space)
   {
     std::shared_ptr<Bullet> bullet = std::make_shared<Bullet>(
-        m_position, Images::Instance().GetImageBullet(), 100);
+        m_space->GetSpaceShip()->GetPosition(),
+        Images::Instance().GetImageBullet(),
+        100);
 
     m_space->AddSpaceShipBullet(bullet);
   }

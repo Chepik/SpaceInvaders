@@ -1,5 +1,7 @@
 #include "game_entity.hpp"
 
+GameEntity::~GameEntity() {}
+
 std::string const & GameEntity::GetName() const
 {
   return m_name;
@@ -28,10 +30,62 @@ void GameEntity::SetTexture(
 
 void GameEntity::IncreaseY(const float & value)
 {
-  m_position.setY(m_position.y() + value);
+  float tmp = m_position.y() + value;
+
+  // Set top wall.
+  if (tmp > Globals::Height)
+  {
+    m_position.setY(m_position.y() - 10.0f);
+  }
+  else
+  {
+    m_position.setY(tmp);
+  }
 }
 
-GameEntity::~GameEntity()
+void GameEntity::DecreaseY(float const & value)
+{
+  float tmp = m_position.y() - value;
+
+  // Set bottom wall.
+  if (tmp < 0.0f)
+  {
+    m_position.setY(m_position.y() + 10.0f);
+  }
+  else
+  {
+    m_position.setY(tmp);
+  }
+}
+
+void GameEntity::IncreaseX(float const &value)
+{
+  float tmp = m_position.x() + value;
+
+  // Set right wall.
+  if (tmp > Globals::Width)
+  {
+    m_position.setX(m_position.x() - 10.0f);
+  }
+  else
+  {
+    m_position.setX(tmp);
+  }
+
+}
+
+void GameEntity::DecreaseX(float const &value)
 {
 
+  // Set left wall.
+  float tmp = m_position.x() - value;
+
+  if (tmp < 0.0f)
+  {
+    m_position.setX(m_position.x() + 10.0f);
+  }
+  else
+  {
+    m_position.setX(tmp);
+  }
 }

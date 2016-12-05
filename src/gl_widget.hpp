@@ -77,8 +77,6 @@ private:
 
   TexturedRect * m_texturedRect = nullptr;
 
-  QVector2D m_position = QVector2D(200, 200);
-
   std::array<bool, 4> m_directions = {{ false, false, false, false }};
 
   std::default_random_engine m_generator;
