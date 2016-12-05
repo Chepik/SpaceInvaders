@@ -21,7 +21,7 @@ public:
   Bullet(QVector2D const & position,
          std::shared_ptr<QImage> image,
          uint const & damage,
-         Box2D const & size) :
+         TSize const & size) :
     GameEntity(position, "Bullet", image, size),
     m_damage(damage)
   {}

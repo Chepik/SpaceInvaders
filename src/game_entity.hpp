@@ -24,7 +24,7 @@ public:
   GameEntity(QVector2D const & position,
              std::string const & name,
              std::shared_ptr<QImage> image,
-             Box2D const & size)
+             std::pair<int,int> const & size)
     : m_position(position),
       m_name(name),
       m_size(size)
@@ -43,8 +43,8 @@ public:
   QVector2D const & GetPosition() const;
   void SetPosition(QVector2D const & point);
 
-  Box2D const & GetSize() const;
-  void SetSize(Box2D const & size);
+  std::pair<int,int> const & GetSize() const;
+  void SetSize(std::pair<int,int> const & size);
 
   std::shared_ptr<QOpenGLTexture> GetTexture();
   void SetTexture(std::shared_ptr<QOpenGLTexture> texture);
@@ -59,8 +59,10 @@ protected:
   QVector2D m_position;
   std::string m_name;
   std::shared_ptr<QOpenGLTexture> m_texture = nullptr;
-  Box2D m_size;
+  //Width and Heigth
+  std::pair<int,int> m_size;
 };
 
+using TSize = std::pair<int,int>;
 using TGameEntityPtr = std::shared_ptr<GameEntity>;
 using TGameEntityConstPtr = std::shared_ptr<GameEntity const>;

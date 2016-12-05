@@ -17,12 +17,12 @@ void GameEntity::SetPosition(QVector2D const & point)
   m_position = point;
 }
 
-const Box2D & GameEntity::GetSize() const
+const TSize & GameEntity::GetSize() const
 {
   return m_size;
 }
 
-void GameEntity::SetSize(const Box2D & size)
+void GameEntity::SetSize(const TSize & size)
 {
   m_size = size;
 }

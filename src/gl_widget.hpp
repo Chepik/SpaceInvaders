@@ -42,6 +42,8 @@ protected:
   void RenderStar(float blend);
   void AddStar();
   void CheckHitSpaceShip();
+  void KillSpaceShip(uint damage);
+  void CheckHitAlien();
   void mousePressEvent(QMouseEvent * e) override;
   void mouseDoubleClickEvent(QMouseEvent * e) override;
   void mouseMoveEvent(QMouseEvent * e) override;

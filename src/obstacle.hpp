@@ -19,7 +19,7 @@ public:
   Obstacle(uint const & health,
            QVector2D const & position,
            std::shared_ptr<QImage> image,
-           Box2D const & size)
+           TSize const & size)
     :GameEntity(position, "Obstacle", image, size),
       m_health(health)
   {}

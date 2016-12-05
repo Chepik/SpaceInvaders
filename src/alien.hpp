@@ -22,7 +22,7 @@ public:
         uint const & rate,
         uint const & health,
         std::shared_ptr<QImage> image,
-        Box2D const & size)
+        TSize const & size)
     : GameEntityWithWeapon(position, "Alien", rate, health, image, size),
       m_speed(speed)
   {}
