@@ -183,7 +183,7 @@ void GLWidget::Update(float elapsedSeconds)
     new_position_y += kSpeed * elapsedSeconds;
 
     // Set top wall.
-    if (new_position_y > m_space->GetHeight()) {
+    if (new_position_y > Globals::Height) {
       new_position_y -= 10.0;
     }
   }
@@ -210,7 +210,7 @@ void GLWidget::Update(float elapsedSeconds)
     new_position_x += kSpeed * elapsedSeconds;
 
     // Set right wall.
-    if (new_position_x > m_space->GetWidth()) {
+    if (new_position_x > Globals::Width) {
       new_position_x -= 10.0;
     }
   }
