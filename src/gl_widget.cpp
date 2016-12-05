@@ -114,9 +114,9 @@ void GLWidget::paintGL()
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-  for (auto bullet : m_space->GetSpaceShipBullets()) {
-    bullet->IncreaseY(100);
-  }
+  SpaceShipBulletsLogic();
+
+  AlienBulletsLogic();
 
   Render();
 
@@ -142,7 +142,7 @@ void GLWidget::paintGL()
 
   // Generate a parameter for a star.
   // transperancy is a value between 0.0 and 1.0 .
-  float transperancy = sin(m_period * 2 * PI);
+  float transperancy = static_cast<float>(sin(m_period * 2 * PI));
 
   RenderStar(transperancy);
   glDisable(GL_CULL_FACE);
@@ -377,4 +377,49 @@ double GLWidget::Random(double min, double max)
   double number = distribution(m_generator);
 
   return number;
+}
+
+void GLWidget::SpaceShipBulletsLogic()
+{
+  // Loop over space ship bullets and delete it if needed.
+  std::list<TBulletPtr> & lst = m_space->GetSpaceShipBullets();
+
+  for (auto it = begin(lst); it != end(lst);)
+  {
+    (*it)->IncreaseY(100);
+
+    if ((*it)->GetPosition().y() > Globals::Height)
+    {
+      it = lst.erase(it);
+    }
+    else
+    {
+      ++it;
+    }
+  }
+
+  // Check if needed.
+//  qDebug() << "lst.size() = " << lst.size();
+}
+void GLWidget::AlienBulletsLogic()
+{
+  // Loop over space ship bullets and delete it if needed.
+  std::list<TBulletPtr> & lst = m_space->GetAlienBullets();
+
+  for (auto it = begin(lst); it != end(lst);)
+  {
+    (*it)->DecreaseX(100);
+
+    if ((*it)->GetPosition().y() < 0.0f)
+    {
+      it = lst.erase(it);
+    }
+    else
+    {
+      ++it;
+    }
+  }
+
+  // Check if needed.
+//  qDebug() << "lst.size() = " << lst.size();
 }

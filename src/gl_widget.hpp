@@ -50,6 +50,9 @@ protected:
   void keyPressEvent(QKeyEvent * e) override;
   void keyReleaseEvent(QKeyEvent * e) override;
 
+  void SpaceShipBulletsLogic();
+  void AlienBulletsLogic();
+
   ///
   /// Generate random number between min and max values.
   ///
