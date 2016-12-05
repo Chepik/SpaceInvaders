@@ -1,7 +1,7 @@
 #include "space.hpp"
 #include "constants.hpp"
 
-const std::list<TAlienPtr> &Space::GetAliens() const
+std::list<TAlienPtr> &Space::GetAliens()
 {
   return m_alienList;
 }
@@ -11,7 +11,7 @@ void Space::AddAlien(TAlienPtr alien)
   m_alienList.push_back(alien);
 }
 
-const std::list<TObstaclePtr> &Space::GetObstacles() const
+std::list<TObstaclePtr> &Space::GetObstacles()
 {
   return m_obstacleList;
 }
@@ -31,7 +31,7 @@ void Space::AddStar(TStarPtr star)
   m_starList.push_back(star);
 }
 
-const std::list<TBulletPtr> &Space::GetAlienBullets() const
+std::list<TBulletPtr> &Space::GetAlienBullets()
 {
   return m_alienBulletList;
 }
@@ -41,7 +41,7 @@ void Space::AddAlienBullet(TBulletPtr bullet)
   m_alienBulletList.push_back(bullet);
 }
 
-const std::list<TBulletPtr> & Space::GetSpaceShipBullets() const
+std::list<TBulletPtr> & Space::GetSpaceShipBullets()
 {
   return m_spaceShipBulletList;
 }
