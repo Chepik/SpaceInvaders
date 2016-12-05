@@ -44,6 +44,10 @@ public:
   void SetTexture(std::shared_ptr<QOpenGLTexture> texture);
 
   virtual void IncreaseY(float const & value);
+  virtual void DecreaseY(float const & value);
+
+  virtual void IncreaseX(float const & value);
+  virtual void DecreaseX(float const & value);
   
 protected:
   QVector2D m_position;
