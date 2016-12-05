@@ -37,5 +37,7 @@ private:
   uint m_speed = 0;
 };
 
+using TAlienPtr = std::shared_ptr<Alien>;
+
 std::ostream & operator << (std::ostream & os,
                             Alien const & obj);
