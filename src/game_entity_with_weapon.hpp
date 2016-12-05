@@ -13,11 +13,21 @@ public:
     : GameEntity(name)
   {}
 
-  GameEntityWithWeapon(Point2D const & position,
+  GameEntityWithWeapon(QVector2D const & position,
                        std::string const & name,
                        uint const & rate,
                        uint const & health)
-    : GameEntity(position,name),
+    : GameEntity(position, name),
+      m_rate(rate),
+      m_health(health)
+  {}  
+
+  GameEntityWithWeapon(QVector2D const & position,
+                       std::string const & name,
+                       uint const & rate,
+                       uint const & health,
+                       QImage * image)
+    : GameEntity(position, name, image),
       m_rate(rate),
       m_health(health)
   {}

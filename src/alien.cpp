@@ -30,9 +30,9 @@ void Alien::SetSpeed(uint const & rate)
 std::ostream & operator << (std::ostream & os,
                             const Alien & obj)
 {
-  os << "Alien [Position: " << obj.GetPosition()
-     << "; Rate: " << obj.GetRate()
-     << "; Health: " << obj.GetHealth()
-     << "; Speed: " << obj.GetSpeed() << "]";
+//  os << "Alien [Position: " << obj.GetPosition()
+//     << "; Rate: " << obj.GetRate()
+//     << "; Health: " << obj.GetHealth()
+//     << "; Speed: " << obj.GetSpeed() << "]";
   return os;
 }

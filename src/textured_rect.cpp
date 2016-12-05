@@ -72,8 +72,12 @@ bool TexturedRect::Initialize(QOpenGLFunctions * functions)
   return true;
 }
 
-void TexturedRect::Render(QOpenGLTexture * texture, QVector2D const & position,
-                          QSize const & size, QSize const & screenSize, float const blend)
+void TexturedRect::Render(
+    std::shared_ptr<QOpenGLTexture> texture,
+    QVector2D const & position,
+    QSize const & size,
+    QSize const & screenSize,
+    float const blend)
 {
   if (texture == nullptr) return;
 

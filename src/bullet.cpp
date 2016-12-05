@@ -17,20 +17,20 @@ void Bullet::SetDamage(uint const & damage)
   m_damage = damage;
 }
 
-QOpenGLTexture *Bullet::GetTexture() const
-{
-  return m_texture;
-}
+//QOpenGLTexture *Bullet::GetTexture() const
+//{
+//  return m_texture;
+//}
 
-const QVector2D & Bullet::GetPos() const
-{
-  return m_pos;
-}
+//const QVector2D & Bullet::GetPos() const
+//{
+//  return m_pos;
+//}
 
-void Bullet::IncreaseY(const float & value)
-{
-  m_pos.setY(m_pos.y() + value);
-}
+//void Bullet::IncreaseY(const float & value)
+//{
+//  m_pos.setY(m_pos.y() + value);
+//}
 
 void Bullet::Update()
 {
@@ -44,8 +44,10 @@ void Bullet::Move()
 
 std::ostream & operator << (std::ostream & os,
                             const Bullet & obj)
-{
-  os << "Bullet [Position: " << obj.GetPosition()
-     << "; Damage: " << obj.GetDamage() << "]";
+{  
+//  os << "Bullet [Position: "
+//     << obj.GetPosition().x() << " "
+//     << obj.GetPosition().y()
+//     << "; Damage: " << obj.GetDamage() << "]";
   return os;
 }

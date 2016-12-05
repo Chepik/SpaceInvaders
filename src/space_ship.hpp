@@ -9,10 +9,17 @@ public:
     : GameEntityWithWeapon("SpaceShip")
   {}
 
-  SpaceShip(Point2D const & position,
+  SpaceShip(QVector2D const & position,
             uint const & rate,
             uint const & health)
-    : GameEntityWithWeapon(position,"SpaceShip",rate,health)
+    : GameEntityWithWeapon(position,"SpaceShip", rate, health)
+  {}
+
+  SpaceShip(QVector2D const & position,
+            uint const & rate,
+            uint const & health,
+            QImage * image)
+    : GameEntityWithWeapon(position,"SpaceShip", rate, health, image)
   {}
 
   ~SpaceShip() override;

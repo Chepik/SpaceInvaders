@@ -8,10 +8,19 @@ public:
   {}
 
   Alien(uint const & speed,
-        Point2D const & position,
+        QVector2D const & position,
         uint const & rate,
         uint const & health)
     : GameEntityWithWeapon(position, "Alien", rate, health),
+      m_speed(speed)
+  {}
+
+  Alien(uint const & speed,
+        QVector2D const & position,
+        uint const & rate,
+        uint const & health,
+        QImage * image)
+    : GameEntityWithWeapon(position, "Alien", rate, health, image),
       m_speed(speed)
   {}
 

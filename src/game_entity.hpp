@@ -1,6 +1,9 @@
 #pragma once
 
 #include <memory>
+#include <QVector2D>
+#include <QOpenGLTexture>
+
 #include "point2d.hpp"
 
 class GameEntity 
@@ -12,26 +15,40 @@ public:
     : m_name(name)
   {}
 
-  GameEntity(Point2D const & position, std::string const & name)
+  GameEntity(QVector2D const & position, std::string const & name)
     : m_position(position),
       m_name(name)
   {}
 
-  GameEntity(GameEntity const & obj)
-    : m_position(obj.m_position),
-      m_name(obj.m_name)
-  {}
+  GameEntity(QVector2D const & position,
+             std::string const & name,
+             QImage * image)
+    : m_position(position),
+      m_name(name)
+  {
+    m_texture = std::make_shared<QOpenGLTexture>(*image);
+  }
+
+  //TODO Add copy constructor!
 
   virtual ~GameEntity();
 
   std::string const & GetName() const;
+
   virtual void Update() = 0;
-  Point2D const & GetPosition() const;
-  void SetPosition(Point2D const & point);
+
+  QVector2D const & GetPosition() const;
+  void SetPosition(QVector2D const & point);
+
+  std::shared_ptr<QOpenGLTexture> GetTexture();
+  void SetTexture(std::shared_ptr<QOpenGLTexture> texture);
+
+  void IncreaseY(float const & value);
   
 protected:
-  Point2D m_position;
+  QVector2D m_position;
   std::string m_name;
+  std::shared_ptr<QOpenGLTexture> m_texture = nullptr;
 };
 
 using TGameEntityPtr = std::shared_ptr<GameEntity>;
