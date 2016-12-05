@@ -75,18 +75,21 @@ void GLWidget::initializeGL()
                       QVector2D(200, 600),
                       100,
                       100,
-                      Images::Instance().GetImageAlien()));
+                      Images::Instance().GetImageAlien(),
+                      Box2D::createBox(Point2D(200, 600), Point2D(328, 828))));
 
   m_space->SetSpaceShip(std::make_shared<SpaceShip>(
                           QVector2D(200, 600),
                           100,
                           100,
-                          Images::Instance().GetImageSpaceShip()));
+                          Images::Instance().GetImageSpaceShip(),
+                          Box2D::createBox(Point2D(200, 600), Point2D(328, 828))));
 
   m_space->AddObstacle(std::make_shared<Obstacle>(
                          100,
                          QVector2D(200, 600),
-                         Images::Instance().GetImageObstacle()));
+                         Images::Instance().GetImageObstacle(),
+                         Box2D::createBox(Point2D(200, 600), Point2D(328, 828))));
 
   AddStar();
 
@@ -258,8 +261,21 @@ void GLWidget::AddStar()
 {
   m_space->AddStar(std::make_shared<Star>(
                      QVector2D(200, 600),
-                     Images::Instance().GetImageStar()));
+                     Images::Instance().GetImageStar(),
+                     Box2D::createBox(Point2D(200, 600), Point2D(328, 828))));
   m_random.push_back(std::make_pair(Random(0,1), Random(0,1)));
+}
+
+void GLWidget::CheckHitSpaceShip()
+{
+  for (auto bullet : m_space->GetAlienBullets()) {
+//    m_texturedRect->Render(bullet->GetTexture(),
+//                           bullet->GetPosition(),
+//                           QSize(128, 128),
+//                           m_screenSize,
+//                           1.0);
+
+  }
 }
 
 void GLWidget::mousePressEvent(QMouseEvent * e)
@@ -335,7 +351,8 @@ void GLWidget::keyPressEvent(QKeyEvent * e)
     std::shared_ptr<Bullet> bullet = std::make_shared<Bullet>(
         m_space->GetSpaceShip()->GetPosition(),
         Images::Instance().GetImageBullet(),
-        100);
+        100,
+        Box2D::createBox(Point2D(200, 600), Point2D(328, 828)));
 
     m_space->AddSpaceShipBullet(bullet);
   }

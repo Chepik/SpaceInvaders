@@ -26,8 +26,9 @@ public:
                        std::string const & name,
                        uint const & rate,
                        uint const & health,
-                       std::shared_ptr<QImage> image)
-    : GameEntity(position, name, image),
+                       std::shared_ptr<QImage> image,
+                       Box2D const & size)
+    : GameEntity(position, name, image, size),
       m_rate(rate),
       m_health(health)
   {}

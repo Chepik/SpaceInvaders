@@ -21,8 +21,9 @@ public:
         QVector2D const & position,
         uint const & rate,
         uint const & health,
-        std::shared_ptr<QImage> image)
-    : GameEntityWithWeapon(position, "Alien", rate, health, image),
+        std::shared_ptr<QImage> image,
+        Box2D const & size)
+    : GameEntityWithWeapon(position, "Alien", rate, health, image, size),
       m_speed(speed)
   {}
 

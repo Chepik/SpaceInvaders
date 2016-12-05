@@ -14,8 +14,9 @@ public:
   {}
 
   Star(QVector2D const & position,
-       std::shared_ptr<QImage> image)
-    : GameEntity(position, "Star", image)
+       std::shared_ptr<QImage> image,
+       Box2D const & size)
+    : GameEntity(position, "Star", image, size)
   {}
 
   ~Star() override;

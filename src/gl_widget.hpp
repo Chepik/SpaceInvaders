@@ -41,6 +41,7 @@ protected:
   void RenderObstacle();
   void RenderStar(float blend);
   void AddStar();
+  void CheckHitSpaceShip();
   void mousePressEvent(QMouseEvent * e) override;
   void mouseDoubleClickEvent(QMouseEvent * e) override;
   void mouseMoveEvent(QMouseEvent * e) override;
