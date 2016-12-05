@@ -365,7 +365,6 @@ void GLWidget::CheckHitAlien()
         if(flag)
         {
             itAlien = lstAlien.erase(itAlien);
-             //Add vzriv
         }
         else
         {
