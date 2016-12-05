@@ -113,6 +113,8 @@ void GLWidget::paintGL()
 
   SpaceShipBulletsLogic();
 
+  AlienBulletsLogic();
+
   Render();
 
   RenderSpaceShip();
@@ -370,6 +372,28 @@ void GLWidget::SpaceShipBulletsLogic()
     (*it)->IncreaseY(100);
 
     if ((*it)->GetPosition().y() > Globals::Height)
+    {
+      it = lst.erase(it);
+    }
+    else
+    {
+      ++it;
+    }
+  }
+
+  // Check if needed.
+//  qDebug() << "lst.size() = " << lst.size();
+}
+void GLWidget::AlienBulletsLogic()
+{
+  // Loop over space ship bullets and delete it if needed.
+  std::list<TBulletPtr> & lst = m_space->GetAlienBullets();
+
+  for (auto it = begin(lst); it != end(lst);)
+  {
+    (*it)->DecreaseX(100);
+
+    if ((*it)->GetPosition().y() < 0.0f)
     {
       it = lst.erase(it);
     }
