@@ -13,6 +13,12 @@ class Singleton {
     return instance;
   }
 
+  static T & Instance()
+  {
+    static T instance;
+    return instance;
+  }
+
  protected:
   Singleton() = default;
   virtual ~Singleton() = default;
