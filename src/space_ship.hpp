@@ -30,5 +30,7 @@ public:
   void Move() override;
 };
 
+using TSpaceShipPtr = std::shared_ptr<SpaceShip>;
+
 std::ostream & operator << (std::ostream & os,
                             SpaceShip const & obj);

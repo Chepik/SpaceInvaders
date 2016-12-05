@@ -1,28 +1,64 @@
 #include "space.hpp"
+#include "constants.hpp"
 
-uint Space::GetWidth() const
+const std::list<TAlienPtr> &Space::GetAliens() const
 {
-  return m_width;
+  return m_alienList;
 }
 
-uint Space::GetHeight() const
+void Space::AddAlien(TAlienPtr alien)
 {
-  return m_height;
+  m_alienList.push_back(alien);
 }
 
-void Space::SetWidth(uint const & width)
+const std::list<TObstaclePtr> &Space::GetObstacles() const
 {
-  m_width = width;
+  return m_obstacleList;
 }
 
-void Space::SetHeight(uint const & height)
+void Space::AddObstacle(TObstaclePtr obstacle)
 {
-  m_height = height;
+  m_obstacleList.push_back(obstacle);
 }
 
-void Space::AddGameEntity(TGameEntityConstPtr gameEntity)
+const std::list<TStarPtr> &Space::GetStars() const
 {
-  m_gameEntityList.push_back(gameEntity);
+  return m_starList;
+}
+
+void Space::AddStar(TStarPtr star)
+{
+  m_starList.push_back(star);
+}
+
+const std::list<TBulletPtr> &Space::GetAlienBullets() const
+{
+  return m_alienBulletList;
+}
+
+void Space::AddAlienBullet(TBulletPtr bullet)
+{
+  m_alienBulletList.push_back(bullet);
+}
+
+const std::list<TBulletPtr> & Space::GetSpaceShipBullets() const
+{
+  return m_spaceShipBulletList;
+}
+
+void Space::AddSpaceShipBullet(TBulletPtr bullet)
+{
+  m_spaceShipBulletList.push_back(bullet);
+}
+
+const TSpaceShipPtr & Space::GetSpaceShip() const
+{
+  return m_space_ship;
+}
+
+void Space::SetSpaceShip(TSpaceShipPtr spaceShip)
+{
+  m_space_ship = spaceShip;
 }
 
 Space::~Space()
@@ -30,15 +66,9 @@ Space::~Space()
 
 }
 
-std::list<TGameEntityConstPtr> const & Space::GetGameEntity() const
-{
-  return m_gameEntityList;
-}
-
 std::ostream & operator << (std::ostream & os,
                             const Space & obj)
 {
-  os << "Space [Height: " << obj.GetHeight()
-     << "; Width: " << obj.GetWidth() << "]";
+  os << "Space";
   return os;
 }

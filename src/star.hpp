@@ -25,3 +25,5 @@ public:
 private:
 
 };
+
+using TStarPtr = std::shared_ptr<Star>;

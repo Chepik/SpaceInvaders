@@ -13,10 +13,6 @@
 #include "space.hpp"
 #include "unordered_map"
 #include "images.hpp"
-#include "alien.hpp"
-#include "space_ship.hpp"
-#include "obstacle.hpp"
-#include "star.hpp"
 
 class GameWindow;
 
@@ -44,6 +40,7 @@ protected:
   void RenderBullet();
   void RenderObstacle();
   void RenderStar(float blend);
+  void AddStar();
   void mousePressEvent(QMouseEvent * e) override;
   void mouseDoubleClickEvent(QMouseEvent * e) override;
   void mouseMoveEvent(QMouseEvent * e) override;
@@ -74,17 +71,9 @@ private:
   /// It as a period.
   float m_period = 0.0f;
 
-  std::vector<std::pair<float,float>> m_random = {
-    {0.2f, 0.2f}, {0.5f, 0.5}, {0.7f, 0.7f}};
+  std::vector<std::pair<float,float>> m_random;
 
   std::shared_ptr<Space> m_space = nullptr;
-
-  std::shared_ptr<Alien> m_alien = nullptr;
-  std::shared_ptr<SpaceShip> m_space_ship = nullptr;
-  std::shared_ptr<Obstacle> m_obstacle = nullptr;
-  std::shared_ptr<Star> m_star = nullptr;
-
-  std::list<std::shared_ptr<Bullet>> m_bulletList;
 
   TexturedRect * m_texturedRect = nullptr;
 

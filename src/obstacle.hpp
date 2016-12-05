@@ -33,5 +33,7 @@ private:
   uint m_health = 0;
 };
 
+using TObstaclePtr = std::shared_ptr<Obstacle>;
+
 std::ostream & operator << (std::ostream & os,
                             Obstacle const & obj);
