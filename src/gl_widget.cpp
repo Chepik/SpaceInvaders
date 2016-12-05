@@ -111,9 +111,26 @@ void GLWidget::paintGL()
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-  for (auto bullet : m_space->GetSpaceShipBullets()) {
-    bullet->IncreaseY(100);
+  // Loop over space ship bullets and delete it if needed.
+  std::list<TBulletPtr> & lst = m_space->GetSpaceShipBullets();
+
+  for (auto it = begin(lst); it != end(lst);)
+  {
+    (*it)->IncreaseY(100);
+
+    if ((*it)->GetPosition().y() > Globals::Height)
+    {
+      it = lst.erase(it);
+    }
+    else
+    {
+      ++it;
+    }
   }
+
+  // Check if needed.
+//  qDebug() << "lst.size() = " << lst.size();
+
 
   Render();
 
