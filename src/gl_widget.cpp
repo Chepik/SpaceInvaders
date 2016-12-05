@@ -174,14 +174,50 @@ void GLWidget::Update(float elapsedSeconds)
 {
   float const kSpeed = 20.0f; // pixels per second.
 
+  // Create temporary coordinates.
+  float new_position_y = m_position.y();
+  float new_position_x = m_position.x();
+
   if (m_directions[kUpDirection])
-    m_position.setY(m_position.y() + kSpeed * elapsedSeconds);
+  {
+    new_position_y += kSpeed * elapsedSeconds;
+
+    // Set top wall.
+    if (new_position_y > m_space->GetHeight()) {
+      new_position_y -= 10.0;
+    }
+  }
   if (m_directions[kDownDirection])
-    m_position.setY(m_position.y() - kSpeed * elapsedSeconds);
+  {
+    new_position_y -= kSpeed * elapsedSeconds;
+
+    // Set bottom wall.
+    if (new_position_y < 0) {
+      new_position_y += 10.0;
+    }
+  }
   if (m_directions[kLeftDirection])
-    m_position.setX(m_position.x() - kSpeed * elapsedSeconds);
+  {
+    new_position_x -= kSpeed * elapsedSeconds;
+
+    // Set left wall.
+    if (new_position_x < 0) {
+      new_position_x += 10.0;
+    }
+  }
   if (m_directions[kRightDirection])
-    m_position.setX(m_position.x() + kSpeed * elapsedSeconds);
+  {
+    new_position_x += kSpeed * elapsedSeconds;
+
+    // Set right wall.
+    if (new_position_x > m_space->GetWidth()) {
+      new_position_x -= 10.0;
+    }
+  }
+
+  // Set m_position to updated coordinates.
+  m_position.setY(new_position_y);
+  m_position.setX(new_position_x);
 }
 
 void GLWidget::Render()
