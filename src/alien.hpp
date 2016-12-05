@@ -1,5 +1,7 @@
 #include "game_entity_with_weapon.hpp"
 
+#include <memory>
+
 class Alien : public GameEntityWithWeapon
 {
 public:
@@ -19,7 +21,7 @@ public:
         QVector2D const & position,
         uint const & rate,
         uint const & health,
-        QImage * image)
+        std::shared_ptr<QImage> image)
     : GameEntityWithWeapon(position, "Alien", rate, health, image),
       m_speed(speed)
   {}

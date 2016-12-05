@@ -26,7 +26,7 @@ public:
                        std::string const & name,
                        uint const & rate,
                        uint const & health,
-                       QImage * image)
+                       std::shared_ptr<QImage> image)
     : GameEntity(position, name, image),
       m_rate(rate),
       m_health(health)

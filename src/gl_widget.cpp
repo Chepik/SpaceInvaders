@@ -223,7 +223,7 @@ void GLWidget::RenderBullet()
 {
   for (auto bullet : m_bulletList) {
     m_texturedRect->Render(bullet->GetTexture(),
-                           bullet->GetPos(),
+                           bullet->GetPosition(),
                            QSize(128, 128),
                            m_screenSize,
                            1.0);

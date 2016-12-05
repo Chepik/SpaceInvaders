@@ -14,7 +14,7 @@ public:
   {}
 
   Star(QVector2D const & position,
-       QImage * image)
+       std::shared_ptr<QImage> image)
     : GameEntity(position, "Star", image)
   {}
 

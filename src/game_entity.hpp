@@ -22,7 +22,7 @@ public:
 
   GameEntity(QVector2D const & position,
              std::string const & name,
-             QImage * image)
+             std::shared_ptr<QImage> image)
     : m_position(position),
       m_name(name)
   {

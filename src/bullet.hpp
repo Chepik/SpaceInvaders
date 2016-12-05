@@ -19,7 +19,7 @@ public:
   {}
 
   Bullet(QVector2D const & position,
-         QImage * image,
+         std::shared_ptr<QImage> image,
          uint const & damage) :
     GameEntity(position, "Bullet", image),
     m_damage(damage)
@@ -32,9 +32,6 @@ public:
 
   uint GetDamage() const;
   void SetDamage(uint const & damage);
-
-  const QVector2D & GetPos() const;
-  void IncreaseY(float const & value);
 
 private:
   uint m_damage = 0;

@@ -2,6 +2,8 @@
 
 #include "game_entity_with_weapon.hpp"
 
+#include <memory>
+
 class SpaceShip: public GameEntityWithWeapon
 {
 public:
@@ -18,7 +20,7 @@ public:
   SpaceShip(QVector2D const & position,
             uint const & rate,
             uint const & health,
-            QImage * image)
+            std::shared_ptr<QImage> image)
     : GameEntityWithWeapon(position,"SpaceShip", rate, health, image)
   {}
 
