@@ -13,11 +13,11 @@ public:
 
   virtual ~Space();
 
-  std::list<TAlienPtr> const & GetAliens() const;
-  std::list<TObstaclePtr> const & GetObstacles() const;
+  std::list<TAlienPtr> & GetAliens();
+  std::list<TObstaclePtr> & GetObstacles();
   std::list<TStarPtr> const & GetStars() const;
-  std::list<TBulletPtr> const & GetAlienBullets() const;
-  std::list<TBulletPtr> const & GetSpaceShipBullets() const;
+  std::list<TBulletPtr> & GetAlienBullets();
+  std::list<TBulletPtr> & GetSpaceShipBullets();
   TSpaceShipPtr const & GetSpaceShip() const;
 
   void AddAlien(TAlienPtr alien);
