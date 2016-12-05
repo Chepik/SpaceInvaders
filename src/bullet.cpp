@@ -17,21 +17,6 @@ void Bullet::SetDamage(uint const & damage)
   m_damage = damage;
 }
 
-//QOpenGLTexture *Bullet::GetTexture() const
-//{
-//  return m_texture;
-//}
-
-//const QVector2D & Bullet::GetPos() const
-//{
-//  return m_pos;
-//}
-
-//void Bullet::IncreaseY(const float & value)
-//{
-//  m_pos.setY(m_pos.y() + value);
-//}
-
 void Bullet::Update()
 {
   throw NotImplementedException();
@@ -40,6 +25,9 @@ void Bullet::Update()
 void Bullet::Move()
 {
   throw NotImplementedException();
+}
+void Bullet::IncreaseY(float const & value) {
+  m_position.setY(m_position.y() + value);
 }
 
 std::ostream & operator << (std::ostream & os,

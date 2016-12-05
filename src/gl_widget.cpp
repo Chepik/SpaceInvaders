@@ -56,11 +56,7 @@ GLWidget::GLWidget(GameWindow * mw, QColor const & background)
 GLWidget::~GLWidget()
 {
   makeCurrent();
-  //  delete m_textureAlien;
-  //  delete m_textureStar;
-  //  delete m_textureSpaceShip;
-  //  delete m_textureObstacle;
-  //  delete m_texturedRect;
+
   doneCurrent();
 }
 
@@ -322,7 +318,7 @@ void GLWidget::keyPressEvent(QKeyEvent * e)
   else if (e->key() == Qt::Key_Space)
   {
     std::shared_ptr<Bullet> bullet = std::make_shared<Bullet>(
-          QVector2D(200, 600), Images::Instance().GetImageBullet(), 100);
+        m_position, Images::Instance().GetImageBullet(), 100);
 
     m_bulletList.push_back(bullet);
   }
@@ -342,8 +338,6 @@ void GLWidget::keyReleaseEvent(QKeyEvent * e)
 
 double GLWidget::Random(double min, double max)
 {
-  //    return (double)(rand())/RAND_MAX*(max - min) + min;
-
   std::uniform_real_distribution<double> distribution(min, max);
 
   double number = distribution(m_generator);

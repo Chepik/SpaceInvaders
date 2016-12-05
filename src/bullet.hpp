@@ -32,6 +32,7 @@ public:
 
   uint GetDamage() const;
   void SetDamage(uint const & damage);
+  virtual void IncreaseY(float const &value) override;
 
 private:
   uint m_damage = 0;
