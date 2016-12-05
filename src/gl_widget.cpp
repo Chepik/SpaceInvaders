@@ -111,26 +111,7 @@ void GLWidget::paintGL()
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-  // Loop over space ship bullets and delete it if needed.
-  std::list<TBulletPtr> & lst = m_space->GetSpaceShipBullets();
-
-  for (auto it = begin(lst); it != end(lst);)
-  {
-    (*it)->IncreaseY(100);
-
-    if ((*it)->GetPosition().y() > Globals::Height)
-    {
-      it = lst.erase(it);
-    }
-    else
-    {
-      ++it;
-    }
-  }
-
-  // Check if needed.
-//  qDebug() << "lst.size() = " << lst.size();
-
+  SpaceShipBulletsLogic();
 
   Render();
 
@@ -377,4 +358,27 @@ double GLWidget::Random(double min, double max)
   double number = distribution(m_generator);
 
   return number;
+}
+
+void GLWidget::SpaceShipBulletsLogic()
+{
+  // Loop over space ship bullets and delete it if needed.
+  std::list<TBulletPtr> & lst = m_space->GetSpaceShipBullets();
+
+  for (auto it = begin(lst); it != end(lst);)
+  {
+    (*it)->IncreaseY(100);
+
+    if ((*it)->GetPosition().y() > Globals::Height)
+    {
+      it = lst.erase(it);
+    }
+    else
+    {
+      ++it;
+    }
+  }
+
+  // Check if needed.
+//  qDebug() << "lst.size() = " << lst.size();
 }
