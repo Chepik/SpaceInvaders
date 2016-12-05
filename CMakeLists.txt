@@ -5,10 +5,20 @@ add_definitions(--std=c++11)
 # Set up your project name.
 set(PROJECT_NAME SpaceInvaders)
 
+option(CUSTOM_QT_LOCATION "CUSTOM_QT_LOCATION" OFF)
+
 set(dir ${CMAKE_CURRENT_SOURCE_DIR})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${dir}/bin")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${dir}/bin")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${dir}/bin")
+
+
+if (UNIX)
+  if (CUSTOM_QT_LOCATION)
+    set(CMAKE_PREFIX_PATH $ENV{HOME}/Qt/5.7/gcc_64)
+  endif (CUSTOM_QT_LOCATION)
+endif(UNIX)
+
 
 set(CMAKE_AUTOMOC ON)
 SET(CMAKE_AUTOUIC ON)

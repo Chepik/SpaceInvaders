@@ -6,9 +6,17 @@
 
 #include <array>
 #include <random>
+#include <memory>
 
 #include "textured_rect.hpp"
 #include "bullet.hpp"
+#include "space.hpp"
+#include "unordered_map"
+#include "images.hpp"
+#include "alien.hpp"
+#include "space_ship.hpp"
+#include "obstacle.hpp"
+#include "star.hpp"
 
 class GameWindow;
 
@@ -69,14 +77,14 @@ private:
   std::vector<std::pair<float,float>> m_random = {
     {0.2f, 0.2f}, {0.5f, 0.5}, {0.7f, 0.7f}};
 
-  QOpenGLTexture * m_textureAlien = nullptr;
-  QOpenGLTexture * m_textureStar = nullptr;
-  QOpenGLTexture * m_textureSpaceShip = nullptr;
-  QOpenGLTexture * m_textureObstacle = nullptr;
+  std::shared_ptr<Space> m_space = nullptr;
 
-  QImage * m_image = nullptr;
+  std::shared_ptr<Alien> m_alien = nullptr;
+  std::shared_ptr<SpaceShip> m_space_ship = nullptr;
+  std::shared_ptr<Obstacle> m_obstacle = nullptr;
+  std::shared_ptr<Star> m_star = nullptr;
 
-  std::list<Bullet*> m_bulletList;
+  std::list<std::shared_ptr<Bullet>> m_bulletList;
 
   TexturedRect * m_texturedRect = nullptr;
 

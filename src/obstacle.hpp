@@ -2,6 +2,7 @@
 
 #include "game_entity.hpp"
 
+
 class Obstacle: public GameEntity
 {
 public:
@@ -9,8 +10,16 @@ public:
     : GameEntity("Obstacle")
   {}
 
-  Obstacle(uint const & health,Point2D const & position)
+  Obstacle(uint const & health,
+           QVector2D const & position)
     :GameEntity(position, "Obstacle"),
+      m_health(health)
+  {}
+
+  Obstacle(uint const & health,
+           QVector2D const & position,
+           std::shared_ptr<QImage> image)
+    :GameEntity(position, "Obstacle", image),
       m_health(health)
   {}
 

@@ -47,6 +47,8 @@ GLWidget::GLWidget(GameWindow * mw, QColor const & background)
   : m_mainWindow(mw)
   , m_background(background)
 {
+  m_space = std::make_shared<Space>(kWidth, kHeight);
+
   setMinimumSize(kWidth, kHeight);
   setFocusPolicy(Qt::StrongFocus);
 }
@@ -54,11 +56,7 @@ GLWidget::GLWidget(GameWindow * mw, QColor const & background)
 GLWidget::~GLWidget()
 {
   makeCurrent();
-  delete m_textureAlien;
-  delete m_textureStar;
-  delete m_textureSpaceShip;  
-  delete m_textureObstacle;
-  delete m_texturedRect;
+
   doneCurrent();
 }
 
@@ -68,12 +66,30 @@ void GLWidget::initializeGL()
 
   m_texturedRect = new TexturedRect();
   m_texturedRect->Initialize(this);
-  m_textureAlien = new QOpenGLTexture(QImage("data/alien.png"));
-  m_textureStar = new QOpenGLTexture(QImage("data/star.png"));
-  m_textureSpaceShip = new QOpenGLTexture(QImage("data/space_ship.png"));
-  m_textureObstacle = new QOpenGLTexture(QImage("data/obstacle.png"));
 
-  m_image = new QImage("data/bullet.png");
+  Images::Instance().LoadImages();
+
+  m_alien = std::make_shared<Alien>(
+        100,
+        QVector2D(200, 600),
+        100,
+        100,
+        Images::Instance().GetImageAlien());
+
+  m_space_ship = std::make_shared<SpaceShip>(
+        QVector2D(200, 600),
+        100,
+        100,
+        Images::Instance().GetImageSpaceShip());
+
+  m_obstacle = std::make_shared<Obstacle>(
+        100,
+        QVector2D(200, 600),
+        Images::Instance().GetImageObstacle());
+
+  m_star = std::make_shared<Star>(
+        QVector2D(200, 600),
+        Images::Instance().GetImageStar());
 
   m_time.start();
 }
@@ -96,7 +112,7 @@ void GLWidget::paintGL()
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-  for (Bullet * bullet : m_bulletList) {
+  for (auto bullet : m_bulletList) {
     bullet->IncreaseY(100);
   }
 
@@ -171,21 +187,39 @@ void GLWidget::Update(float elapsedSeconds)
 
 void GLWidget::Render()
 {
-  m_texturedRect->Render(m_textureAlien, QVector2D(200, 600), QSize(128, 128), m_screenSize, 1.0);
-  m_texturedRect->Render(m_textureAlien, QVector2D(400, 600), QSize(128, 128), m_screenSize, 1.0);
-  m_texturedRect->Render(m_textureAlien, QVector2D(600, 600), QSize(128, 128), m_screenSize, 1.0);
+  m_texturedRect->Render(m_alien->GetTexture(),
+                         QVector2D(200, 600),
+                         QSize(128, 128),
+                         m_screenSize,
+                         1.0);
+
+  m_texturedRect->Render(m_alien->GetTexture(),
+                         QVector2D(400, 600),
+                         QSize(128, 128),
+                         m_screenSize,
+                         1.0);
+
+  m_texturedRect->Render(m_alien->GetTexture(),
+                         QVector2D(600, 600),
+                         QSize(128, 128),
+                         m_screenSize,
+                         1.0);
 }
 
 void GLWidget::RenderSpaceShip()
 {
-  m_texturedRect->Render(m_textureSpaceShip, m_position, QSize(128, 128), m_screenSize, 1.0);
+  m_texturedRect->Render(m_space_ship->GetTexture(),
+                         m_position,
+                         QSize(128, 128),
+                         m_screenSize,
+                         1.0);
 }
 
 void GLWidget::RenderBullet()
 {
-  for (Bullet * bullet : m_bulletList) {
+  for (auto bullet : m_bulletList) {
     m_texturedRect->Render(bullet->GetTexture(),
-                           bullet->GetPos(),
+                           bullet->GetPosition(),
                            QSize(128, 128),
                            m_screenSize,
                            1.0);
@@ -194,13 +228,23 @@ void GLWidget::RenderBullet()
 
 void GLWidget::RenderObstacle()
 {
-  m_texturedRect->Render(m_textureObstacle, QVector2D(500, 300), QSize(128, 128), m_screenSize, 1.0);
+  m_texturedRect->Render(m_obstacle->GetTexture(),
+                         QVector2D(500, 300),
+                         QSize(128, 128),
+                         m_screenSize,
+                         1.0);
 }
 
 void GLWidget::RenderStar(float blend)
 {
-  for (auto it = m_random.begin() ; it != m_random.end(); ++it)
-    m_texturedRect->Render(m_textureStar, QVector2D((*it).first*kWidth, (*it).second*kHeight), QSize(16, 16), m_screenSize, blend);
+  for (auto it = m_random.begin() ; it != m_random.end(); ++it) {
+    m_texturedRect->Render(
+          m_star->GetTexture(),
+          QVector2D((*it).first*kWidth, (*it).second*kHeight),
+          QSize(16, 16),
+          m_screenSize,
+          blend);
+  }
 }
 
 void GLWidget::mousePressEvent(QMouseEvent * e)
@@ -273,7 +317,9 @@ void GLWidget::keyPressEvent(QKeyEvent * e)
     m_directions[kRightDirection] = true;
   else if (e->key() == Qt::Key_Space)
   {
-    Bullet * bullet = new Bullet(100, m_position, m_image);
+    std::shared_ptr<Bullet> bullet = std::make_shared<Bullet>(
+        m_position, Images::Instance().GetImageBullet(), 100);
+
     m_bulletList.push_back(bullet);
   }
 }
@@ -292,8 +338,6 @@ void GLWidget::keyReleaseEvent(QKeyEvent * e)
 
 double GLWidget::Random(double min, double max)
 {
-//    return (double)(rand())/RAND_MAX*(max - min) + min;
-
   std::uniform_real_distribution<double> distribution(min, max);
 
   double number = distribution(m_generator);

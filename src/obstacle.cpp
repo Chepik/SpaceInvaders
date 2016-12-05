@@ -26,7 +26,7 @@ void Obstacle::Update()
 std::ostream & operator << (std::ostream & os,
                             const Obstacle & obj)
 {
-  os << "Obstacle [Position: " << obj.GetPosition()
-     << "; Health: " << obj.GetHealth() << "]";
+//  os << "Obstacle [Position: " << obj.GetPosition()
+//     << "; Health: " << obj.GetHealth() << "]";
   return os;
 }

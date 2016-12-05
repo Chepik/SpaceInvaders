@@ -8,6 +8,8 @@
 #include <QSize>
 #include <QVector2D>
 
+#include <memory>
+
 class TexturedRect
 {
 public:
@@ -15,8 +17,12 @@ public:
   ~TexturedRect();
 
   bool Initialize(QOpenGLFunctions * functions);
-  void Render(QOpenGLTexture * texture, QVector2D const & position,
-              QSize const & size, QSize const & screenSize, const float blend);
+
+  void Render(std::shared_ptr<QOpenGLTexture> texture,
+              QVector2D const & position,
+              QSize const & size,
+              QSize const & screenSize,
+              const float blend);
 
 private:
   QOpenGLFunctions * m_functions = nullptr;
