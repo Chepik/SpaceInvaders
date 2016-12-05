@@ -10,7 +10,7 @@
 #include <QDebug>
 
 #include "util.hpp"
-
+#include "constants.hpp"
 
 SettingsPage::SettingsPage(QWidget *parent) :
   QWidget(parent),
@@ -39,7 +39,7 @@ SettingsPage::SettingsPage(QWidget *parent) :
   {
     Json::Value settings;
 
-    settings = Util::ReadJson(settings_file_name);
+    settings = Util::ReadJson(Globals::SettingsFileName);
 
     int currentDifficulty = settings["Difficulty"].asInt();
     int currentSpeed = settings["Speed"].asInt();
@@ -73,5 +73,5 @@ void SettingsPage::on_saveButton_clicked()
   settings["Difficulty"] = currentDifficulty;
   settings["Speed"] = currentSpeed;
 
-  Util::WriteJson(settings_file_name, settings);
+  Util::WriteJson(Globals::SettingsFileName, settings);
 }

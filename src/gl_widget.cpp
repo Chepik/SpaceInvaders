@@ -7,12 +7,20 @@
 #include <QCoreApplication>
 #include <QtGui/QMouseEvent>
 #include <QtGui/QGuiApplication>
-#include <cmath>
+#include <QDebug>
 
+#include <cmath>
 #include <iostream>
+
+#include "json/assertions.h"
+#include "json/value.h"
+#include "json/writer.h"
+#include "json/json.h"
+#include "json/config.h"
 
 #include "game_window.hpp"
 #include "constants.hpp"
+#include "util.hpp"
 
 namespace
 {
@@ -44,9 +52,12 @@ bool IsRightButton(QMouseEvent const * const e)
 
 } // namespace
 
-GLWidget::GLWidget(GameWindow * mw, QColor const & background)
-  : m_mainWindow(mw)
-  , m_background(background)
+GLWidget::GLWidget(GameWindow * mw,
+                   QColor const & background,
+                   size_t const & level)
+  : m_mainWindow(mw),
+    m_background(background),
+    m_level(level)
 {
   m_space = std::make_shared<Space>();
 
@@ -70,22 +81,34 @@ void GLWidget::initializeGL()
 
   Images::Instance().LoadImages();
 
-  m_space->AddAlien(std::make_shared<Alien>(
-                      100,
-                      QVector2D(200, 600),
-                      100,
-                      100,
-                      Images::Instance().GetImageAlien(),
-                      std::make_pair(128,128)));
+  // Read current level parameters from a settings file.
+  try
+  {
+    Json::Value settings;
 
-//  m_space->AddAlien(std::make_shared<Alien>(
-//                      100,
-//                      QVector2D(400,600),
-//                      100,
-//                      100,
-//                      Images::Instance().GetImageAlien(),
-//                      std::make_pair(64,64)));
+    settings = Util::ReadJson(Globals::SettingsFileName);
 
+    m_aliensNumber = \
+        settings["Level"][std::to_string(m_level)]["AliensNumber"].asUInt();
+
+    qDebug() << "m_aliensNumber = " << m_aliensNumber;
+  }
+  catch(std::exception ex) {
+    qDebug() << "Can't read settings from a file!";
+  }
+
+  // Create aliens.
+  for (size_t i = 1; i <= m_aliensNumber; i++) {
+    m_space->AddAlien(std::make_shared<Alien>(
+        100,
+        QVector2D(i * 200, 600),
+        100,
+        100,
+        Images::Instance().GetImageAlien(),
+        std::make_pair(128,128)));
+  }
+
+  // Create a space ship
   m_space->SetSpaceShip(std::make_shared<SpaceShip>(
                           QVector2D(200, 600),
                           100,
@@ -93,12 +116,14 @@ void GLWidget::initializeGL()
                           Images::Instance().GetImageSpaceShip(),
                           std::make_pair(128,128)));
 
+  // Create obstacles.
   m_space->AddObstacle(std::make_shared<Obstacle>(
                          100,
                          QVector2D(200, 600),
                          Images::Instance().GetImageObstacle(),
                          std::make_pair(128,128)));
 
+  // Create stars.
   AddStar();
 
   m_time.start();
@@ -209,7 +234,7 @@ void GLWidget::Render()
 {
   for (auto alien : m_space->GetAliens()) {
     m_texturedRect->Render(alien->GetTexture(),
-                           QVector2D(200, 600),
+                           alien->GetPosition(),
                            QSize(128, 128),
                            m_screenSize,
                            1.0);
@@ -247,7 +272,7 @@ void GLWidget::RenderObstacle()
 {
   for (auto obstacle : m_space->GetObstacles()) {
     m_texturedRect->Render(obstacle->GetTexture(),
-                           QVector2D(500, 300),
+                           obstacle->GetPosition(),
                            QSize(128, 128),
                            m_screenSize,
                            1.0);
@@ -257,7 +282,11 @@ void GLWidget::RenderObstacle()
 void GLWidget::RenderStar(float blend)
 {
   int i=0;
-  for (auto it = m_space->GetStars().begin(); it != m_space->GetStars().end() || i <m_random.size(); ++it,i++) {
+
+  for (auto it = m_space->GetStars().begin();
+       it != m_space->GetStars().end() || i <m_random.size();
+       ++it, i++)
+  {
     m_texturedRect->Render(
           (*it)->GetTexture(),
           QVector2D(m_random.at(i).first*kWidth, m_random.at(i).second*kHeight),

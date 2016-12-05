@@ -26,7 +26,9 @@ class GLWidget : public QGLWidget, protected QOpenGLFunctions
 {
   Q_OBJECT
 public:
-  GLWidget(GameWindow * mw, QColor const & background);
+  GLWidget(GameWindow * mw,
+           QColor const & background,
+           size_t const & level = 1);
   ~GLWidget();
 
 protected:
@@ -72,6 +74,12 @@ private:
   QTime m_time;
   QColor m_background;
   QSize m_screenSize;
+
+  // The current level number.
+  size_t m_level = 0;
+
+  // Number of aliens on the current level.
+  size_t m_aliensNumber = 0;
 
   /// m_period is a value between 0.0 and 1.0 .
   /// It as a period.
