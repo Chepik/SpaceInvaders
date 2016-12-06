@@ -23,6 +23,12 @@ QT_FORWARD_DECLARE_CLASS(QOpenGLTexture)
 QT_FORWARD_DECLARE_CLASS(QOpenGLShader)
 QT_FORWARD_DECLARE_CLASS(QOpenGLShaderProgram)
 
+struct RandomStar
+{
+  std::pair<float,float> m_randomStar;
+  float m_periodStar;
+};
+
 class GLWidget : public QGLWidget, protected QOpenGLFunctions
 {
   Q_OBJECT
@@ -50,9 +56,9 @@ protected:
   void keyReleaseEvent(QKeyEvent * e) override;
 
   /// Create objects.
-  void AddObstacles();
-  void AddSpaceShip();
-  void AddAliens();
+  void AddObstacles(const std::string & level);
+  void AddSpaceShip(const std::string & level);
+  void AddAliens(std::string const & level);
   void AddStars();
 
   /// Render stage.
@@ -60,7 +66,7 @@ protected:
   void RenderSpaceShip();
   void RenderBullet();
   void RenderObstacle();
-  void RenderStar(float blend);
+  void RenderStar();
   void RenderExplosion();
 
   /// Logic stage.
@@ -84,7 +90,7 @@ protected:
 
 private:
   // Read current level parameters from a settings file.
-  void ReadSettings();
+  void ReadSettings(const std::string & level);
 
   int L2D(int px) const { return px * devicePixelRatio(); }
 
@@ -98,14 +104,7 @@ private:
   // The current level number.
   size_t m_level = 0;
 
-  // Number of aliens on the current level.
-  size_t m_aliensNumber = 0;
-
-  /// m_period is a value between 0.0 and 1.0 .
-  /// It as a period.
-  float m_period = 0.0f;
-
-  std::vector<std::pair<float,float>> m_random;
+  std::vector<RandomStar> m_random;
 
   std::shared_ptr<Space> m_space = nullptr;
 
@@ -114,4 +113,12 @@ private:
   std::array<bool, 4> m_directions = {{ false, false, false, false }};
 
   std::default_random_engine m_generator;
+
+  uint m_damageBullet;
+  TSize m_sizeBullet;
+
+  uint m_lifetimeExplosion;
+  TSize m_sizeExplosion;
+  uint m_lifetimeExplosionBig;
+  TSize m_sizeExplosionBig;
 };

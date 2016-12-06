@@ -81,69 +81,142 @@ void GLWidget::initializeGL()
 
   Images::Instance().LoadImages();
 
-  ReadSettings();
+  std::string level = std::to_string(m_level);
 
-  AddAliens();
+  ReadSettings(level);
 
-  AddSpaceShip();
+  AddAliens(level);
 
-  AddObstacles();
+  AddSpaceShip(level);
+
+  AddObstacles(level);
 
   AddStars();
 
   m_time.start();
 }
 
-void GLWidget::ReadSettings()
+void GLWidget::ReadSettings(const std::string & level)
 {
+  Json::Value settings;
   try
   {
-    Json::Value settings;
-
     settings = Util::ReadJson(Globals::SettingsFileName);
-
-    m_aliensNumber = \
-        settings["Level"][std::__cxx11::to_string(m_level)]["AliensNumber"].asUInt();
-
-    qDebug() << "m_aliensNumber = " << m_aliensNumber;
   }
   catch(std::exception ex)
   {
     qDebug() << "Can't read settings from a file!";
   }
+
+    m_damageBullet = settings["Level"][std::to_string(m_level)]["BulletDamage"].asUInt();
+    m_sizeBullet = std::make_pair(settings["Level"][level]["BulletWidth"].asInt()
+                            ,settings["Level"][level]["BulletHeight"].asInt());
+
+    m_lifetimeExplosion = settings["ExplosionLifeTime"].asUInt();
+    m_lifetimeExplosionBig = settings["ExplosionLifeTimeBig"].asUInt();
+    m_sizeExplosion = std::make_pair(settings["ExplosionWidth"].asInt()
+                            ,settings["ExplosionHeight"].asInt());
+    m_sizeExplosionBig = std::make_pair(settings["ExplosionWidthBig"].asInt()
+                            ,settings["ExplosionHeightBig"].asInt());
+
 }
 
-void GLWidget::AddAliens()
+void GLWidget::AddAliens(const std::string & level)
 {
-  for (size_t i = 1; i <= m_aliensNumber; i++)
+  size_t aliensNumber = 0;
+  int speed = 0;
+  uint rate = 0;
+  uint health = 0;
+  TSize size = std::make_pair(0,0);
+  size_t aliensRowNumber = 0;
+
+  Json::Value settings;
+  try
   {
-    m_space->AddAlien(std::make_shared<Alien>(
-                        100,
-                        QVector2D(i * 200, 600),
-                        200,
-                        100,
-                        Images::Instance().GetImageAlien(),
-                        std::make_pair(128, 128)));
+    settings = Util::ReadJson(Globals::SettingsFileName);
   }
+  catch(std::exception ex)
+  {
+    qDebug() << "Can't read settings from a file!";
+  }
+  aliensNumber = settings["Level"][level]["AliensNumber"].asUInt();
+  speed = settings["Level"][level]["AlienSpeed"].asInt();
+  rate = settings["Level"][level]["AlienRate"].asUInt();
+  health = settings["Level"][level]["AlienHealth"].asUInt();
+  size = std::make_pair(settings["Level"][level]["AlienWidth"].asInt()
+                          ,settings["Level"][level]["AlienHeigth"].asInt());
+  aliensRowNumber = settings["Level"][level]["AlienRowNumber"].asUInt();
+
+  size_t r = (Globals::Width/aliensNumber);
+  int height = settings["Level"][level]["AlienHeigth"].asInt();
+  for (size_t j = 0; j < aliensRowNumber; j++)
+   for (size_t i = 0; i < aliensNumber; i++)
+    {
+      m_space->AddAlien(std::make_shared<Alien>(
+                          speed,
+                          QVector2D(i * r, 600 + j*height),
+                          rate,
+                          health,
+                          Images::Instance().GetImageAlien(),
+                          size));
+    }
 }
 
-void GLWidget::AddSpaceShip()
-{
+void GLWidget::AddSpaceShip(const std::string & level)
+{  
+  uint health = 0;
+  TSize size = std::make_pair(0,0);
+
+  Json::Value settings;
+  try
+  {
+    settings = Util::ReadJson(Globals::SettingsFileName);
+  }
+  catch(std::exception ex)
+  {
+    qDebug() << "Can't read settings from a file!";
+  }
+
+  health = settings["Level"][level]["SpaceShipHealth"].asUInt();;
+  size = std::make_pair(settings["Level"][level]["SpaceShipWidth"].asInt()
+                          ,settings["Level"][level]["SpaceShipHeigth"].asInt());
+
   m_space->SetSpaceShip(std::make_shared<SpaceShip>(
-                          QVector2D(200, 600),
+                          QVector2D(Globals::Width/2, size.second),
                           100,
-                          300,
+                          health,
                           Images::Instance().GetImageSpaceShip(),
-                          std::make_pair(128, 128)));
+                          size));
 }
 
-void GLWidget::AddObstacles()
-{
-  m_space->AddObstacle(std::make_shared<Obstacle>(
-                         100,
-                         QVector2D(200, 600),
-                         Images::Instance().GetImageObstacle(),
-                         std::make_pair(128, 128)));
+void GLWidget::AddObstacles(const std::string & level)
+{  
+  size_t obstaclesNumber = 0;
+  uint health = 0;
+  TSize size = std::make_pair(0,0);
+
+  Json::Value settings;
+  try
+  {
+    settings = Util::ReadJson(Globals::SettingsFileName);
+  }
+  catch(std::exception ex)
+  {
+    qDebug() << "Can't read settings from a file!";
+  }
+  obstaclesNumber = settings["Level"][level]["ObstacleNumber"].asUInt();
+  health = settings["Level"][level]["ObstacleHealth"].asUInt();;
+  size = std::make_pair(settings["Level"][level]["ObstacleWidth"].asInt()
+                          ,settings["Level"][level]["ObstacleHeigth"].asInt());
+
+  for (size_t i = 1; i <= obstaclesNumber; i++)
+  {
+    m_space->AddObstacle(std::make_shared<Obstacle>(
+                           health,
+                           QVector2D(200, 600),
+                           Images::Instance().GetImageObstacle(),
+                           size));
+  }
 }
 
 void GLWidget::paintGL()
@@ -195,24 +268,21 @@ void GLWidget::paintGL()
   RenderExplosion();
 
   /// Set to zero if it reaches the 1.0 .
-  if (m_period < 1.0)
+
+  for (auto it = m_random.begin() ; it != m_random.end(); ++it)
   {
-    m_period += 0.001f;
-  }
-  else
-  {
-    m_period = 0.0f;
-    for (auto it = m_random.begin() ; it != m_random.end(); ++it)
+    if((*it).m_periodStar < 1.0)
     {
-      *it = std::make_pair(Random(0,1), Random(0,1));
+      (*it).m_periodStar += 0.001f;
+    }
+    else
+    {
+      (*it).m_randomStar = std::make_pair(Random(0,1), Random(0,1));
+      (*it).m_periodStar = 0.0f;
     }
   }
 
-  // Generate a parameter for a star.
-  // transparency is a value between 0.0 and 1.0 .
-  float transparency = static_cast<float>(sin(m_period * 2 * PI));
-
-  RenderStar(transparency);
+  RenderStar();
   glDisable(GL_CULL_FACE);
   glDisable(GL_BLEND);
   painter.endNativePainting();
@@ -269,7 +339,7 @@ void GLWidget::RenderAlien()
   {
     m_texturedRect->Render(alien->GetTexture(),
                            alien->GetPosition(),
-                           QSize(128, 128),
+                           alien->GetSize(),
                            m_screenSize,
                            1.0);
   }
@@ -279,7 +349,7 @@ void GLWidget::RenderSpaceShip()
 {
   m_texturedRect->Render(m_space->GetSpaceShip()->GetTexture(),
                          m_space->GetSpaceShip()->GetPosition(),
-                         QSize(128, 128),
+                         m_space->GetSpaceShip()->GetSize(),
                          m_screenSize,
                          1.0);
 }
@@ -290,7 +360,7 @@ void GLWidget::RenderBullet()
   {
     m_texturedRect->Render(bullet->GetTexture(),
                            bullet->GetPosition(),
-                           QSize(128, 128),
+                           bullet->GetSize(),
                            m_screenSize,
                            1.0);
   }
@@ -298,7 +368,7 @@ void GLWidget::RenderBullet()
   {
     m_texturedRect->Render(bullet->GetTexture(),
                            bullet->GetPosition(),
-                           QSize(128, 128),
+                           bullet->GetSize(),
                            m_screenSize,
                            1.0);
   }
@@ -310,13 +380,13 @@ void GLWidget::RenderObstacle()
   {
     m_texturedRect->Render(obstacle->GetTexture(),
                            obstacle->GetPosition(),
-                           QSize(128, 128),
+                           obstacle->GetSize(),
                            m_screenSize,
                            1.0);
   }
 }
 
-void GLWidget::RenderStar(float blend)
+void GLWidget::RenderStar()
 {
   int i=0;
 
@@ -324,11 +394,12 @@ void GLWidget::RenderStar(float blend)
        it != m_space->GetStars().end() || i <m_random.size();
        ++it, i++)
   {
+    float blend = static_cast<float>(sin(m_random.at(i).m_periodStar * 2 * PI));
     m_texturedRect->Render(
           (*it)->GetTexture(),
-          QVector2D(m_random.at(i).first*Globals::Width,
-                    m_random.at(i).second*Globals::Height),
-          QSize(16, 16),
+          QVector2D(m_random.at(i).m_randomStar.first*Globals::Width,
+                    m_random.at(i).m_randomStar.second*Globals::Height),
+          (*it)->GetSize(),
           m_screenSize,
           blend);
   }
@@ -340,7 +411,7 @@ void GLWidget::RenderExplosion()
   {
     m_texturedRect->Render(explosion->GetTexture(),
                            explosion->GetPosition(),
-                           QSize(128, 128),
+                           explosion->GetSize(),
                            m_screenSize,
                            1.0);
   }
@@ -348,12 +419,33 @@ void GLWidget::RenderExplosion()
 
 void GLWidget::AddStars()
 {
-  m_space->AddStar(std::make_shared<Star>(
-                     QVector2D(200, 600),
-                     Images::Instance().GetImageStar(),
-                     std::make_pair(128,128)));
+  size_t starsNumber = 0;
+  TSize size = std::make_pair(0,0);
 
-  m_random.push_back(std::make_pair(Random(0,1), Random(0,1)));
+  Json::Value settings;
+  try
+  {
+    settings = Util::ReadJson(Globals::SettingsFileName);
+  }
+  catch(std::exception ex)
+  {
+    qDebug() << "Can't read settings from a file!";
+  }
+  starsNumber = settings["StarNumber"].asUInt();
+  size = std::make_pair(settings["StarWidth"].asInt()
+                          ,settings["StarHeigth"].asInt());
+
+  for (size_t i = 1; i <= starsNumber; i++)
+  {
+    m_space->AddStar(std::make_shared<Star>(
+                       QVector2D(200, 600),
+                       Images::Instance().GetImageStar(),
+                       size));
+    RandomStar randomStar;
+    randomStar.m_periodStar = Random(0,1);
+    randomStar.m_randomStar = std::make_pair(Random(0,1), Random(0,1));
+    m_random.push_back(randomStar);
+  }
 }
 
 void GLWidget::CheckHitSpaceShip()
@@ -403,8 +495,8 @@ void GLWidget::KillSpaceShip(uint damage, QVector2D const position)
     m_space->AddExplosion(std::make_shared<Explosion>(
                            position,
                            Images::Instance().GetImageExplosion(),
-                           std::make_pair(32,32),
-                           60));
+                           m_sizeExplosionBig,
+                           m_lifetimeExplosionBig));
     m_space->GetSpaceShip()->SetHealth(health-damage);
   }
   else
@@ -450,21 +542,18 @@ void GLWidget::CheckHitAlien()
       {
         uint health = (*itAlien)->GetHealth();
         uint damage = (*it)->GetDamage();
-//        qDebug() << damage;
-        qDebug()<<health;
         if ((health-damage) > 0)
         {
           m_space->AddExplosion(std::make_shared<Explosion>(
                                  positionAlien,
                                  Images::Instance().GetImageExplosion(),
-                                 std::make_pair(32,32),
-                                 30));
+                                 m_sizeExplosion,
+                                 m_lifetimeExplosion));
           (*itAlien)->SetHealth(health-damage);
         }
         else
         {
           flag = true;
-          qDebug() << "KILL";
         }
         it = lstBullet.erase(it);
         break;
@@ -479,8 +568,8 @@ void GLWidget::CheckHitAlien()
       m_space->AddExplosion(std::make_shared<Explosion>(
                              positionAlien,
                              Images::Instance().GetImageExplosion(),
-                             std::make_pair(128,128),
-                             30));
+                             m_sizeExplosionBig,
+                             m_lifetimeExplosionBig));
       itAlien = lstAlien.erase(itAlien);
     }
     else
@@ -496,15 +585,18 @@ void GLWidget::ShotAlien()
 
   for (auto it = begin(lst); it != end(lst); ++it)
   {
-    if((*it)->Shot())
+    if( abs(m_space->GetSpaceShip()->GetPosition().x() - (*it)->GetPosition().x()) < Globals::Width/2)
     {
-      std::shared_ptr<Bullet> bullet = std::make_shared<Bullet>(
-            (*it)->GetPosition(),
-            Images::Instance().GetImageBulletAlien(),
-            100,
-            std::make_pair(128,128));
+      if((*it)->Shot())
+      {
+        std::shared_ptr<Bullet> bullet = std::make_shared<Bullet>(
+              (*it)->GetPosition(),
+              Images::Instance().GetImageBulletAlien(),
+              m_damageBullet,
+              m_sizeBullet);
 
-      m_space->AddAlienBullet(bullet);
+        m_space->AddAlienBullet(bullet);
+      }
     }
   }
 }
@@ -611,8 +703,8 @@ void GLWidget::keyPressEvent(QKeyEvent * e)
     std::shared_ptr<Bullet> bullet = std::make_shared<Bullet>(
           m_space->GetSpaceShip()->GetPosition(),
           Images::Instance().GetImageBullet(),
-          100,
-          std::make_pair(128,128));
+          m_damageBullet,
+          m_sizeBullet);
 
     m_space->AddSpaceShipBullet(bullet);
   }
@@ -786,8 +878,8 @@ void GLWidget::CheckHitObstacle()
       m_space->AddExplosion(std::make_shared<Explosion>(
           positionObstacle,
           Images::Instance().GetImageExplosion(),
-          std::make_pair(128, 128),
-          30));
+          m_sizeExplosionBig,
+          m_lifetimeExplosionBig));
 
       itObstacle = lstObstacles.erase(itObstacle);
     }

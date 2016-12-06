@@ -9,6 +9,7 @@
 #include <QVector2D>
 
 #include <memory>
+#include "game_entity.hpp"
 
 class TexturedRect
 {
@@ -20,7 +21,7 @@ public:
 
   void Render(std::shared_ptr<QOpenGLTexture> texture,
               QVector2D const & position,
-              QSize const & size,
+              TSize const & size,
               QSize const & screenSize,
               const float blend);
 

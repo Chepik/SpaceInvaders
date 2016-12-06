@@ -75,17 +75,16 @@ bool TexturedRect::Initialize(QOpenGLFunctions * functions)
 void TexturedRect::Render(
     std::shared_ptr<QOpenGLTexture> texture,
     QVector2D const & position,
-    QSize const & size,
+    TSize const & size,
     QSize const & screenSize,
     float const blend)
 {
   if (texture == nullptr) return;
-
   QMatrix4x4 mvp;
   mvp.translate(2.0f * position.x() / screenSize.width() - 1.0f,
                 2.0f * position.y() / screenSize.height() - 1.0f);
-  mvp.scale(static_cast<float>(size.width()) / screenSize.width(),
-            static_cast<float>(size.height()) / screenSize.height());
+  mvp.scale(static_cast<float>(size.first) / screenSize.width(),
+            static_cast<float>(size.second) / screenSize.height());
 
   m_program->bind();
   m_program->setUniformValue(m_textureUniform, 0); // use texture unit 0

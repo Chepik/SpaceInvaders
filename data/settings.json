@@ -6,14 +6,29 @@
         "1" : 
         {
             "AliensNumber" : 2
+            "AlienSpeed" : 100
+            "AlienRate" : 200
+            "AlienHealth" : 200
+            "AlienWidth" : 128
+            "AlienHeigth" : 128
         },
         "2" : 
         {
             "AliensNumber" : 4
+            "AlienSpeed" : 100
+            "AlienRate" : 200
+            "AlienHealth" : 200
+            "AlienWidth" : 128
+            "AlienHeigth" : 128
         },
         "3" : 
         {
             "AliensNumber" : 8
+            "AlienSpeed" : 100
+            "AlienRate" : 200
+            "AlienHealth" : 200
+            "AlienWidth" : 128
+            "AlienHeigth" : 128
         }            
    }
 }
