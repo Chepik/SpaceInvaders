@@ -63,6 +63,7 @@ protected:
   void KillSpaceShip(uint damage);
   void SpaceShipBulletsLogic();
   void AlienBulletsLogic();
+  void AlienLogic();
 
   ///
   /// Generate random number between min and max values.

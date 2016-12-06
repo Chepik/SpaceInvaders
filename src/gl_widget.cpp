@@ -153,6 +153,8 @@ void GLWidget::paintGL()
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+  AlienLogic();
+
   CheckHitAlien();
 
   SpaceShipBulletsLogic();
@@ -552,6 +554,7 @@ void GLWidget::SpaceShipBulletsLogic()
   // Check if needed.
   //  qDebug() << "lst.size() = " << lst.size();
 }
+
 void GLWidget::AlienBulletsLogic()
 {
   // Loop over space ship bullets and delete it if needed.
@@ -573,4 +576,22 @@ void GLWidget::AlienBulletsLogic()
 
   // Check if needed.
   //  qDebug() << "lst.size() = " << lst.size();
+}
+
+void GLWidget::AlienLogic()
+{
+  // Loop over aliens.
+  std::list<TAlienPtr > & lst = m_space->GetAliens();
+
+  for (auto itAlien : lst)
+  {
+    if (itAlien->GetSpeed() > 0)
+    {
+      itAlien->IncreaseX(10.0f);
+    }
+    else
+    {
+      itAlien->DecreaseX(10.0f);
+    }
+  }
 }
