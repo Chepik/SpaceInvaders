@@ -42,7 +42,7 @@ void MainWindow::setCurrentIndex(int value)
       pageWidget = new MenuPage(this);
       break;
     case 1:
-      pageWidget = new GameWindow(this);
+      pageWidget = new GameWindow(this, m_currentLevel);
       break;
     case 2:
       pageWidget = new SettingsPage(this);
@@ -83,4 +83,15 @@ void MainWindow::moveToSettingsPage()
   qDebug() << "moveToSettingsPage";
 
   setCurrentIndex(2);
+}
+
+void MainWindow::moveToNextLevel()
+{
+  qDebug() << "moveToNextLevel";
+
+  // Increase game level number.
+  m_currentLevel++;
+
+  // Load the next game level.
+  setCurrentIndex(1);
 }
