@@ -23,9 +23,13 @@ public slots:
   void moveToGamePage();
   void exitFromGame();
   void moveToMenuPage();
+  void moveToNextLevel();
 
 public:
   QWidget * rootPageWidget = nullptr;
   QWidget * pageWidget = nullptr;
   QVBoxLayout * layoutRootPageWidget = nullptr;
+
+  // It stores current game level.
+  size_t m_currentLevel = 1;
 };
