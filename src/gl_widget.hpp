@@ -38,18 +38,9 @@ protected:
   void initializeGL() override;
 
   void Update(float elapsedSeconds);
-  void Render();
-  void RenderSpaceShip();
-  void RenderBullet();
-  void RenderObstacle();
-  void RenderStar(float blend);
-  void RenderExplosion();
-  void AddStar();
-  void CheckHitSpaceShip();
-  void KillSpaceShip(uint damage, const QVector2D position);
-  void CheckHitAlien();
-  void ShotAlien();
-  void ExplosionLogic();
+
+
+  /// Mouse and keyboard events.
   void mousePressEvent(QMouseEvent * e) override;
   void mouseDoubleClickEvent(QMouseEvent * e) override;
   void mouseMoveEvent(QMouseEvent * e) override;
@@ -58,8 +49,26 @@ protected:
   void keyPressEvent(QKeyEvent * e) override;
   void keyReleaseEvent(QKeyEvent * e) override;
 
+  /// Create objects.
+  void AddStar();
+
+  /// Render stage.
+  void RenderAlien();
+  void RenderSpaceShip();
+  void RenderBullet();
+  void RenderObstacle();
+  void RenderStar(float blend);
+  void RenderExplosion();
+
+  /// Logic stage.
+  void CheckHitAlien();
+  void CheckHitSpaceShip();
+  void KillSpaceShip(uint damage, QVector2D const position);
   void SpaceShipBulletsLogic();
   void AlienBulletsLogic();
+  void AlienLogic();
+  void ShotAlien();
+  void ExplosionLogic();
 
   ///
   /// Generate random number between min and max values.

@@ -9,7 +9,7 @@ public:
     : GameEntityWithWeapon("Alien")
   {}
 
-  Alien(uint const & speed,
+  Alien(int const & speed,
         QVector2D const & position,
         uint const & rate,
         uint const & health)
@@ -17,7 +17,7 @@ public:
       m_speed(speed)
   {}
 
-  Alien(uint const & speed,
+  Alien(int const & speed,
         QVector2D const & position,
         uint const & rate,
         uint const & health,
@@ -34,11 +34,17 @@ public:
   void Update() override;
   uint GetSpeed() const;
   void SetSpeed(uint const & rate);
+  void IncreaseX(float const & value) override;
+  void DecreaseX(float const & value) override;
   bool Shot();
   
 private:
+  // Change direction.
+  void ReverseDirection();
+
   uint m_speed = 0;
   uint m_shotTime = 0;
+
 };
 
 using TAlienPtr = std::shared_ptr<Alien>;

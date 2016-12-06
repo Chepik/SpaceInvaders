@@ -39,6 +39,46 @@ bool Alien::Shot()
   return shot;
 }
 
+void Alien::IncreaseX(float const &value)
+{
+  float tmp = m_position.x() + value;
+
+  // Set right wall.
+  if (tmp > Globals::Width)
+  {
+    m_position.setX(m_position.x() - 10.0f);
+
+    ReverseDirection();
+  }
+  else
+  {
+    m_position.setX(tmp);
+  }
+}
+
+void Alien::DecreaseX(float const &value)
+{
+
+  // Set left wall.
+  float tmp = m_position.x() - value;
+
+  if (tmp < 0.0f)
+  {
+    m_position.setX(m_position.x() + 10.0f);
+
+    ReverseDirection();
+  }
+  else
+  {
+    m_position.setX(tmp);
+  }
+}
+
+void Alien::ReverseDirection()
+{
+  SetSpeed(-GetSpeed());
+}
+
 std::ostream & operator << (std::ostream & os,
                             const Alien & obj)
 {
