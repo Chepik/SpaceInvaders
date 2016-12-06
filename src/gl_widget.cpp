@@ -21,6 +21,7 @@
 #include "game_window.hpp"
 #include "constants.hpp"
 #include "util.hpp"
+#include "logger.hpp"
 
 namespace
 {
@@ -208,12 +209,12 @@ void GLWidget::AddObstacles(const std::string & level)
   health = settings["Level"][level]["ObstacleHealth"].asUInt();;
   size = std::make_pair(settings["Level"][level]["ObstacleWidth"].asInt()
                           ,settings["Level"][level]["ObstacleHeigth"].asInt());
-
-  for (size_t i = 1; i <= obstaclesNumber; i++)
+  size_t r = (Globals::Width/obstaclesNumber);
+  for (size_t i = 0; i < obstaclesNumber; i++)
   {
     m_space->AddObstacle(std::make_shared<Obstacle>(
                            health,
-                           QVector2D(200, 600),
+                           QVector2D(i*r, 300),
                            Images::Instance().GetImageObstacle(),
                            size));
   }
@@ -522,7 +523,7 @@ void GLWidget::CheckHitAlien()
           Point2D(positionAlien.x(), positionAlien.y()),
           Point2D(positionAlien.x() + sizeAlien.first,
                   positionAlien.y() + sizeAlien.second));
-
+    LOG(LogLevel::info) << alienBox;
     bool flag = false;
 
     for (auto it = begin(lstBullet); it != end(lstBullet);)
@@ -550,6 +551,7 @@ void GLWidget::CheckHitAlien()
                                  m_sizeExplosion,
                                  m_lifetimeExplosion));
           (*itAlien)->SetHealth(health-damage);
+          qDebug()<< "SHOT ALIEN";
         }
         else
         {
@@ -563,6 +565,7 @@ void GLWidget::CheckHitAlien()
         ++it;
       }
     }
+    qDebug()<<"lstBullet.size()="<<lstBullet.size();
     if (flag)
     {
       m_space->AddExplosion(std::make_shared<Explosion>(
@@ -570,6 +573,7 @@ void GLWidget::CheckHitAlien()
                              Images::Instance().GetImageExplosion(),
                              m_sizeExplosionBig,
                              m_lifetimeExplosionBig));
+      qDebug() << "KILL ALIEN";
       itAlien = lstAlien.erase(itAlien);
     }
     else
@@ -577,6 +581,7 @@ void GLWidget::CheckHitAlien()
       ++itAlien;
     }
   }
+  qDebug() <<"lstAlien.size() = " <<lstAlien.size();
 }
 
 void GLWidget::ShotAlien()
@@ -700,6 +705,7 @@ void GLWidget::keyPressEvent(QKeyEvent * e)
   }
   else if (e->key() == Qt::Key_Space)
   {
+    qDebug() << "ADD BULLET";
     std::shared_ptr<Bullet> bullet = std::make_shared<Bullet>(
           m_space->GetSpaceShip()->GetPosition(),
           Images::Instance().GetImageBullet(),
@@ -841,8 +847,23 @@ void GLWidget::CheckHitObstacle()
       // then return false.
       if (Box2D::checkBoxes(obstacleBox, bulletBox))
       {
+        uint health = (*itObstacle)->GetHealth();
+        uint damage = (*it)->GetDamage();
+        if ((health-damage) > 0)
+        {
+          m_space->AddExplosion(std::make_shared<Explosion>(
+                                 positionObstacle,
+                                 Images::Instance().GetImageExplosion(),
+                                 m_sizeExplosion,
+                                 m_lifetimeExplosion));
+          (*itObstacle)->SetHealth(health-damage);
+          qDebug()<< "SHOT ALIEN";
+        }
+        else
+        {
+           flag = true;
+        }
         it = lstBulletsAlien.erase(it);
-        flag = true;
         break;
       }
     }
@@ -865,8 +886,23 @@ void GLWidget::CheckHitObstacle()
         // then return false.
         if (Box2D::checkBoxes(obstacleBox, bulletBox))
         {
-          it = lstBulletsSpaceShip.erase(it);
-          flag = true;
+          uint health = (*itObstacle)->GetHealth();
+          uint damage = (*it)->GetDamage();
+          if ((health-damage) > 0)
+          {
+            m_space->AddExplosion(std::make_shared<Explosion>(
+                                   positionObstacle,
+                                   Images::Instance().GetImageExplosion(),
+                                   m_sizeExplosion,
+                                   m_lifetimeExplosion));
+            (*itObstacle)->SetHealth(health-damage);
+            qDebug()<< "SHOT ALIEN";
+          }
+          else
+          {
+             flag = true;
+          }
+          it = lstBulletsAlien.erase(it);
           break;
         }
       }
