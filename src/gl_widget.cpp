@@ -462,7 +462,7 @@ void GLWidget::ShotAlien()
     {
       std::shared_ptr<Bullet> bullet = std::make_shared<Bullet>(
             (*it)->GetPosition(),
-            Images::Instance().GetImageBullet(),
+            Images::Instance().GetImageBulletAlien(),
             100,
             std::make_pair(128,128));
 
