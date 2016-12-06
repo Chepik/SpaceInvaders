@@ -16,6 +16,9 @@ void Images::LoadImages()
 
   m_imageBullet = std::make_shared<QImage>(
         "data/bullet.png");
+
+  m_imageExplosion= std::make_shared<QImage>(
+        "data/explosion.png");
 }
 
 std::shared_ptr<QImage> Images::GetImageAlien()
@@ -41,4 +44,9 @@ std::shared_ptr<QImage> Images::GetImageObstacle()
 std::shared_ptr<QImage> Images::GetImageBullet()
 {
   return m_imageBullet;
+}
+
+std::shared_ptr<QImage> Images::GetImageExplosion()
+{
+  return m_imageExplosion;
 }

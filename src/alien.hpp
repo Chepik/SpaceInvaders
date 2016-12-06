@@ -24,7 +24,8 @@ public:
         std::shared_ptr<QImage> image,
         TSize const & size)
     : GameEntityWithWeapon(position, "Alien", rate, health, image, size),
-      m_speed(speed)
+      m_speed(speed),
+      m_shotTime(rate)
   {}
 
   ~Alien() override;
@@ -33,9 +34,11 @@ public:
   void Update() override;
   uint GetSpeed() const;
   void SetSpeed(uint const & rate);
+  bool Shot();
   
 private:
   uint m_speed = 0;
+  uint m_shotTime = 0;
 };
 
 using TAlienPtr = std::shared_ptr<Alien>;

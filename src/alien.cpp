@@ -27,6 +27,18 @@ void Alien::SetSpeed(uint const & rate)
   m_speed = rate;
 }
 
+bool Alien::Shot()
+{
+  bool shot = false;
+  m_shotTime--;
+  if(m_shotTime == 0)
+  {
+    m_shotTime = m_rate;
+    shot = true;
+  }
+  return shot;
+}
+
 std::ostream & operator << (std::ostream & os,
                             const Alien & obj)
 {

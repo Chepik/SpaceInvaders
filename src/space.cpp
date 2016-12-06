@@ -61,6 +61,11 @@ void Space::SetSpaceShip(TSpaceShipPtr spaceShip)
   m_space_ship = spaceShip;
 }
 
+void Space::AddExplosion(TExplosionPtr explosion)
+{
+  m_explosionList.push_back(explosion);
+}
+
 Space::~Space()
 {
 
@@ -71,4 +76,10 @@ std::ostream & operator << (std::ostream & os,
 {
   os << "Space";
   return os;
+}
+
+
+std::list<TExplosionPtr> &Space::GetExplosions()
+{
+  return m_explosionList;
 }

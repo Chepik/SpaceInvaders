@@ -13,6 +13,7 @@
 #include "space.hpp"
 #include "unordered_map"
 #include "images.hpp"
+#include "explosion.hpp"
 
 class GameWindow;
 
@@ -42,10 +43,13 @@ protected:
   void RenderBullet();
   void RenderObstacle();
   void RenderStar(float blend);
+  void RenderExplosion();
   void AddStar();
   void CheckHitSpaceShip();
-  void KillSpaceShip(uint damage);
+  void KillSpaceShip(uint damage, const QVector2D position);
   void CheckHitAlien();
+  void ShotAlien();
+  void ExplosionLogic();
   void mousePressEvent(QMouseEvent * e) override;
   void mouseDoubleClickEvent(QMouseEvent * e) override;
   void mouseMoveEvent(QMouseEvent * e) override;

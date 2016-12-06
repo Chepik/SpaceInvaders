@@ -5,6 +5,7 @@
 #include "space_ship.hpp"
 #include "obstacle.hpp"
 #include "star.hpp"
+#include "explosion.hpp"
 
 class Space
 {
@@ -19,6 +20,7 @@ public:
   std::list<TBulletPtr> & GetAlienBullets();
   std::list<TBulletPtr> & GetSpaceShipBullets();
   TSpaceShipPtr const & GetSpaceShip() const;
+  std::list<TExplosionPtr> & GetExplosions();
 
   void AddAlien(TAlienPtr alien);
   void AddObstacle(TObstaclePtr obstacle);
@@ -26,6 +28,7 @@ public:
   void AddAlienBullet(TBulletPtr bullet);
   void AddSpaceShipBullet(TBulletPtr bullet);
   void SetSpaceShip(TSpaceShipPtr spaceShip);
+  void AddExplosion(TExplosionPtr explosion);
   
 private:
   std::list<TAlienPtr> m_alienList;
@@ -34,6 +37,7 @@ private:
   std::list<TStarPtr> m_starList;
   std::list<TBulletPtr> m_spaceShipBulletList;
   std::list<TBulletPtr> m_alienBulletList;
+  std::list<TExplosionPtr> m_explosionList;
 };
 
 std::ostream & operator << (std::ostream & os,

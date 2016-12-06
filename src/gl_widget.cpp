@@ -104,7 +104,7 @@ void GLWidget::initializeGL()
     m_space->AddAlien(std::make_shared<Alien>(
                         100,
                         QVector2D(i * 200, 600),
-                        100,
+                        200,
                         100,
                         Images::Instance().GetImageAlien(),
                         std::make_pair(128,128)));
@@ -114,7 +114,7 @@ void GLWidget::initializeGL()
   m_space->SetSpaceShip(std::make_shared<SpaceShip>(
                           QVector2D(200, 600),
                           100,
-                          100,
+                          300,
                           Images::Instance().GetImageSpaceShip(),
                           std::make_pair(128,128)));
 
@@ -153,7 +153,13 @@ void GLWidget::paintGL()
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+  ExplosionLogic();
+
+  CheckHitSpaceShip();
+
   CheckHitAlien();
+
+  ShotAlien();
 
   SpaceShipBulletsLogic();
 
@@ -166,6 +172,8 @@ void GLWidget::paintGL()
   RenderBullet();
 
   RenderObstacle();
+
+  RenderExplosion();
 
   /// Set to zero if it reaches the 1.0 .
   if (m_period < 1.0)
@@ -238,7 +246,8 @@ void GLWidget::Update(float elapsedSeconds)
 
 void GLWidget::Render()
 {
-  for (auto alien : m_space->GetAliens()) {
+  for (auto alien : m_space->GetAliens())
+  {
     m_texturedRect->Render(alien->GetTexture(),
                            alien->GetPosition(),
                            QSize(128, 128),
@@ -258,14 +267,16 @@ void GLWidget::RenderSpaceShip()
 
 void GLWidget::RenderBullet()
 {
-  for (auto bullet : m_space->GetSpaceShipBullets()) {
+  for (auto bullet : m_space->GetSpaceShipBullets())
+  {
     m_texturedRect->Render(bullet->GetTexture(),
                            bullet->GetPosition(),
                            QSize(128, 128),
                            m_screenSize,
                            1.0);
   }
-  for (auto bullet : m_space->GetAlienBullets()) {
+  for (auto bullet : m_space->GetAlienBullets())
+  {
     m_texturedRect->Render(bullet->GetTexture(),
                            bullet->GetPosition(),
                            QSize(128, 128),
@@ -276,7 +287,8 @@ void GLWidget::RenderBullet()
 
 void GLWidget::RenderObstacle()
 {
-  for (auto obstacle : m_space->GetObstacles()) {
+  for (auto obstacle : m_space->GetObstacles())
+  {
     m_texturedRect->Render(obstacle->GetTexture(),
                            obstacle->GetPosition(),
                            QSize(128, 128),
@@ -303,6 +315,18 @@ void GLWidget::RenderStar(float blend)
   }
 }
 
+void GLWidget::RenderExplosion()
+{
+  for (auto explosion : m_space->GetExplosions())
+  {
+    m_texturedRect->Render(explosion->GetTexture(),
+                           explosion->GetPosition(),
+                           QSize(128, 128),
+                           m_screenSize,
+                           1.0);
+  }
+}
+
 void GLWidget::AddStar()
 {
   m_space->AddStar(std::make_shared<Star>(
@@ -324,11 +348,13 @@ void GLWidget::CheckHitSpaceShip()
         Point2D(positionSpaceShip.x() + sizeSpaceShip.first,
                 positionSpaceShip.y() + sizeSpaceShip.second));
 
-  for (auto bullet : m_space->GetAlienBullets())
-  {
-    QVector2D position = bullet->GetPosition();
+  std::list<TBulletPtr> & lstBullet = m_space->GetAlienBullets();
 
-    TSize size = bullet->GetSize();
+  for (auto it = begin(lstBullet); it != end(lstBullet);)
+  {
+    QVector2D position = (*it)->GetPosition();
+
+    TSize size = (*it)->GetSize();
 
     Box2D bulletBox = Box2D::createBox(
           Point2D(position.x(), position.y()),
@@ -339,17 +365,27 @@ void GLWidget::CheckHitSpaceShip()
     // then return false.
     if (Box2D::checkBoxes(spaceShipBox,bulletBox))
     {
-      KillSpaceShip(bullet->GetDamage());
+      KillSpaceShip((*it)->GetDamage(),(*it)->GetPosition());
+      it = lstBullet.erase(it);
+    }
+    else
+    {
+      ++it;
     }
   }
 }
 
-void GLWidget::KillSpaceShip(uint damage)
+void GLWidget::KillSpaceShip(uint damage, QVector2D const position)
 {
   uint health = m_space->GetSpaceShip()->GetHealth();
-
+  qDebug() << damage;
   if ((health-damage) > 0)
   {
+    m_space->AddExplosion(std::make_shared<Explosion>(
+                           position,
+                           Images::Instance().GetImageExplosion(),
+                           std::make_pair(32,32),
+                           60));
     m_space->GetSpaceShip()->SetHealth(health-damage);
   }
   else
@@ -400,11 +436,52 @@ void GLWidget::CheckHitAlien()
     }
     if (flag)
     {
+      m_space->AddExplosion(std::make_shared<Explosion>(
+                             positionAlien,
+                             Images::Instance().GetImageExplosion(),
+                             std::make_pair(128,128),
+                             30));
       itAlien = lstAlien.erase(itAlien);
     }
     else
     {
       ++itAlien;
+    }
+  }
+}
+
+void GLWidget::ShotAlien()
+{
+  std::list<TAlienPtr> & lst = m_space->GetAliens();
+
+  for (auto it = begin(lst); it != end(lst); ++it)
+  {
+    if((*it)->Shot())
+    {
+      std::shared_ptr<Bullet> bullet = std::make_shared<Bullet>(
+            (*it)->GetPosition(),
+            Images::Instance().GetImageBullet(),
+            100,
+            std::make_pair(128,128));
+
+      m_space->AddAlienBullet(bullet);
+    }
+  }
+}
+
+void GLWidget::ExplosionLogic()
+{
+  std::list<TExplosionPtr> & lst = m_space->GetExplosions();
+
+  for (auto it = begin(lst); it != end(lst);)
+  {
+    if ((*it)->ReduceLifeTime())
+    {
+      it = lst.erase(it);
+    }
+    else
+    {
+      ++it;
     }
   }
 }
@@ -559,9 +636,9 @@ void GLWidget::AlienBulletsLogic()
 
   for (auto it = begin(lst); it != end(lst);)
   {
-    (*it)->DecreaseX(100);
+    (*it)->DecreaseY(10);
 
-    if ((*it)->GetPosition().y() < 0.0f)
+    if ((*it)->GetPosition().y() <= 0.0f)
     {
       it = lst.erase(it);
     }

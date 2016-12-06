@@ -94,6 +94,7 @@ set(DATA_FILES_LIST
   data/star.png
   data/space_ship.png
   data/bullet.png
-  data/obstacle.png)
+  data/obstacle.png
+  data/explosion.png)
 
 copy_files("${DATA_FILES_LIST}" ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
