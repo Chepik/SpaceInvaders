@@ -83,7 +83,21 @@ void GLWidget::initializeGL()
 
   Images::Instance().LoadImages();
 
-  // Read current level parameters from a settings file.
+  ReadSettings();
+
+  AddAliens();
+
+  AddSpaceShip();
+
+  AddObstacles();
+
+  AddStars();
+
+  m_time.start();
+}
+
+void GLWidget::ReadSettings()
+{
   try
   {
     Json::Value settings;
@@ -91,44 +105,47 @@ void GLWidget::initializeGL()
     settings = Util::ReadJson(Globals::SettingsFileName);
 
     m_aliensNumber = \
-        settings["Level"][std::to_string(m_level)]["AliensNumber"].asUInt();
+        settings["Level"][std::__cxx11::to_string(m_level)]["AliensNumber"].asUInt();
 
     qDebug() << "m_aliensNumber = " << m_aliensNumber;
   }
-  catch(std::exception ex) {
+  catch(std::exception ex)
+  {
     qDebug() << "Can't read settings from a file!";
   }
+}
 
-  // Create aliens.
-  for (size_t i = 1; i <= m_aliensNumber; i++) {
+void GLWidget::AddAliens()
+{
+  for (size_t i = 1; i <= m_aliensNumber; i++)
+  {
     m_space->AddAlien(std::make_shared<Alien>(
                         100,
                         QVector2D(i * 200, 600),
                         200,
                         100,
                         Images::Instance().GetImageAlien(),
-                        std::make_pair(128,128)));
+                        std::make_pair(128, 128)));
   }
+}
 
-  // Create a space ship
+void GLWidget::AddSpaceShip()
+{
   m_space->SetSpaceShip(std::make_shared<SpaceShip>(
                           QVector2D(200, 600),
                           100,
                           300,
                           Images::Instance().GetImageSpaceShip(),
-                          std::make_pair(128,128)));
+                          std::make_pair(128, 128)));
+}
 
-  // Create obstacles.
+void GLWidget::AddObstacles()
+{
   m_space->AddObstacle(std::make_shared<Obstacle>(
                          100,
                          QVector2D(200, 600),
                          Images::Instance().GetImageObstacle(),
-                         std::make_pair(128,128)));
-
-  // Create stars.
-  AddStar();
-
-  m_time.start();
+                         std::make_pair(128, 128)));
 }
 
 void GLWidget::paintGL()
@@ -329,7 +346,7 @@ void GLWidget::RenderExplosion()
   }
 }
 
-void GLWidget::AddStar()
+void GLWidget::AddStars()
 {
   m_space->AddStar(std::make_shared<Star>(
                      QVector2D(200, 600),
@@ -671,4 +688,9 @@ void GLWidget::AlienLogic()
       itAlien->DecreaseX(10.0f);
     }
   }
+}
+
+void GLWidget::ObstacleLogic()
+{
+
 }

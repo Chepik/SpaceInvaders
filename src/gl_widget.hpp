@@ -50,7 +50,10 @@ protected:
   void keyReleaseEvent(QKeyEvent * e) override;
 
   /// Create objects.
-  void AddStar();
+  void AddObstacles();
+  void AddSpaceShip();
+  void AddAliens();
+  void AddStars();
 
   /// Render stage.
   void RenderAlien();
@@ -69,6 +72,7 @@ protected:
   void AlienLogic();
   void ShotAlien();
   void ExplosionLogic();
+  void ObstacleLogic();
 
   ///
   /// Generate random number between min and max values.
@@ -79,6 +83,9 @@ protected:
   double Random(double min, double max);
 
 private:
+  // Read current level parameters from a settings file.
+  void ReadSettings();
+
   int L2D(int px) const { return px * devicePixelRatio(); }
 
   GameWindow * m_mainWindow;
