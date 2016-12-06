@@ -416,7 +416,7 @@ void GLWidget::CheckHitAlien()
 
     bool flag = false;
 
-    for (auto it = begin(lstBullet); it != end(lstBullet); ++it)
+    for (auto it = begin(lstBullet); it != end(lstBullet);)
     {
       QVector2D position = (*it)->GetPosition();
 
@@ -431,9 +431,30 @@ void GLWidget::CheckHitAlien()
       // then return false.
       if (Box2D::checkBoxes(alienBox,bulletBox))
       {
+        uint health = (*itAlien)->GetHealth();
+        uint damage = (*it)->GetDamage();
+//        qDebug() << damage;
+        qDebug()<<health;
+        if ((health-damage) > 0)
+        {
+          m_space->AddExplosion(std::make_shared<Explosion>(
+                                 positionAlien,
+                                 Images::Instance().GetImageExplosion(),
+                                 std::make_pair(32,32),
+                                 30));
+          (*itAlien)->SetHealth(health-damage);
+        }
+        else
+        {
+          flag = true;
+          qDebug() << "KILL";
+        }
         it = lstBullet.erase(it);
-        flag = true;
         break;
+      }
+      else
+      {
+        ++it;
       }
     }
     if (flag)
