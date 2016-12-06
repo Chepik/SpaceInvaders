@@ -184,6 +184,8 @@ void GLWidget::paintGL()
 
   AlienBulletsLogic();
 
+  CheckHitObstacle();
+
   RenderAlien();
 
   RenderSpaceShip();
@@ -690,7 +692,89 @@ void GLWidget::AlienLogic()
   }
 }
 
-void GLWidget::ObstacleLogic()
+void GLWidget::CheckHitObstacle()
 {
+  std::list<TObstaclePtr > & lstObstacles = m_space->GetObstacles();
 
+  std::list<TBulletPtr> & lstBulletsAlien = m_space->GetAlienBullets();
+
+  std::list<TBulletPtr> & lstBulletsSpaceShip = m_space->GetSpaceShipBullets();
+
+  // Loop over obstacles.
+  for (auto itObstacle = begin(lstObstacles); itObstacle != end(lstObstacles);)
+  {
+    QVector2D positionObstacle = (*itObstacle)->GetPosition();
+
+    TSize sizeObstacle = (*itObstacle)->GetSize();
+
+    Box2D obstacleBox = Box2D::createBox(
+        Point2D(positionObstacle.x(), positionObstacle.y()),
+        Point2D(positionObstacle.x() + sizeObstacle.first,
+                positionObstacle.y() + sizeObstacle.second));
+
+    bool flag = false;
+
+    // Loop over alien bullets.
+    for (auto it = begin(lstBulletsAlien); it != end(lstBulletsAlien); ++it)
+    {
+      QVector2D position = (*it)->GetPosition();
+
+      TSize size = (*it)->GetSize();
+
+      Box2D bulletBox = Box2D::createBox(
+          Point2D(position.x(), position.y()),
+          Point2D(position.x() + size.first,
+                  position.y() + size.second));
+
+      // If two boxes are not intersected with each other
+      // then return false.
+      if (Box2D::checkBoxes(obstacleBox, bulletBox))
+      {
+        it = lstBulletsAlien.erase(it);
+        flag = true;
+        break;
+      }
+    }
+
+    // Loop over space ship bullets if needed.
+    if (!flag)
+    {
+      for (auto it = begin(lstBulletsSpaceShip); it != end(lstBulletsSpaceShip); ++it)
+      {
+        QVector2D position = (*it)->GetPosition();
+
+        TSize size = (*it)->GetSize();
+
+        Box2D bulletBox = Box2D::createBox(
+            Point2D(position.x(), position.y()),
+            Point2D(position.x() + size.first,
+                    position.y() + size.second));
+
+        // If two boxes are not intersected with each other
+        // then return false.
+        if (Box2D::checkBoxes(obstacleBox, bulletBox))
+        {
+          it = lstBulletsSpaceShip.erase(it);
+          flag = true;
+          break;
+        }
+      }
+    }
+
+    // Make explosion if needed.
+    if (flag)
+    {
+      m_space->AddExplosion(std::make_shared<Explosion>(
+          positionObstacle,
+          Images::Instance().GetImageExplosion(),
+          std::make_pair(128, 128),
+          30));
+
+      itObstacle = lstObstacles.erase(itObstacle);
+    }
+    else
+    {
+      ++itObstacle;
+    }
+  }
 }

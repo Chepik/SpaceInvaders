@@ -72,7 +72,7 @@ protected:
   void AlienLogic();
   void ShotAlien();
   void ExplosionLogic();
-  void ObstacleLogic();
+  void CheckHitObstacle();
 
   ///
   /// Generate random number between min and max values.
