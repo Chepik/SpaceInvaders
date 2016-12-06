@@ -81,7 +81,21 @@ void GLWidget::initializeGL()
 
   Images::Instance().LoadImages();
 
-  // Read current level parameters from a settings file.
+  ReadSettings();
+
+  AddAliens();
+
+  AddSpaceShip();
+
+  AddObstacles();
+
+  AddStars();
+
+  m_time.start();
+}
+
+void GLWidget::ReadSettings()
+{
   try
   {
     Json::Value settings;
@@ -89,44 +103,47 @@ void GLWidget::initializeGL()
     settings = Util::ReadJson(Globals::SettingsFileName);
 
     m_aliensNumber = \
-        settings["Level"][std::to_string(m_level)]["AliensNumber"].asUInt();
+        settings["Level"][std::__cxx11::to_string(m_level)]["AliensNumber"].asUInt();
 
     qDebug() << "m_aliensNumber = " << m_aliensNumber;
   }
-  catch(std::exception ex) {
+  catch(std::exception ex)
+  {
     qDebug() << "Can't read settings from a file!";
   }
+}
 
-  // Create aliens.
-  for (size_t i = 1; i <= m_aliensNumber; i++) {
+void GLWidget::AddAliens()
+{
+  for (size_t i = 1; i <= m_aliensNumber; i++)
+  {
     m_space->AddAlien(std::make_shared<Alien>(
                         100,
                         QVector2D(i * 200, 600),
                         200,
                         100,
                         Images::Instance().GetImageAlien(),
-                        std::make_pair(128,128)));
+                        std::make_pair(128, 128)));
   }
+}
 
-  // Create a space ship
+void GLWidget::AddSpaceShip()
+{
   m_space->SetSpaceShip(std::make_shared<SpaceShip>(
                           QVector2D(200, 600),
                           100,
                           300,
                           Images::Instance().GetImageSpaceShip(),
-                          std::make_pair(128,128)));
+                          std::make_pair(128, 128)));
+}
 
-  // Create obstacles.
+void GLWidget::AddObstacles()
+{
   m_space->AddObstacle(std::make_shared<Obstacle>(
                          100,
                          QVector2D(200, 600),
                          Images::Instance().GetImageObstacle(),
-                         std::make_pair(128,128)));
-
-  // Create stars.
-  AddStar();
-
-  m_time.start();
+                         std::make_pair(128, 128)));
 }
 
 void GLWidget::paintGL()
@@ -164,6 +181,8 @@ void GLWidget::paintGL()
   SpaceShipBulletsLogic();
 
   AlienBulletsLogic();
+
+  CheckHitObstacle();
 
   RenderAlien();
 
@@ -327,7 +346,7 @@ void GLWidget::RenderExplosion()
   }
 }
 
-void GLWidget::AddStar()
+void GLWidget::AddStars()
 {
   m_space->AddStar(std::make_shared<Star>(
                      QVector2D(200, 600),
@@ -688,6 +707,93 @@ void GLWidget::AlienLogic()
     else
     {
       itAlien->DecreaseX(10.0f);
+    }
+  }
+}
+
+void GLWidget::CheckHitObstacle()
+{
+  std::list<TObstaclePtr > & lstObstacles = m_space->GetObstacles();
+
+  std::list<TBulletPtr> & lstBulletsAlien = m_space->GetAlienBullets();
+
+  std::list<TBulletPtr> & lstBulletsSpaceShip = m_space->GetSpaceShipBullets();
+
+  // Loop over obstacles.
+  for (auto itObstacle = begin(lstObstacles); itObstacle != end(lstObstacles);)
+  {
+    QVector2D positionObstacle = (*itObstacle)->GetPosition();
+
+    TSize sizeObstacle = (*itObstacle)->GetSize();
+
+    Box2D obstacleBox = Box2D::createBox(
+        Point2D(positionObstacle.x(), positionObstacle.y()),
+        Point2D(positionObstacle.x() + sizeObstacle.first,
+                positionObstacle.y() + sizeObstacle.second));
+
+    bool flag = false;
+
+    // Loop over alien bullets.
+    for (auto it = begin(lstBulletsAlien); it != end(lstBulletsAlien); ++it)
+    {
+      QVector2D position = (*it)->GetPosition();
+
+      TSize size = (*it)->GetSize();
+
+      Box2D bulletBox = Box2D::createBox(
+          Point2D(position.x(), position.y()),
+          Point2D(position.x() + size.first,
+                  position.y() + size.second));
+
+      // If two boxes are not intersected with each other
+      // then return false.
+      if (Box2D::checkBoxes(obstacleBox, bulletBox))
+      {
+        it = lstBulletsAlien.erase(it);
+        flag = true;
+        break;
+      }
+    }
+
+    // Loop over space ship bullets if needed.
+    if (!flag)
+    {
+      for (auto it = begin(lstBulletsSpaceShip); it != end(lstBulletsSpaceShip); ++it)
+      {
+        QVector2D position = (*it)->GetPosition();
+
+        TSize size = (*it)->GetSize();
+
+        Box2D bulletBox = Box2D::createBox(
+            Point2D(position.x(), position.y()),
+            Point2D(position.x() + size.first,
+                    position.y() + size.second));
+
+        // If two boxes are not intersected with each other
+        // then return false.
+        if (Box2D::checkBoxes(obstacleBox, bulletBox))
+        {
+          it = lstBulletsSpaceShip.erase(it);
+          flag = true;
+          break;
+        }
+      }
+    }
+
+    // Make explosion if needed.
+    if (flag)
+    {
+      m_space->AddExplosion(std::make_shared<Explosion>(
+          positionObstacle,
+          Images::Instance().GetImageExplosion(),
+          std::make_pair(128, 128),
+          30));
+
+      itObstacle = lstObstacles.erase(itObstacle);
+    }
+    else
+    {
+      ++itObstacle;
     }
   }
 }
