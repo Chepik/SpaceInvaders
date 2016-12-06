@@ -493,6 +493,5 @@ build/
 build/
 bin/
 3party/
-data/
 
 *.zip
