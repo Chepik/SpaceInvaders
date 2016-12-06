@@ -36,6 +36,7 @@ bool IsLeftButton(Qt::MouseButtons buttons)
 {
   return buttons & Qt::LeftButton;
 }
+
 bool IsLeftButton(QMouseEvent const * const e)
 {
   return IsLeftButton(e->button()) || IsLeftButton(e->buttons());
@@ -45,6 +46,7 @@ bool IsRightButton(Qt::MouseButtons buttons)
 {
   return buttons & Qt::RightButton;
 }
+
 bool IsRightButton(QMouseEvent const * const e)
 {
   return IsRightButton(e->button()) || IsRightButton(e->buttons());
@@ -100,12 +102,12 @@ void GLWidget::initializeGL()
   // Create aliens.
   for (size_t i = 1; i <= m_aliensNumber; i++) {
     m_space->AddAlien(std::make_shared<Alien>(
-        100,
-        QVector2D(i * 200, 600),
-        100,
-        100,
-        Images::Instance().GetImageAlien(),
-        std::make_pair(128,128)));
+                        100,
+                        QVector2D(i * 200, 600),
+                        100,
+                        100,
+                        Images::Instance().GetImageAlien(),
+                        std::make_pair(128,128)));
   }
 
   // Create a space ship
@@ -138,7 +140,11 @@ void GLWidget::paintGL()
   painter.begin(this);
   painter.beginNativePainting();
 
-  glClearColor(m_background.redF(), m_background.greenF(), m_background.blueF(), 1.0f);
+  glClearColor(m_background.redF(),
+               m_background.greenF(),
+               m_background.blueF(),
+               1.0f);
+
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   glFrontFace(GL_CW);
@@ -289,7 +295,8 @@ void GLWidget::RenderStar(float blend)
   {
     m_texturedRect->Render(
           (*it)->GetTexture(),
-          QVector2D(m_random.at(i).first*kWidth, m_random.at(i).second*kHeight),
+          QVector2D(m_random.at(i).first*kWidth,
+                    m_random.at(i).second*kHeight),
           QSize(16, 16),
           m_screenSize,
           blend);
@@ -302,75 +309,104 @@ void GLWidget::AddStar()
                      QVector2D(200, 600),
                      Images::Instance().GetImageStar(),
                      std::make_pair(128,128)));
+
   m_random.push_back(std::make_pair(Random(0,1), Random(0,1)));
 }
 
 void GLWidget::CheckHitSpaceShip()
 {
   QVector2D positionSpaceShip = m_space->GetSpaceShip()->GetPosition();
+
   TSize sizeSpaceShip = m_space->GetSpaceShip()->GetSize();
-  Box2D spaceShipBox = Box2D::createBox(Point2D(positionSpaceShip.x(), positionSpaceShip.y()),
-                                        Point2D(positionSpaceShip.x()+sizeSpaceShip.first, positionSpaceShip.y()+sizeSpaceShip.second));
+
+  Box2D spaceShipBox = Box2D::createBox(
+        Point2D(positionSpaceShip.x(), positionSpaceShip.y()),
+        Point2D(positionSpaceShip.x() + sizeSpaceShip.first,
+                positionSpaceShip.y() + sizeSpaceShip.second));
+
   for (auto bullet : m_space->GetAlienBullets())
   {
-      QVector2D position = bullet->GetPosition();
-      TSize size = bullet->GetSize();
-      Box2D bulletBox = Box2D::createBox(Point2D(position.x(), position.y()), Point2D(position.x()+size.first, position.y()+size.second));
-      // If two boxes are not intersected with each other
-      // then return false.
-      if(Box2D::checkBoxes(spaceShipBox,bulletBox))
-          KillSpaceShip(bullet->GetDamage());
+    QVector2D position = bullet->GetPosition();
+
+    TSize size = bullet->GetSize();
+
+    Box2D bulletBox = Box2D::createBox(
+          Point2D(position.x(), position.y()),
+          Point2D(position.x() + size.first,
+                  position.y() + size.second));
+
+    // If two boxes are not intersected with each other
+    // then return false.
+    if (Box2D::checkBoxes(spaceShipBox,bulletBox))
+    {
+      KillSpaceShip(bullet->GetDamage());
+    }
   }
 }
 
 void GLWidget::KillSpaceShip(uint damage)
 {
-    uint health = m_space->GetSpaceShip()->GetHealth();
-    if((health-damage) > 0)
-    {
-        m_space->GetSpaceShip()->SetHealth(health-damage);
-    }
-    else
-    {
-        //emit signal Game Over
-        qDebug() << "Game Over!!!!!!!!!!!!!!!!!!!!!!!!!";
-    }
+  uint health = m_space->GetSpaceShip()->GetHealth();
+
+  if ((health-damage) > 0)
+  {
+    m_space->GetSpaceShip()->SetHealth(health-damage);
+  }
+  else
+  {
+    //emit signal Game Over
+    qDebug() << "Game Over!!!!!!!!!!!!!!!!!!!!!!!!!";
+  }
 }
 
 void GLWidget::CheckHitAlien()
 {
-    std::list<TBulletPtr> & lstBullet = m_space->GetSpaceShipBullets();
-    std::list<TAlienPtr> & lstAlien = m_space->GetAliens();
-    for (auto itAlien = begin(lstAlien); itAlien != end(lstAlien);)
+  std::list<TBulletPtr> & lstBullet = m_space->GetSpaceShipBullets();
+
+  std::list<TAlienPtr> & lstAlien = m_space->GetAliens();
+
+  for (auto itAlien = begin(lstAlien); itAlien != end(lstAlien);)
+  {
+    QVector2D positionAlien = (*itAlien)->GetPosition();
+
+    TSize sizeAlien = (*itAlien)->GetSize();
+
+    Box2D alienBox = Box2D::createBox(
+          Point2D(positionAlien.x(), positionAlien.y()),
+          Point2D(positionAlien.x() + sizeAlien.first,
+                  positionAlien.y() + sizeAlien.second));
+
+    bool flag = false;
+
+    for (auto it = begin(lstBullet); it != end(lstBullet); ++it)
     {
-        QVector2D positionAlien = (*itAlien)->GetPosition();
-        TSize sizeAlien = (*itAlien)->GetSize();
-        Box2D alienBox = Box2D::createBox(Point2D(positionAlien.x(), positionAlien.y()),
-                                              Point2D(positionAlien.x()+sizeAlien.first, positionAlien.y()+sizeAlien.second));
-        bool flag = false;
-        for (auto it = begin(lstBullet); it != end(lstBullet); ++it)
-        {
-            QVector2D position = (*it)->GetPosition();
-            TSize size = (*it)->GetSize();
-            Box2D bulletBox = Box2D::createBox(Point2D(position.x(), position.y()), Point2D(position.x()+size.first, position.y()+size.second));
-            // If two boxes are not intersected with each other
-            // then return false.
-            if(Box2D::checkBoxes(alienBox,bulletBox))
-            {
-                it = lstBullet.erase(it);
-                flag = true;
-                break;
-            }
-        }
-        if(flag)
-        {
-            itAlien = lstAlien.erase(itAlien);
-        }
-        else
-        {
-            ++itAlien;
-        }
+      QVector2D position = (*it)->GetPosition();
+
+      TSize size = (*it)->GetSize();
+
+      Box2D bulletBox = Box2D::createBox(
+            Point2D(position.x(), position.y()),
+            Point2D(position.x() + size.first,
+                    position.y() + size.second));
+
+      // If two boxes are not intersected with each other
+      // then return false.
+      if (Box2D::checkBoxes(alienBox,bulletBox))
+      {
+        it = lstBullet.erase(it);
+        flag = true;
+        break;
+      }
     }
+    if (flag)
+    {
+      itAlien = lstAlien.erase(itAlien);
+    }
+    else
+    {
+      ++itAlien;
+    }
+  }
 }
 
 void GLWidget::mousePressEvent(QMouseEvent * e)
@@ -379,6 +415,7 @@ void GLWidget::mousePressEvent(QMouseEvent * e)
 
   int const px = L2D(e->x());
   int const py = L2D(e->y());
+
   if (IsLeftButton(e))
   {
     // ...
@@ -391,6 +428,7 @@ void GLWidget::mouseDoubleClickEvent(QMouseEvent * e)
 
   int const px = L2D(e->x());
   int const py = L2D(e->y());
+
   if (IsRightButton(e))
   {
     // ...
@@ -403,6 +441,7 @@ void GLWidget::mouseMoveEvent(QMouseEvent * e)
 
   int const px = L2D(e->x());
   int const py = L2D(e->y());
+
   if (IsLeftButton(e))
   {
     // ...
@@ -415,6 +454,7 @@ void GLWidget::mouseReleaseEvent(QMouseEvent * e)
 
   int const px = L2D(e->x());
   int const py = L2D(e->y());
+
   if (IsLeftButton(e))
   {
     // ...
@@ -434,20 +474,28 @@ void GLWidget::wheelEvent(QWheelEvent * e)
 void GLWidget::keyPressEvent(QKeyEvent * e)
 {
   if (e->key() == Qt::Key_Up)
+  {
     m_directions[kUpDirection] = true;
+  }
   else if (e->key() == Qt::Key_Down)
+  {
     m_directions[kDownDirection] = true;
+  }
   else if (e->key() == Qt::Key_Left)
+  {
     m_directions[kLeftDirection] = true;
+  }
   else if (e->key() == Qt::Key_Right)
+  {
     m_directions[kRightDirection] = true;
+  }
   else if (e->key() == Qt::Key_Space)
   {
     std::shared_ptr<Bullet> bullet = std::make_shared<Bullet>(
-        m_space->GetSpaceShip()->GetPosition(),
-        Images::Instance().GetImageBullet(),
-        100,
-        std::make_pair(128,128));
+          m_space->GetSpaceShip()->GetPosition(),
+          Images::Instance().GetImageBullet(),
+          100,
+          std::make_pair(128,128));
 
     m_space->AddSpaceShipBullet(bullet);
   }
@@ -456,13 +504,21 @@ void GLWidget::keyPressEvent(QKeyEvent * e)
 void GLWidget::keyReleaseEvent(QKeyEvent * e)
 {
   if (e->key() == Qt::Key_Up)
+  {
     m_directions[kUpDirection] = false;
+  }
   else if (e->key() == Qt::Key_Down)
+  {
     m_directions[kDownDirection] = false;
+  }
   else if (e->key() == Qt::Key_Left)
+  {
     m_directions[kLeftDirection] = false;
+  }
   else if (e->key() == Qt::Key_Right)
+  {
     m_directions[kRightDirection] = false;
+  }
 }
 
 double GLWidget::Random(double min, double max)
@@ -494,7 +550,7 @@ void GLWidget::SpaceShipBulletsLogic()
   }
 
   // Check if needed.
-//  qDebug() << "lst.size() = " << lst.size();
+  //  qDebug() << "lst.size() = " << lst.size();
 }
 void GLWidget::AlienBulletsLogic()
 {
@@ -516,5 +572,5 @@ void GLWidget::AlienBulletsLogic()
   }
 
   // Check if needed.
-//  qDebug() << "lst.size() = " << lst.size();
+  //  qDebug() << "lst.size() = " << lst.size();
 }
