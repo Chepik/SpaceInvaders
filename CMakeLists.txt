@@ -95,6 +95,7 @@ set(DATA_FILES_LIST
   data/space_ship.png
   data/bullet.png
   data/obstacle.png
-  data/explosion.png)
+  data/explosion.png
+  data/settings.json)
 
 copy_files("${DATA_FILES_LIST}" ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
