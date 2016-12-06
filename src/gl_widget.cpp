@@ -182,7 +182,7 @@ void GLWidget::paintGL()
   }
 
   // Generate a parameter for a star.
-  // transperancy is a value between 0.0 and 1.0 .
+  // transparency is a value between 0.0 and 1.0 .
   float transperancy = static_cast<float>(sin(m_period * 2 * PI));
 
   RenderStar(transperancy);
