@@ -104,7 +104,8 @@ void GLWidget::initializeGL()
         QVector2D(i * 200, 600),
         100,
         100,
-        Images::Instance().GetImageAlien()));
+        Images::Instance().GetImageAlien(),
+        std::make_pair(128,128)));
   }
 
   // Create a space ship
@@ -112,13 +113,15 @@ void GLWidget::initializeGL()
                           QVector2D(200, 600),
                           100,
                           100,
-                          Images::Instance().GetImageSpaceShip()));
+                          Images::Instance().GetImageSpaceShip(),
+                          std::make_pair(128,128)));
 
   // Create obstacles.
   m_space->AddObstacle(std::make_shared<Obstacle>(
                          100,
                          QVector2D(200, 600),
-                         Images::Instance().GetImageObstacle()));
+                         Images::Instance().GetImageObstacle(),
+                         std::make_pair(128,128)));
 
   // Create stars.
   AddStar();
@@ -143,6 +146,8 @@ void GLWidget::paintGL()
   glEnable(GL_CULL_FACE);
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+  CheckHitAlien();
 
   SpaceShipBulletsLogic();
 
@@ -295,9 +300,77 @@ void GLWidget::AddStar()
 {
   m_space->AddStar(std::make_shared<Star>(
                      QVector2D(200, 600),
-                     Images::Instance().GetImageStar()));
-
+                     Images::Instance().GetImageStar(),
+                     std::make_pair(128,128)));
   m_random.push_back(std::make_pair(Random(0,1), Random(0,1)));
+}
+
+void GLWidget::CheckHitSpaceShip()
+{
+  QVector2D positionSpaceShip = m_space->GetSpaceShip()->GetPosition();
+  TSize sizeSpaceShip = m_space->GetSpaceShip()->GetSize();
+  Box2D spaceShipBox = Box2D::createBox(Point2D(positionSpaceShip.x(), positionSpaceShip.y()),
+                                        Point2D(positionSpaceShip.x()+sizeSpaceShip.first, positionSpaceShip.y()+sizeSpaceShip.second));
+  for (auto bullet : m_space->GetAlienBullets())
+  {
+      QVector2D position = bullet->GetPosition();
+      TSize size = bullet->GetSize();
+      Box2D bulletBox = Box2D::createBox(Point2D(position.x(), position.y()), Point2D(position.x()+size.first, position.y()+size.second));
+      // If two boxes are not intersected with each other
+      // then return false.
+      if(Box2D::checkBoxes(spaceShipBox,bulletBox))
+          KillSpaceShip(bullet->GetDamage());
+  }
+}
+
+void GLWidget::KillSpaceShip(uint damage)
+{
+    uint health = m_space->GetSpaceShip()->GetHealth();
+    if((health-damage) > 0)
+    {
+        m_space->GetSpaceShip()->SetHealth(health-damage);
+    }
+    else
+    {
+        //emit signal Game Over
+        qDebug() << "Game Over!!!!!!!!!!!!!!!!!!!!!!!!!";
+    }
+}
+
+void GLWidget::CheckHitAlien()
+{
+    std::list<TBulletPtr> & lstBullet = m_space->GetSpaceShipBullets();
+    std::list<TAlienPtr> & lstAlien = m_space->GetAliens();
+    for (auto itAlien = begin(lstAlien); itAlien != end(lstAlien);)
+    {
+        QVector2D positionAlien = (*itAlien)->GetPosition();
+        TSize sizeAlien = (*itAlien)->GetSize();
+        Box2D alienBox = Box2D::createBox(Point2D(positionAlien.x(), positionAlien.y()),
+                                              Point2D(positionAlien.x()+sizeAlien.first, positionAlien.y()+sizeAlien.second));
+        bool flag = false;
+        for (auto it = begin(lstBullet); it != end(lstBullet); ++it)
+        {
+            QVector2D position = (*it)->GetPosition();
+            TSize size = (*it)->GetSize();
+            Box2D bulletBox = Box2D::createBox(Point2D(position.x(), position.y()), Point2D(position.x()+size.first, position.y()+size.second));
+            // If two boxes are not intersected with each other
+            // then return false.
+            if(Box2D::checkBoxes(alienBox,bulletBox))
+            {
+                it = lstBullet.erase(it);
+                flag = true;
+                break;
+            }
+        }
+        if(flag)
+        {
+            itAlien = lstAlien.erase(itAlien);
+        }
+        else
+        {
+            ++itAlien;
+        }
+    }
 }
 
 void GLWidget::mousePressEvent(QMouseEvent * e)
@@ -373,7 +446,8 @@ void GLWidget::keyPressEvent(QKeyEvent * e)
     std::shared_ptr<Bullet> bullet = std::make_shared<Bullet>(
         m_space->GetSpaceShip()->GetPosition(),
         Images::Instance().GetImageBullet(),
-        100);
+        100,
+        std::make_pair(128,128));
 
     m_space->AddSpaceShipBullet(bullet);
   }

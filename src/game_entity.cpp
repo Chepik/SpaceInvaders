@@ -17,6 +17,16 @@ void GameEntity::SetPosition(QVector2D const & point)
   m_position = point;
 }
 
+const TSize & GameEntity::GetSize() const
+{
+  return m_size;
+}
+
+void GameEntity::SetSize(const TSize & size)
+{
+  m_size = size;
+}
+
 std::shared_ptr<QOpenGLTexture> GameEntity::GetTexture()
 {
   return m_texture;

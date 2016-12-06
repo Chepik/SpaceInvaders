@@ -20,8 +20,9 @@ public:
   SpaceShip(QVector2D const & position,
             uint const & rate,
             uint const & health,
-            std::shared_ptr<QImage> image)
-    : GameEntityWithWeapon(position,"SpaceShip", rate, health, image)
+            std::shared_ptr<QImage> image,
+            TSize const & size)
+    : GameEntityWithWeapon(position,"SpaceShip", rate, health, image, size)
   {}
 
   ~SpaceShip() override;

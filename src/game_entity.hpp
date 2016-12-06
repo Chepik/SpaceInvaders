@@ -4,7 +4,8 @@
 #include <QVector2D>
 #include <QOpenGLTexture>
 
-#include "point2d.hpp"
+//#include "point2d.hpp"
+#include "box2d.hpp"
 
 class GameEntity 
 {
@@ -22,9 +23,11 @@ public:
 
   GameEntity(QVector2D const & position,
              std::string const & name,
-             std::shared_ptr<QImage> image)
+             std::shared_ptr<QImage> image,
+             std::pair<int,int> const & size)
     : m_position(position),
-      m_name(name)
+      m_name(name),
+      m_size(size)
   {
     m_texture = std::make_shared<QOpenGLTexture>(*image);
   }
@@ -40,6 +43,9 @@ public:
   QVector2D const & GetPosition() const;
   void SetPosition(QVector2D const & point);
 
+  std::pair<int,int> const & GetSize() const;
+  void SetSize(std::pair<int,int> const & size);
+
   std::shared_ptr<QOpenGLTexture> GetTexture();
   void SetTexture(std::shared_ptr<QOpenGLTexture> texture);
 
@@ -53,7 +59,10 @@ protected:
   QVector2D m_position;
   std::string m_name;
   std::shared_ptr<QOpenGLTexture> m_texture = nullptr;
+  //Width and Heigth
+  std::pair<int,int> m_size;
 };
 
+using TSize = std::pair<int,int>;
 using TGameEntityPtr = std::shared_ptr<GameEntity>;
 using TGameEntityConstPtr = std::shared_ptr<GameEntity const>;
