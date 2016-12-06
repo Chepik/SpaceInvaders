@@ -1,3 +1,5 @@
+#pragma once
+
 #include "game_entity_with_weapon.hpp"
 
 #include <memory>

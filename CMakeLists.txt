@@ -61,24 +61,24 @@ set(PROJECT_TEST_NAME ${PROJECT_NAME}_test)
 include_directories(3party/googletest/googletest/include ${SOURCE_ROOT})
 
 # Set up testing project.
-set(TESTS_SOURCE_ROOT tests)
+#set(TESTS_SOURCE_ROOT tests)
 
-aux_source_directory(${TESTS_SOURCE_ROOT} TEST_SRC_FILES)
+#aux_source_directory(${TESTS_SOURCE_ROOT} TEST_SRC_FILES)
 
-set(TEST_SRC_FILES ${SRC_LIST} ${TEST_SRC_FILES})
+#set(TEST_SRC_FILES ${SRC_LIST} ${TEST_SRC_FILES})
 
-list(REMOVE_ITEM TEST_SRC_FILES src/main.cpp)
+#list(REMOVE_ITEM TEST_SRC_FILES src/main.cpp)
 
-qt5_wrap_cpp(QT_WRAPPED_TEST_SRC ${TEST_SRC_FILES})
+#qt5_wrap_cpp(QT_WRAPPED_TEST_SRC ${TEST_SRC_FILES})
 
-add_executable(${PROJECT_TEST_NAME} ${TEST_SRC_FILES} ${QT_WRAPPED_TEST_SRC} ${JSONCPP_SRC})
+#add_executable(${PROJECT_TEST_NAME} ${TEST_SRC_FILES} ${QT_WRAPPED_TEST_SRC} ${JSONCPP_SRC})
 
 # Link gtest and gtest_main libraries.
-target_link_libraries(${PROJECT_TEST_NAME} gtest gtest_main)
-qt5_use_modules(${PROJECT_TEST_NAME} Widgets OpenGL)
+#target_link_libraries(${PROJECT_TEST_NAME} gtest gtest_main)
+#qt5_use_modules(${PROJECT_TEST_NAME} Widgets OpenGL)
 
 # Finish tests setting up.
-add_test(test ${PROJECT_TEST_NAME})
+#add_test(test ${PROJECT_TEST_NAME})
 
 macro(copy_files GLOBPAT DESTINATION)
   file(GLOB COPY_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ${GLOBPAT})
