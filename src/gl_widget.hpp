@@ -37,15 +37,8 @@ protected:
   void initializeGL() override;
 
   void Update(float elapsedSeconds);
-  void RenderAlien();
-  void RenderSpaceShip();
-  void RenderBullet();
-  void RenderObstacle();
-  void RenderStar(float blend);
-  void AddStar();
-  void CheckHitSpaceShip();
-  void KillSpaceShip(uint damage);
-  void CheckHitAlien();
+
+  /// Mouse and keyboard events.
   void mousePressEvent(QMouseEvent * e) override;
   void mouseDoubleClickEvent(QMouseEvent * e) override;
   void mouseMoveEvent(QMouseEvent * e) override;
@@ -54,6 +47,20 @@ protected:
   void keyPressEvent(QKeyEvent * e) override;
   void keyReleaseEvent(QKeyEvent * e) override;
 
+  /// Create objects.
+  void AddStar();
+
+  /// Render stage.
+  void RenderAlien();
+  void RenderSpaceShip();
+  void RenderBullet();
+  void RenderObstacle();
+  void RenderStar(float blend);
+
+  /// Logic stage.
+  void CheckHitAlien();
+  void CheckHitSpaceShip();
+  void KillSpaceShip(uint damage);
   void SpaceShipBulletsLogic();
   void AlienBulletsLogic();
 
