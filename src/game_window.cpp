@@ -9,10 +9,13 @@ GameWindow::GameWindow(QMainWindow *parent)
   : QMainWindow(parent)
 {
   m_glWidget = new GLWidget(this, qRgb(20, 20, 50));
+
   m_timer = new QTimer(this);
-  m_settingsButton = new QPushButton("Menu",m_glWidget);
-  m_settingsButton->move(15,50);
   m_timer->setInterval(10);
+
+  m_settingsButton = new QPushButton("Menu", m_glWidget);
+  m_settingsButton->move(15, 50);
+
   setCentralWidget(m_glWidget);
 
   connect(m_timer, &QTimer::timeout, m_glWidget,
@@ -25,6 +28,7 @@ GameWindow::GameWindow(QMainWindow *parent)
           parent, SLOT(moveToMenuPage()));
 
   m_timer->start();
+
   setFocusPolicy(Qt::StrongFocus);
 }
 
