@@ -29,8 +29,6 @@ int constexpr kLeftDirection = 0;
 int constexpr kRightDirection = 1;
 int constexpr kUpDirection = 2;
 int constexpr kDownDirection = 3;
-int constexpr kWidth = 1024;
-int constexpr kHeight = 768;
 
 bool IsLeftButton(Qt::MouseButtons buttons)
 {
@@ -309,8 +307,8 @@ void GLWidget::RenderStar(float blend)
   {
     m_texturedRect->Render(
           (*it)->GetTexture(),
-          QVector2D(m_random.at(i).first*kWidth,
-                    m_random.at(i).second*kHeight),
+          QVector2D(m_random.at(i).first*Globals::Width,
+                    m_random.at(i).second*Globals::Height),
           QSize(16, 16),
           m_screenSize,
           blend);
