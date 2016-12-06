@@ -81,7 +81,6 @@ void GameEntity::IncreaseX(float const &value)
   {
     m_position.setX(tmp);
   }
-
 }
 
 void GameEntity::DecreaseX(float const &value)
