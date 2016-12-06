@@ -159,7 +159,7 @@ void GLWidget::paintGL()
 
   AlienBulletsLogic();
 
-  Render();
+  RenderAlien();
 
   RenderSpaceShip();
 
@@ -236,7 +236,7 @@ void GLWidget::Update(float elapsedSeconds)
   }
 }
 
-void GLWidget::Render()
+void GLWidget::RenderAlien()
 {
   for (auto alien : m_space->GetAliens()) {
     m_texturedRect->Render(alien->GetTexture(),

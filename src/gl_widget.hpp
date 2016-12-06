@@ -37,7 +37,7 @@ protected:
   void initializeGL() override;
 
   void Update(float elapsedSeconds);
-  void Render();
+  void RenderAlien();
   void RenderSpaceShip();
   void RenderBullet();
   void RenderObstacle();
