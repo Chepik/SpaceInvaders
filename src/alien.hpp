@@ -32,8 +32,8 @@ public:
 
   void Move() override;
   void Update() override;
-  uint GetSpeed() const;
-  void SetSpeed(uint const & rate);
+  int GetSpeed() const;
+  void SetSpeed(int const & rate);
   void IncreaseX(float const & value) override;
   void DecreaseX(float const & value) override;
   bool Shot();

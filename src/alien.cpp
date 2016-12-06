@@ -17,12 +17,12 @@ void Alien::Update()
   throw NotImplementedException();
 }
 
-uint Alien::GetSpeed() const
+int Alien::GetSpeed() const
 {
   return m_speed;
 }
 
-void Alien::SetSpeed(uint const & rate)
+void Alien::SetSpeed(int const & rate)
 {
   m_speed = rate;
 }
