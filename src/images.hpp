@@ -15,6 +15,7 @@ public:
   std::shared_ptr<QImage> GetImageSpaceShip();
   std::shared_ptr<QImage> GetImageObstacle();
   std::shared_ptr<QImage> GetImageBullet();
+  std::shared_ptr<QImage> GetImageBulletAlien();
   std::shared_ptr<QImage> GetImageExplosion();
 
 private:
@@ -28,5 +29,6 @@ private:
   std::shared_ptr<QImage> m_imageSpaceShip = nullptr;
   std::shared_ptr<QImage> m_imageObstacle = nullptr;
   std::shared_ptr<QImage> m_imageBullet = nullptr;
+  std::shared_ptr<QImage> m_imageBulletAlien = nullptr;
   std::shared_ptr<QImage> m_imageExplosion = nullptr;
 };
