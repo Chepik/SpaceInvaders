@@ -210,11 +210,12 @@ void GLWidget::AddObstacles(const std::string & level)
   size = std::make_pair(settings["Level"][level]["ObstacleWidth"].asInt()
                           ,settings["Level"][level]["ObstacleHeigth"].asInt());
   size_t r = (Globals::Width/obstaclesNumber);
+  int width = settings["Level"][level]["ObstacleWidth"].asInt();
   for (size_t i = 0; i < obstaclesNumber; i++)
   {
     m_space->AddObstacle(std::make_shared<Obstacle>(
                            health,
-                           QVector2D(i*r, 300),
+                           QVector2D(i*r+width, 300),
                            Images::Instance().GetImageObstacle(),
                            size));
   }
