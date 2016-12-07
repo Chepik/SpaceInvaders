@@ -59,7 +59,7 @@ std::shared_ptr<QImage> Images::LoadImage(std::string path)
 
   if (image->isNull())
   {
-    throw CantLoadImagesException(path);
+    throw LoadImagesException(path);
   }
 
   return image;
