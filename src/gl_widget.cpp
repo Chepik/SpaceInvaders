@@ -86,7 +86,27 @@ void GLWidget::initializeGL()
 
   std::string level = std::to_string(m_level);
 
-  ReadSettings(level);
+  try
+  {
+    ReadSettings(level);
+  }
+  catch (ReadSettingsException const & ex)
+  {
+    qDebug() << ex.what();
+
+    throw InitialiseGameException();
+  }
+
+  try
+  {
+    Images::Instance().LoadImages();
+  }
+  catch (LoadImagesException const & ex)
+  {
+    qDebug() << ex.what();
+
+    throw InitialiseGameException();
+  }
 
   AddAliens(level);
 
@@ -102,26 +122,35 @@ void GLWidget::initializeGL()
 void GLWidget::ReadSettings(const std::string & level)
 {
   Json::Value settings;
+
   try
   {
     settings = Util::ReadJson(Globals::SettingsFileName);
-  }
-  catch(std::exception ex)
-  {
-    qDebug() << "Can't read settings from a file!";
-  }
 
-    m_damageBullet = settings["Level"][std::to_string(m_level)]["BulletDamage"].asUInt();
-    m_sizeBullet = std::make_pair(settings["Level"][level]["BulletWidth"].asInt()
-                            ,settings["Level"][level]["BulletHeight"].asInt());
+    m_damageBullet = \
+        settings["Level"][std::to_string(m_level)]["BulletDamage"].asUInt();
+
+    m_sizeBullet = std::make_pair(
+          settings["Level"][level]["BulletWidth"].asInt(),
+        settings["Level"][level]["BulletHeight"].asInt());
 
     m_lifetimeExplosion = settings["ExplosionLifeTime"].asUInt();
-    m_lifetimeExplosionBig = settings["ExplosionLifeTimeBig"].asUInt();
-    m_sizeExplosion = std::make_pair(settings["ExplosionWidth"].asInt()
-                            ,settings["ExplosionHeight"].asInt());
-    m_sizeExplosionBig = std::make_pair(settings["ExplosionWidthBig"].asInt()
-                            ,settings["ExplosionHeightBig"].asInt());
 
+    m_lifetimeExplosionBig = settings["ExplosionLifeTimeBig"].asUInt();
+
+    m_sizeExplosion = std::make_pair(
+          settings["ExplosionWidth"].asInt(),
+        settings["ExplosionHeight"].asInt());
+
+    m_sizeExplosionBig = std::make_pair(
+          settings["ExplosionWidthBig"].asInt(),
+        settings["ExplosionHeightBig"].asInt());
+
+  }
+  catch(ReadFileException const & ex)
+  {
+    throw ReadSettingsException(Globals::SettingsFileName);
+  }
 }
 
 void GLWidget::AddAliens(const std::string & level)
