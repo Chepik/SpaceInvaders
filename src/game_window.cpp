@@ -37,6 +37,9 @@ GameWindow::GameWindow(QMainWindow *parent, size_t const & level)
   connect(this, SIGNAL(moveToNextLevel()),
           parent, SLOT(moveToNextLevel()));
 
+  connect(this, SIGNAL(finishGame(QString)),
+          parent, SLOT(finishGame(QString)));
+
   m_timer->start();
 
   setFocusPolicy(Qt::StrongFocus);
@@ -50,4 +53,10 @@ void GameWindow::on_menuButtonClicked()
 void GameWindow::on_nextLevelButtonClicked()
 {
   emit moveToNextLevel();
+}
+
+void GameWindow::gameOver(QString message)
+{
+  delete m_glWidget;
+  emit finishGame(message);
 }
