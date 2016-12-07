@@ -49,7 +49,7 @@ SettingsPage::SettingsPage(QWidget *parent) :
     ui->comboBoxSpeed->setCurrentIndex(currentSpeed);
   }
   catch(std::exception ex) {
-    qDebug() << "Can't read settings fron a file!";
+    qDebug() << "Can't read settings from a file!";
   }
 }
 
