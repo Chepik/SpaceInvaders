@@ -79,6 +79,8 @@ protected:
   void ShotAlien();
   void ExplosionLogic();
   void CheckHitObstacle();
+  void StarLogic();
+  void SetPosition(int w, int h);
 
   ///
   /// Generate random number between min and max values.

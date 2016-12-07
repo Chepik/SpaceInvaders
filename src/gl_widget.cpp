@@ -275,18 +275,7 @@ void GLWidget::paintGL()
 
   /// Set to zero if it reaches the 1.0 .
 
-  for (auto it = m_random.begin() ; it != m_random.end(); ++it)
-  {
-    if((*it).m_periodStar < 1.0)
-    {
-      (*it).m_periodStar += 0.001f;
-    }
-    else
-    {
-      (*it).m_randomStar = std::make_pair(Random(0,1), Random(0,1));
-      (*it).m_periodStar = 0.0f;
-    }
-  }
+  StarLogic();
 
   RenderStar();
   glDisable(GL_CULL_FACE);
@@ -313,8 +302,11 @@ void GLWidget::paintGL()
 
 void GLWidget::resizeGL(int w, int h)
 {
+  SetPosition(w, h);
   m_screenSize.setWidth(w);
+  Globals::Width = w;
   m_screenSize.setHeight(h);
+  Globals::Height = h;
 }
 
 void GLWidget::Update(float elapsedSeconds)
@@ -917,5 +909,52 @@ void GLWidget::CheckHitObstacle()
     {
       ++itObstacle;
     }
+  }
+}
+
+void GLWidget::StarLogic()
+{
+  for (auto it = m_random.begin() ; it != m_random.end(); ++it)
+  {
+    if((*it).m_periodStar < 1.0)
+    {
+      (*it).m_periodStar += 0.001f;
+    }
+    else
+    {
+      (*it).m_randomStar = std::make_pair(Random(0,1), Random(0,1));
+      (*it).m_periodStar = 0.0f;
+    }
+  }
+}
+
+void GLWidget::SetPosition(int w, int h)
+{
+  QVector2D position = m_space->GetSpaceShip()->GetPosition();
+//  QVector2D newPosition (position.x()*w/Globals::Width,position.y()*h/Globals::Height);
+  m_space->GetSpaceShip()->SetPosition(QVector2D(position.x()*w/Globals::Width,position.y()*h/Globals::Height));
+
+  for (auto obstacle : m_space->GetObstacles())
+  {
+    position = obstacle->GetPosition();
+    obstacle->SetPosition(QVector2D(position.x()*w/Globals::Width,position.y()*h/Globals::Height));
+  }
+
+  for (auto alien : m_space->GetAliens())
+  {
+    position = alien->GetPosition();
+    alien->SetPosition(QVector2D(position.x()*w/Globals::Width,position.y()*h/Globals::Height));
+  }
+
+  for (auto bullet : m_space->GetAlienBullets())
+  {
+    position = bullet->GetPosition();
+    bullet->SetPosition(QVector2D(position.x()*w/Globals::Width,position.y()*h/Globals::Height));
+  }
+
+  for (auto bullet : m_space->GetSpaceShipBullets())
+  {
+    position = bullet->GetPosition();
+    bullet->SetPosition(QVector2D(position.x()*w/Globals::Width,position.y()*h/Globals::Height));
   }
 }
