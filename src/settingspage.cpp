@@ -49,7 +49,7 @@ SettingsPage::SettingsPage(QWidget *parent) :
     ui->comboBoxSpeed->setCurrentIndex(currentSpeed);
   }
   catch(std::exception ex) {
-    qDebug() << "Can't read settings fron a file!";
+    qDebug() << "Can't read settings from a file!";
   }
 }
 
@@ -68,7 +68,7 @@ void SettingsPage::on_saveButton_clicked()
   int currentDifficulty = ui->comboBoxDifficulty->currentIndex();
   int currentSpeed = ui->comboBoxSpeed->currentIndex();
 
-  Json::Value settings;
+  Json::Value settings = Util::ReadJson(Globals::SettingsFileName);
 
   settings["Difficulty"] = currentDifficulty;
   settings["Speed"] = currentSpeed;

@@ -53,10 +53,10 @@ bool IsRightButton(QMouseEvent const * const e)
 
 } // namespace
 
-GLWidget::GLWidget(GameWindow * mw,
+GLWidget::GLWidget(GameWindow * parent,
                    QColor const & background,
                    size_t const & level)
-  : m_mainWindow(mw),
+  : m_mainWindow(parent),
     m_background(background),
     m_level(level)
 {
@@ -64,6 +64,9 @@ GLWidget::GLWidget(GameWindow * mw,
 
   setMinimumSize(Globals::Width, Globals::Height);
   setFocusPolicy(Qt::StrongFocus);
+
+  connect(this, SIGNAL(gameOver(QString)),
+          parent, SLOT(gameOver(QString)));
 }
 
 GLWidget::~GLWidget()
@@ -247,6 +250,11 @@ void GLWidget::paintGL()
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+  if (IsGameOver())
+  {
+    return;
+  }
+
   ExplosionLogic();
 
   CheckHitSpaceShip();
@@ -329,6 +337,20 @@ void GLWidget::Update(float elapsedSeconds)
   {
     m_space->GetSpaceShip()->IncreaseX(kSpeed * elapsedSeconds);
   }
+}
+
+bool GLWidget::IsGameOver()
+{
+  std::list<TAlienPtr> & lstAlien = m_space->GetAliens();
+
+  if (lstAlien.empty())
+  {
+    emit gameOver("Congratulations! You win!");
+
+    return true;
+  }
+
+  return false;
 }
 
 void GLWidget::RenderAlien()
@@ -498,8 +520,7 @@ void GLWidget::KillSpaceShip(uint damage, QVector2D const position)
   }
   else
   {
-    //emit signal Game Over
-    qDebug() << "Game Over!!!!!!!!!!!!!!!!!!!!!!!!!";
+    emit gameOver("You lose!");
   }
 }
 
@@ -507,6 +528,11 @@ void GLWidget::CheckHitAlien()
 {
   std::list<TBulletPtr> & lstBullet = m_space->GetSpaceShipBullets();
   std::list<TAlienPtr> & lstAlien = m_space->GetAliens();
+
+//  if (lstAlien.empty())
+//  {
+//    emit gameOver("Congratulations! You win!");
+//  }
 
   for (auto itAlien = begin(lstAlien); itAlien != end(lstAlien);)
   {
@@ -558,6 +584,7 @@ void GLWidget::CheckHitAlien()
         ++it;
       }
     }
+//    qDebug()<<"lstBullet.size()="<<lstBullet.size();
     if (flag)
     {
       m_space->AddExplosion(std::make_shared<Explosion>(
@@ -572,6 +599,7 @@ void GLWidget::CheckHitAlien()
       ++itAlien;
     }
   }
+//  qDebug() <<"lstAlien.size() = " <<lstAlien.size();
 }
 
 void GLWidget::ShotAlien()
@@ -677,6 +705,15 @@ void GLWidget::wheelEvent(QWheelEvent * e)
 
 void GLWidget::keyPressEvent(QKeyEvent * e)
 {
+  if (e->key() == Qt::Key_Backspace)
+  {
+    std::list<TAlienPtr> & lstAlien = m_space->GetAliens();
+
+    if (!lstAlien.empty())
+    {
+      lstAlien.clear();
+    }
+  }
   if (e->key() == Qt::Key_Up)
   {
     m_directions[kUpDirection] = true;

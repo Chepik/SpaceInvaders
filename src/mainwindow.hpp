@@ -4,6 +4,7 @@
 #include <QVBoxLayout>
 #include <QPushButton>
 #include <QComboBox>
+#include <QString>
 
 namespace Ui {
 class MainWindow;
@@ -24,6 +25,7 @@ public slots:
   void exitFromGame();
   void moveToMenuPage();
   void moveToNextLevel();
+  void finishGame(QString message);
 
 public:
   QWidget * rootPageWidget = nullptr;
@@ -32,4 +34,6 @@ public:
 
   // It stores current game level.
   size_t m_currentLevel = 1;
+
+  QString m_message;
 };
