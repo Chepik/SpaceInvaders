@@ -68,7 +68,7 @@ void SettingsPage::on_saveButton_clicked()
   int currentDifficulty = ui->comboBoxDifficulty->currentIndex();
   int currentSpeed = ui->comboBoxSpeed->currentIndex();
 
-  Json::Value settings;
+  Json::Value settings = Util::ReadJson(Globals::SettingsFileName);
 
   settings["Difficulty"] = currentDifficulty;
   settings["Speed"] = currentSpeed;
