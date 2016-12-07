@@ -777,7 +777,7 @@ void GLWidget::AlienBulletsLogic()
   {
     (*it)->DecreaseY(10);
 
-    if ((*it)->GetPosition().y() <= 0.0f)
+    if ((*it)->GetPosition().y() == 0.0f)
     {
       it = lst.erase(it);
     }
