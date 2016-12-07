@@ -32,8 +32,11 @@ struct RandomStar
 class GLWidget : public QGLWidget, protected QOpenGLFunctions
 {
   Q_OBJECT
+signals:
+  void gameOver(QString message);
+
 public:
-  GLWidget(GameWindow * mw,
+  GLWidget(GameWindow * parent,
            QColor const & background,
            size_t const & level = 1);
   ~GLWidget();
