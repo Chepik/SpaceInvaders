@@ -1,27 +1,26 @@
 #include "images.hpp"
 
+#include <QDebug>
+
+#include "except.hpp"
+
 void Images::LoadImages()
 {
-  m_imageAlien = std::make_shared<QImage>(
-        "data/alien.png");
+  std::string imageAlienPath = "data/alien.png";
+  std::string imageStarPath = "data/star.png";
+  std::string imageSpaceShipPath = "data/space_ship.png";
+  std::string imageObstaclePath = "data/obstacle.png";
+  std::string imageBulletPath = "data/bullet.png";
+  std::string imageBulletAlienPath = "data/bullet_alien.png";
+  std::string imageExplosionPath = "data/explosion.png";
 
-  m_imageStar = std::make_shared<QImage>(
-        "data/star.png");
-
-  m_imageSpaceShip = std::make_shared<QImage>(
-        "data/space_ship.png");
-
-  m_imageObstacle = std::make_shared<QImage>(
-        "data/obstacle.png");
-
-  m_imageBullet = std::make_shared<QImage>(
-        "data/bullet.png");
-
-  m_imageExplosion= std::make_shared<QImage>(
-        "data/explosion.png");
-
-  m_imageBulletAlien= std::make_shared<QImage>(
-      "data/bullet_alien.png");
+  m_imageAlien = LoadImage(imageAlienPath);
+  m_imageStar = LoadImage(imageStarPath);
+  m_imageSpaceShip = LoadImage(imageSpaceShipPath);
+  m_imageObstacle = LoadImage(imageObstaclePath);
+  m_imageBullet = LoadImage(imageBulletPath);
+  m_imageBulletAlien = LoadImage(imageBulletAlienPath);
+  m_imageExplosion = LoadImage(imageExplosionPath);
 }
 
 std::shared_ptr<QImage> Images::GetImageAlien()
@@ -53,6 +52,19 @@ std::shared_ptr<QImage> Images::GetImageExplosion()
 {
   return m_imageExplosion;
 }
+
+std::shared_ptr<QImage> Images::LoadImage(std::string path)
+{
+  auto image = std::make_shared<QImage>(path.c_str());
+
+  if (image->isNull())
+  {
+    throw CantLoadImagesException(path);
+  }
+
+  return image;
+}
+
 std::shared_ptr<QImage> Images::GetImageBulletAlien()
 {
   return m_imageBulletAlien;
