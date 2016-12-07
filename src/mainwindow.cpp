@@ -6,6 +6,7 @@
 #include "menupage.hpp"
 #include "game_window.hpp"
 #include "settingspage.hpp"
+#include "gameoverpage.hpp"
 
 MainWindow::MainWindow(QWidget *parent) :
   QMainWindow(parent)
@@ -46,6 +47,9 @@ void MainWindow::setCurrentIndex(int value)
       break;
     case 2:
       pageWidget = new SettingsPage(this);
+      break;
+    case 3:
+      pageWidget = new GameOverPage(this, m_message);
       break;
     default:
       break;
@@ -94,4 +98,12 @@ void MainWindow::moveToNextLevel()
 
   // Load the next game level.
   setCurrentIndex(1);
+}
+
+void MainWindow::finishGame(QString message)
+{
+  m_message = "Game over." + message;
+
+  // Stop the game.
+  setCurrentIndex(3);
 }
