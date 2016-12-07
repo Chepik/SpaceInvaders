@@ -126,10 +126,10 @@ void GLWidget::AddAliens(const std::string & level)
 {
   size_t aliensNumber = 0;
   int speed = 0;
-  uint rate = 0;
   uint health = 0;
   TSize size = std::make_pair(0,0);
   size_t aliensRowNumber = 0;
+  uint frequency = 0;
 
   Json::Value settings;
   try
@@ -142,11 +142,12 @@ void GLWidget::AddAliens(const std::string & level)
   }
   aliensNumber = settings["Level"][level]["AliensNumber"].asUInt();
   speed = settings["Level"][level]["AlienSpeed"].asInt();
-  rate = settings["Level"][level]["AlienRate"].asUInt();
+  m_rateAlien = settings["Level"][level]["AlienRate"].asUInt();
   health = settings["Level"][level]["AlienHealth"].asUInt();
   size = std::make_pair(settings["Level"][level]["AlienWidth"].asInt()
                           ,settings["Level"][level]["AlienHeigth"].asInt());
   aliensRowNumber = settings["Level"][level]["AlienRowNumber"].asUInt();
+  frequency = settings["Level"][level]["AlienFrequency"].asInt();
 
   size_t r = (Globals::Width/aliensNumber);
   int height = settings["Level"][level]["AlienHeigth"].asInt();
@@ -156,16 +157,18 @@ void GLWidget::AddAliens(const std::string & level)
       m_space->AddAlien(std::make_shared<Alien>(
                           speed,
                           QVector2D(i * r, 600 + j*height),
-                          rate,
+                          m_rateAlien,
                           health,
                           Images::Instance().GetImageAlien(),
-                          size));
+                          size,
+                          frequency));
     }
 }
 
 void GLWidget::AddSpaceShip(const std::string & level)
 {  
   uint health = 0;
+  uint rate = 0;
   TSize size = std::make_pair(0,0);
 
   Json::Value settings;
@@ -181,10 +184,11 @@ void GLWidget::AddSpaceShip(const std::string & level)
   health = settings["Level"][level]["SpaceShipHealth"].asUInt();;
   size = std::make_pair(settings["Level"][level]["SpaceShipWidth"].asInt()
                           ,settings["Level"][level]["SpaceShipHeigth"].asInt());
+  rate = settings["Level"][level]["SpaceShipRate"].asUInt();
 
   m_space->SetSpaceShip(std::make_shared<SpaceShip>(
                           QVector2D(Globals::Width/2, size.second),
-                          100,
+                          rate,
                           health,
                           Images::Instance().GetImageSpaceShip(),
                           size));
@@ -742,10 +746,10 @@ void GLWidget::SpaceShipBulletsLogic()
 {
   // Loop over space ship bullets and delete it if needed.
   std::list<TBulletPtr> & lst = m_space->GetSpaceShipBullets();
-
+  uint rate = m_space->GetSpaceShip()->GetRate();
   for (auto it = begin(lst); it != end(lst);)
   {
-    (*it)->IncreaseY(20);
+    (*it)->IncreaseY(rate);
 
     if ((*it)->GetPosition().y() > Globals::Height)
     {
@@ -765,10 +769,9 @@ void GLWidget::AlienBulletsLogic()
 {
   // Loop over space ship bullets and delete it if needed.
   std::list<TBulletPtr> & lst = m_space->GetAlienBullets();
-
   for (auto it = begin(lst); it != end(lst);)
   {
-    (*it)->DecreaseY(10);
+    (*it)->DecreaseY(m_rateAlien);
 
     if ((*it)->GetPosition().y() == 0.0f)
     {
@@ -793,11 +796,11 @@ void GLWidget::AlienLogic()
   {
     if (itAlien->GetSpeed() > 0)
     {
-      itAlien->IncreaseX(10.0f);
+      itAlien->IncreaseX(10.0f*abs(itAlien->GetSpeed()));
     }
     else
     {
-      itAlien->DecreaseX(10.0f);
+      itAlien->DecreaseX(10.0f*abs(itAlien->GetSpeed()));
     }
   }
 }
