@@ -156,7 +156,7 @@ void GLWidget::AddAliens(const std::string & level)
     {
       m_space->AddAlien(std::make_shared<Alien>(
                           speed,
-                          QVector2D(i * r, 600 + j*height),
+                          QVector2D(i * r, 500 + j*height),
                           m_rateAlien,
                           health,
                           Images::Instance().GetImageAlien(),
