@@ -24,10 +24,12 @@ public:
         uint const & rate,
         uint const & health,
         std::shared_ptr<QImage> image,
-        TSize const & size)
+        TSize const & size,
+        uint const & frequency)
     : GameEntityWithWeapon(position, "Alien", rate, health, image, size),
       m_speed(speed),
-      m_shotTime(rate)
+      m_shotTime(frequency),
+      m_frequency(frequency)
   {}
 
   ~Alien() override;
@@ -46,6 +48,7 @@ private:
 
   uint m_speed = 0;
   uint m_shotTime = 0;
+  uint m_frequency = 0;
 
 };
 

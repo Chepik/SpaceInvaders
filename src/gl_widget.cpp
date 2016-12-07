@@ -157,10 +157,10 @@ void GLWidget::AddAliens(const std::string & level)
 {
   size_t aliensNumber = 0;
   int speed = 0;
-  uint rate = 0;
   uint health = 0;
   TSize size = std::make_pair(0,0);
   size_t aliensRowNumber = 0;
+  uint frequency = 0;
 
   Json::Value settings;
   try
@@ -173,11 +173,12 @@ void GLWidget::AddAliens(const std::string & level)
   }
   aliensNumber = settings["Level"][level]["AliensNumber"].asUInt();
   speed = settings["Level"][level]["AlienSpeed"].asInt();
-  rate = settings["Level"][level]["AlienRate"].asUInt();
+  m_rateAlien = settings["Level"][level]["AlienRate"].asUInt();
   health = settings["Level"][level]["AlienHealth"].asUInt();
   size = std::make_pair(settings["Level"][level]["AlienWidth"].asInt()
                           ,settings["Level"][level]["AlienHeigth"].asInt());
   aliensRowNumber = settings["Level"][level]["AlienRowNumber"].asUInt();
+  frequency = settings["Level"][level]["AlienFrequency"].asInt();
 
   size_t r = (Globals::Width/aliensNumber);
   int height = settings["Level"][level]["AlienHeigth"].asInt();
@@ -187,16 +188,18 @@ void GLWidget::AddAliens(const std::string & level)
       m_space->AddAlien(std::make_shared<Alien>(
                           speed,
                           QVector2D(i * r, 600 + j*height),
-                          rate,
+                          m_rateAlien,
                           health,
                           Images::Instance().GetImageAlien(),
-                          size));
+                          size,
+                          frequency));
     }
 }
 
 void GLWidget::AddSpaceShip(const std::string & level)
 {  
   uint health = 0;
+  uint rate = 0;
   TSize size = std::make_pair(0,0);
 
   Json::Value settings;
@@ -212,10 +215,11 @@ void GLWidget::AddSpaceShip(const std::string & level)
   health = settings["Level"][level]["SpaceShipHealth"].asUInt();;
   size = std::make_pair(settings["Level"][level]["SpaceShipWidth"].asInt()
                           ,settings["Level"][level]["SpaceShipHeigth"].asInt());
+  rate = settings["Level"][level]["SpaceShipRate"].asUInt();
 
   m_space->SetSpaceShip(std::make_shared<SpaceShip>(
                           QVector2D(Globals::Width/2, size.second),
-                          100,
+                          rate,
                           health,
                           Images::Instance().GetImageSpaceShip(),
                           size));
@@ -241,11 +245,12 @@ void GLWidget::AddObstacles(const std::string & level)
   size = std::make_pair(settings["Level"][level]["ObstacleWidth"].asInt()
                           ,settings["Level"][level]["ObstacleHeigth"].asInt());
   size_t r = (Globals::Width/obstaclesNumber);
+  int width = settings["Level"][level]["ObstacleWidth"].asInt();
   for (size_t i = 0; i < obstaclesNumber; i++)
   {
     m_space->AddObstacle(std::make_shared<Obstacle>(
                            health,
-                           QVector2D(i*r, 300),
+                           QVector2D(i*r+width, 300),
                            Images::Instance().GetImageObstacle(),
                            size));
   }
@@ -306,18 +311,7 @@ void GLWidget::paintGL()
 
   /// Set to zero if it reaches the 1.0 .
 
-  for (auto it = m_random.begin() ; it != m_random.end(); ++it)
-  {
-    if((*it).m_periodStar < 1.0)
-    {
-      (*it).m_periodStar += 0.001f;
-    }
-    else
-    {
-      (*it).m_randomStar = std::make_pair(Random(0,1), Random(0,1));
-      (*it).m_periodStar = 0.0f;
-    }
-  }
+  StarLogic();
 
   RenderStar();
   glDisable(GL_CULL_FACE);
@@ -344,8 +338,11 @@ void GLWidget::paintGL()
 
 void GLWidget::resizeGL(int w, int h)
 {
+  SetPosition(w, h);
   m_screenSize.setWidth(w);
+  Globals::Width = w;
   m_screenSize.setHeight(h);
+  Globals::Height = h;
 }
 
 void GLWidget::Update(float elapsedSeconds)
@@ -540,7 +537,6 @@ void GLWidget::CheckHitSpaceShip()
 void GLWidget::KillSpaceShip(uint damage, QVector2D const position)
 {
   uint health = m_space->GetSpaceShip()->GetHealth();
-  qDebug() << damage;
   if ((health-damage) > 0)
   {
     m_space->AddExplosion(std::make_shared<Explosion>(
@@ -559,7 +555,6 @@ void GLWidget::KillSpaceShip(uint damage, QVector2D const position)
 void GLWidget::CheckHitAlien()
 {
   std::list<TBulletPtr> & lstBullet = m_space->GetSpaceShipBullets();
-
   std::list<TAlienPtr> & lstAlien = m_space->GetAliens();
 
 //  if (lstAlien.empty())
@@ -605,21 +600,18 @@ void GLWidget::CheckHitAlien()
                                  m_sizeExplosion,
                                  m_lifetimeExplosion));
           (*itAlien)->SetHealth(health-damage);
-          qDebug()<< "SHOT ALIEN";
         }
         else
         {
           flag = true;
         }
         it = lstBullet.erase(it);
-        break;
       }
       else
       {
         ++it;
       }
     }
-//    qDebug()<<"lstBullet.size()="<<lstBullet.size();
     if (flag)
     {
       m_space->AddExplosion(std::make_shared<Explosion>(
@@ -627,7 +619,6 @@ void GLWidget::CheckHitAlien()
                              Images::Instance().GetImageExplosion(),
                              m_sizeExplosionBig,
                              m_lifetimeExplosionBig));
-      qDebug() << "KILL ALIEN";
       itAlien = lstAlien.erase(itAlien);
     }
     else
@@ -635,8 +626,6 @@ void GLWidget::CheckHitAlien()
       ++itAlien;
     }
   }
-
-//  qDebug() <<"lstAlien.size() = " <<lstAlien.size();
 }
 
 void GLWidget::ShotAlien()
@@ -645,7 +634,7 @@ void GLWidget::ShotAlien()
 
   for (auto it = begin(lst); it != end(lst); ++it)
   {
-    if( abs(m_space->GetSpaceShip()->GetPosition().x() - (*it)->GetPosition().x()) < Globals::Width/2)
+    if( abs(m_space->GetSpaceShip()->GetPosition().x() - (*it)->GetPosition().x()) < Globals::Width/2 && Random(0,1) <= 0.5f)
     {
       if((*it)->Shot())
       {
@@ -769,7 +758,6 @@ void GLWidget::keyPressEvent(QKeyEvent * e)
   }
   else if (e->key() == Qt::Key_Space)
   {
-    qDebug() << "ADD BULLET";
     std::shared_ptr<Bullet> bullet = std::make_shared<Bullet>(
           m_space->GetSpaceShip()->GetPosition(),
           Images::Instance().GetImageBullet(),
@@ -813,10 +801,10 @@ void GLWidget::SpaceShipBulletsLogic()
 {
   // Loop over space ship bullets and delete it if needed.
   std::list<TBulletPtr> & lst = m_space->GetSpaceShipBullets();
-
+  uint rate = m_space->GetSpaceShip()->GetRate();
   for (auto it = begin(lst); it != end(lst);)
   {
-    (*it)->IncreaseY(100);
+    (*it)->IncreaseY(rate);
 
     if ((*it)->GetPosition().y() > Globals::Height)
     {
@@ -836,12 +824,11 @@ void GLWidget::AlienBulletsLogic()
 {
   // Loop over space ship bullets and delete it if needed.
   std::list<TBulletPtr> & lst = m_space->GetAlienBullets();
-
   for (auto it = begin(lst); it != end(lst);)
   {
-    (*it)->DecreaseY(10);
+    (*it)->DecreaseY(m_rateAlien);
 
-    if ((*it)->GetPosition().y() <= 0.0f)
+    if ((*it)->GetPosition().y() == 0.0f)
     {
       it = lst.erase(it);
     }
@@ -864,11 +851,11 @@ void GLWidget::AlienLogic()
   {
     if (itAlien->GetSpeed() > 0)
     {
-      itAlien->IncreaseX(10.0f);
+      itAlien->IncreaseX(5.0f*abs(itAlien->GetSpeed()));
     }
     else
     {
-      itAlien->DecreaseX(10.0f);
+      itAlien->DecreaseX(5.0f*abs(itAlien->GetSpeed()));
     }
   }
 }
@@ -921,7 +908,6 @@ void GLWidget::CheckHitObstacle()
                                  m_sizeExplosion,
                                  m_lifetimeExplosion));
           (*itObstacle)->SetHealth(health-damage);
-          qDebug()<< "SHOT ALIEN";
         }
         else
         {
@@ -960,7 +946,6 @@ void GLWidget::CheckHitObstacle()
                                    m_sizeExplosion,
                                    m_lifetimeExplosion));
             (*itObstacle)->SetHealth(health-damage);
-            qDebug()<< "SHOT ALIEN";
           }
           else
           {
@@ -987,5 +972,51 @@ void GLWidget::CheckHitObstacle()
     {
       ++itObstacle;
     }
+  }
+}
+
+void GLWidget::StarLogic()
+{
+  for (auto it = m_random.begin() ; it != m_random.end(); ++it)
+  {
+    if((*it).m_periodStar < 1.0)
+    {
+      (*it).m_periodStar += 0.001f;
+    }
+    else
+    {
+      (*it).m_randomStar = std::make_pair(Random(0,1), Random(0,1));
+      (*it).m_periodStar = 0.0f;
+    }
+  }
+}
+
+void GLWidget::SetPosition(int w, int h)
+{
+  QVector2D position = m_space->GetSpaceShip()->GetPosition();
+  m_space->GetSpaceShip()->SetPosition(QVector2D(position.x()*w/Globals::Width,position.y()*h/Globals::Height));
+
+  for (auto obstacle : m_space->GetObstacles())
+  {
+    position = obstacle->GetPosition();
+    obstacle->SetPosition(QVector2D(position.x()*w/Globals::Width,position.y()*h/Globals::Height));
+  }
+
+  for (auto alien : m_space->GetAliens())
+  {
+    position = alien->GetPosition();
+    alien->SetPosition(QVector2D(position.x()*w/Globals::Width,position.y()*h/Globals::Height));
+  }
+
+  for (auto bullet : m_space->GetAlienBullets())
+  {
+    position = bullet->GetPosition();
+    bullet->SetPosition(QVector2D(position.x()*w/Globals::Width,position.y()*h/Globals::Height));
+  }
+
+  for (auto bullet : m_space->GetSpaceShipBullets())
+  {
+    position = bullet->GetPosition();
+    bullet->SetPosition(QVector2D(position.x()*w/Globals::Width,position.y()*h/Globals::Height));
   }
 }

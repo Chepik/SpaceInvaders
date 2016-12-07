@@ -33,7 +33,7 @@ bool Alien::Shot()
   m_shotTime--;
   if(m_shotTime == 0)
   {
-    m_shotTime = m_rate;
+    m_shotTime = m_frequency;
     shot = true;
   }
   return shot;

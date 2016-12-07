@@ -60,7 +60,7 @@ void GameEntity::DecreaseY(float const & value)
   // Set bottom wall.
   if (tmp < 0.0f)
   {
-    m_position.setY(m_position.y() + 10.0f);
+    m_position.setY(0.0f);
   }
   else
   {

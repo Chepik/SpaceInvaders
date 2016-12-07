@@ -83,6 +83,8 @@ protected:
   void ShotAlien();
   void ExplosionLogic();
   void CheckHitObstacle();
+  void StarLogic();
+  void SetPosition(int w, int h);
 
   ///
   /// Generate random number between min and max values.
@@ -125,4 +127,5 @@ private:
   TSize m_sizeExplosion;
   uint m_lifetimeExplosionBig;
   TSize m_sizeExplosionBig;
+  uint m_rateAlien;
 };
