@@ -48,6 +48,7 @@ protected:
 
   void Update(float elapsedSeconds);
 
+  bool IsGameOver();
 
   /// Mouse and keyboard events.
   void mousePressEvent(QMouseEvent * e) override;
