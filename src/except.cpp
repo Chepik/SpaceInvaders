@@ -10,3 +10,8 @@ const char* WrongLogLevelException::what() const noexcept
 {
   return "Wrong log level!";
 }
+
+const char * CantLoadImagesException::what() const noexcept
+{
+  return m_message.c_str();
+}
