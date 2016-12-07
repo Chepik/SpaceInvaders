@@ -523,7 +523,7 @@ void GLWidget::CheckHitAlien()
           Point2D(positionAlien.x(), positionAlien.y()),
           Point2D(positionAlien.x() + sizeAlien.first,
                   positionAlien.y() + sizeAlien.second));
-    LOG(LogLevel::info) << alienBox;
+//    LOG(LogLevel::info) << alienBox;
     bool flag = false;
 
     for (auto it = begin(lstBullet); it != end(lstBullet);)
