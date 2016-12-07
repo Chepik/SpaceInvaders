@@ -931,7 +931,6 @@ void GLWidget::StarLogic()
 void GLWidget::SetPosition(int w, int h)
 {
   QVector2D position = m_space->GetSpaceShip()->GetPosition();
-//  QVector2D newPosition (position.x()*w/Globals::Width,position.y()*h/Globals::Height);
   m_space->GetSpaceShip()->SetPosition(QVector2D(position.x()*w/Globals::Width,position.y()*h/Globals::Height));
 
   for (auto obstacle : m_space->GetObstacles())
