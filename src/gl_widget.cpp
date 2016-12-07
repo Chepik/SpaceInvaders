@@ -580,7 +580,7 @@ void GLWidget::ShotAlien()
 
   for (auto it = begin(lst); it != end(lst); ++it)
   {
-    if( abs(m_space->GetSpaceShip()->GetPosition().x() - (*it)->GetPosition().x()) < Globals::Width/2)
+    if( abs(m_space->GetSpaceShip()->GetPosition().x() - (*it)->GetPosition().x()) < Globals::Width/2 && Random(0,1) <= 0.5f)
     {
       if((*it)->Shot())
       {
@@ -788,11 +788,11 @@ void GLWidget::AlienLogic()
   {
     if (itAlien->GetSpeed() > 0)
     {
-      itAlien->IncreaseX(10.0f*abs(itAlien->GetSpeed()));
+      itAlien->IncreaseX(5.0f*abs(itAlien->GetSpeed()));
     }
     else
     {
-      itAlien->DecreaseX(10.0f*abs(itAlien->GetSpeed()));
+      itAlien->DecreaseX(5.0f*abs(itAlien->GetSpeed()));
     }
   }
 }
