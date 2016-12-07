@@ -22,6 +22,7 @@
 #include "constants.hpp"
 #include "util.hpp"
 #include "logger.hpp"
+#include "except.hpp"
 
 namespace
 {
@@ -82,8 +83,6 @@ void GLWidget::initializeGL()
 
   m_texturedRect = new TexturedRect();
   m_texturedRect->Initialize(this);
-
-  Images::Instance().LoadImages();
 
   std::string level = std::to_string(m_level);
 
