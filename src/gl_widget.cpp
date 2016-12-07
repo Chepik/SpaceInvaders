@@ -491,7 +491,6 @@ void GLWidget::CheckHitSpaceShip()
 void GLWidget::KillSpaceShip(uint damage, QVector2D const position)
 {
   uint health = m_space->GetSpaceShip()->GetHealth();
-  qDebug() << damage;
   if ((health-damage) > 0)
   {
     m_space->AddExplosion(std::make_shared<Explosion>(
@@ -511,7 +510,6 @@ void GLWidget::KillSpaceShip(uint damage, QVector2D const position)
 void GLWidget::CheckHitAlien()
 {
   std::list<TBulletPtr> & lstBullet = m_space->GetSpaceShipBullets();
-
   std::list<TAlienPtr> & lstAlien = m_space->GetAliens();
 
   for (auto itAlien = begin(lstAlien); itAlien != end(lstAlien);)
@@ -552,21 +550,18 @@ void GLWidget::CheckHitAlien()
                                  m_sizeExplosion,
                                  m_lifetimeExplosion));
           (*itAlien)->SetHealth(health-damage);
-          qDebug()<< "SHOT ALIEN";
         }
         else
         {
           flag = true;
         }
         it = lstBullet.erase(it);
-        break;
       }
       else
       {
         ++it;
       }
     }
-    qDebug()<<"lstBullet.size()="<<lstBullet.size();
     if (flag)
     {
       m_space->AddExplosion(std::make_shared<Explosion>(
@@ -574,7 +569,6 @@ void GLWidget::CheckHitAlien()
                              Images::Instance().GetImageExplosion(),
                              m_sizeExplosionBig,
                              m_lifetimeExplosionBig));
-      qDebug() << "KILL ALIEN";
       itAlien = lstAlien.erase(itAlien);
     }
     else
@@ -582,7 +576,6 @@ void GLWidget::CheckHitAlien()
       ++itAlien;
     }
   }
-  qDebug() <<"lstAlien.size() = " <<lstAlien.size();
 }
 
 void GLWidget::ShotAlien()
@@ -706,7 +699,6 @@ void GLWidget::keyPressEvent(QKeyEvent * e)
   }
   else if (e->key() == Qt::Key_Space)
   {
-    qDebug() << "ADD BULLET";
     std::shared_ptr<Bullet> bullet = std::make_shared<Bullet>(
           m_space->GetSpaceShip()->GetPosition(),
           Images::Instance().GetImageBullet(),
@@ -753,7 +745,7 @@ void GLWidget::SpaceShipBulletsLogic()
 
   for (auto it = begin(lst); it != end(lst);)
   {
-    (*it)->IncreaseY(100);
+    (*it)->IncreaseY(20);
 
     if ((*it)->GetPosition().y() > Globals::Height)
     {
@@ -858,7 +850,6 @@ void GLWidget::CheckHitObstacle()
                                  m_sizeExplosion,
                                  m_lifetimeExplosion));
           (*itObstacle)->SetHealth(health-damage);
-          qDebug()<< "SHOT ALIEN";
         }
         else
         {
@@ -897,7 +888,6 @@ void GLWidget::CheckHitObstacle()
                                    m_sizeExplosion,
                                    m_lifetimeExplosion));
             (*itObstacle)->SetHealth(health-damage);
-            qDebug()<< "SHOT ALIEN";
           }
           else
           {
