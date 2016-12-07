@@ -16,10 +16,12 @@ public:
 private slots:
   void on_menuButtonClicked();
   void on_nextLevelButtonClicked();
+  void gameOver(QString message);
 
 signals:
   void moveToMenuPage();
   void moveToNextLevel();
+  void finishGame(QString message);
 
 private:
   QTimer * m_timer = nullptr;

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <memory>
 #include <QImage>
 
@@ -23,6 +24,8 @@ private:
   friend class Singleton<Images>;
 
   Images() = default;
+
+  std::shared_ptr<QImage> LoadImage(std::string path);
 
   std::shared_ptr<QImage> m_imageAlien = nullptr;
   std::shared_ptr<QImage> m_imageStar = nullptr;

@@ -22,6 +22,7 @@
 #include "constants.hpp"
 #include "util.hpp"
 #include "logger.hpp"
+#include "except.hpp"
 
 namespace
 {
@@ -53,10 +54,10 @@ bool IsRightButton(QMouseEvent const * const e)
 
 } // namespace
 
-GLWidget::GLWidget(GameWindow * mw,
+GLWidget::GLWidget(GameWindow * parent,
                    QColor const & background,
                    size_t const & level)
-  : m_mainWindow(mw),
+  : m_mainWindow(parent),
     m_background(background),
     m_level(level)
 {
@@ -64,6 +65,9 @@ GLWidget::GLWidget(GameWindow * mw,
 
   setMinimumSize(Globals::Width, Globals::Height);
   setFocusPolicy(Qt::StrongFocus);
+
+  connect(this, SIGNAL(gameOver(QString)),
+          parent, SLOT(gameOver(QString)));
 }
 
 GLWidget::~GLWidget()
@@ -80,11 +84,29 @@ void GLWidget::initializeGL()
   m_texturedRect = new TexturedRect();
   m_texturedRect->Initialize(this);
 
-  Images::Instance().LoadImages();
-
   std::string level = std::to_string(m_level);
 
-  ReadSettings(level);
+  try
+  {
+    ReadSettings(level);
+  }
+  catch (ReadSettingsException const & ex)
+  {
+    qDebug() << ex.what();
+
+    throw InitialiseGameException();
+  }
+
+  try
+  {
+    Images::Instance().LoadImages();
+  }
+  catch (LoadImagesException const & ex)
+  {
+    qDebug() << ex.what();
+
+    throw InitialiseGameException();
+  }
 
   AddAliens(level);
 
@@ -100,26 +122,35 @@ void GLWidget::initializeGL()
 void GLWidget::ReadSettings(const std::string & level)
 {
   Json::Value settings;
+
   try
   {
     settings = Util::ReadJson(Globals::SettingsFileName);
-  }
-  catch(std::exception ex)
-  {
-    qDebug() << "Can't read settings from a file!";
-  }
 
-    m_damageBullet = settings["Level"][std::to_string(m_level)]["BulletDamage"].asUInt();
-    m_sizeBullet = std::make_pair(settings["Level"][level]["BulletWidth"].asInt()
-                            ,settings["Level"][level]["BulletHeight"].asInt());
+    m_damageBullet = \
+        settings["Level"][std::to_string(m_level)]["BulletDamage"].asUInt();
+
+    m_sizeBullet = std::make_pair(
+          settings["Level"][level]["BulletWidth"].asInt(),
+        settings["Level"][level]["BulletHeight"].asInt());
 
     m_lifetimeExplosion = settings["ExplosionLifeTime"].asUInt();
-    m_lifetimeExplosionBig = settings["ExplosionLifeTimeBig"].asUInt();
-    m_sizeExplosion = std::make_pair(settings["ExplosionWidth"].asInt()
-                            ,settings["ExplosionHeight"].asInt());
-    m_sizeExplosionBig = std::make_pair(settings["ExplosionWidthBig"].asInt()
-                            ,settings["ExplosionHeightBig"].asInt());
 
+    m_lifetimeExplosionBig = settings["ExplosionLifeTimeBig"].asUInt();
+
+    m_sizeExplosion = std::make_pair(
+          settings["ExplosionWidth"].asInt(),
+        settings["ExplosionHeight"].asInt());
+
+    m_sizeExplosionBig = std::make_pair(
+          settings["ExplosionWidthBig"].asInt(),
+        settings["ExplosionHeightBig"].asInt());
+
+  }
+  catch(ReadFileException const & ex)
+  {
+    throw ReadSettingsException(Globals::SettingsFileName);
+  }
 }
 
 void GLWidget::AddAliens(const std::string & level)
@@ -242,6 +273,11 @@ void GLWidget::paintGL()
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+  if (IsGameOver())
+  {
+    return;
+  }
+
   ExplosionLogic();
 
   CheckHitSpaceShip();
@@ -332,6 +368,20 @@ void GLWidget::Update(float elapsedSeconds)
   {
     m_space->GetSpaceShip()->IncreaseX(kSpeed * elapsedSeconds);
   }
+}
+
+bool GLWidget::IsGameOver()
+{
+  std::list<TAlienPtr> & lstAlien = m_space->GetAliens();
+
+  if (lstAlien.empty())
+  {
+    emit gameOver("Congratulations! You win!");
+
+    return true;
+  }
+
+  return false;
 }
 
 void GLWidget::RenderAlien()
@@ -502,8 +552,7 @@ void GLWidget::KillSpaceShip(uint damage, QVector2D const position)
   }
   else
   {
-    //emit signal Game Over
-    qDebug() << "Game Over!!!!!!!!!!!!!!!!!!!!!!!!!";
+    emit gameOver("You lose!");
   }
 }
 
@@ -512,6 +561,11 @@ void GLWidget::CheckHitAlien()
   std::list<TBulletPtr> & lstBullet = m_space->GetSpaceShipBullets();
 
   std::list<TAlienPtr> & lstAlien = m_space->GetAliens();
+
+//  if (lstAlien.empty())
+//  {
+//    emit gameOver("Congratulations! You win!");
+//  }
 
   for (auto itAlien = begin(lstAlien); itAlien != end(lstAlien);)
   {
@@ -565,7 +619,7 @@ void GLWidget::CheckHitAlien()
         ++it;
       }
     }
-    qDebug()<<"lstBullet.size()="<<lstBullet.size();
+//    qDebug()<<"lstBullet.size()="<<lstBullet.size();
     if (flag)
     {
       m_space->AddExplosion(std::make_shared<Explosion>(
@@ -581,7 +635,8 @@ void GLWidget::CheckHitAlien()
       ++itAlien;
     }
   }
-  qDebug() <<"lstAlien.size() = " <<lstAlien.size();
+
+//  qDebug() <<"lstAlien.size() = " <<lstAlien.size();
 }
 
 void GLWidget::ShotAlien()
@@ -687,6 +742,15 @@ void GLWidget::wheelEvent(QWheelEvent * e)
 
 void GLWidget::keyPressEvent(QKeyEvent * e)
 {
+  if (e->key() == Qt::Key_Backspace)
+  {
+    std::list<TAlienPtr> & lstAlien = m_space->GetAliens();
+
+    if (!lstAlien.empty())
+    {
+      lstAlien.clear();
+    }
+  }
   if (e->key() == Qt::Key_Up)
   {
     m_directions[kUpDirection] = true;
