@@ -299,6 +299,8 @@ void GLWidget::paintGL()
 
   CheckHitObstacle();
 
+  CheckSpaceShipCollision();
+
   RenderAlien();
 
   RenderSpaceShip();
@@ -1018,5 +1020,73 @@ void GLWidget::SetPosition(int w, int h)
   {
     position = bullet->GetPosition();
     bullet->SetPosition(QVector2D(position.x()*w/Globals::Width,position.y()*h/Globals::Height));
+  }
+}
+
+void GLWidget::CheckSpaceShipCollision()
+{
+  QVector2D positionSpaceShip = m_space->GetSpaceShip()->GetPosition();
+
+  TSize sizeSpaceShip = m_space->GetSpaceShip()->GetSize();
+
+  Box2D spaceShipBox = Box2D::createBox(
+        Point2D(positionSpaceShip.x(), positionSpaceShip.y()),
+        Point2D(positionSpaceShip.x() + sizeSpaceShip.first,
+                positionSpaceShip.y() + sizeSpaceShip.second));
+
+  std::list<TObstaclePtr > & lstObstacles = m_space->GetObstacles();
+
+  // Loop over obstacles.
+  for (auto itObstacle = begin(lstObstacles); itObstacle != end(lstObstacles);)
+  {
+    QVector2D positionObstacle = (*itObstacle)->GetPosition();
+
+    TSize sizeObstacle = (*itObstacle)->GetSize();
+
+    Box2D obstacleBox = Box2D::createBox(
+        Point2D(positionObstacle.x(), positionObstacle.y()),
+        Point2D(positionObstacle.x() + sizeObstacle.first,
+                positionObstacle.y() + sizeObstacle.second));
+
+    // If two boxes are not intersected with each other
+    // then return false.
+    if (Box2D::checkBoxes(spaceShipBox, obstacleBox))
+    {
+      m_space->GetSpaceShip()->SetHealth(0.0f);
+
+      itObstacle = lstObstacles.erase(itObstacle);
+    }
+    else
+    {
+      ++itObstacle;
+    }
+  }
+
+  std::list<TAlienPtr > & lstAliens = m_space->GetAliens();
+
+  // Loop over aliens.
+  for (auto itAlien = begin(lstAliens); itAlien != end(lstAliens);)
+  {
+    QVector2D positionAlien = (*itAlien)->GetPosition();
+
+    TSize sizeAlien = (*itAlien)->GetSize();
+
+    Box2D alienBox = Box2D::createBox(
+        Point2D(positionAlien.x(), positionAlien.y()),
+        Point2D(positionAlien.x() + sizeAlien.first,
+                positionAlien.y() + sizeAlien.second));
+
+    // If two boxes are not intersected with each other
+    // then return false.
+    if (Box2D::checkBoxes(spaceShipBox, alienBox))
+    {
+      m_space->GetSpaceShip()->SetHealth(0.0f);
+
+      itAlien = lstAliens.erase(itAlien);
+    }
+    else
+    {
+      ++itAlien;
+    }
   }
 }

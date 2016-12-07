@@ -85,6 +85,7 @@ protected:
   void CheckHitObstacle();
   void StarLogic();
   void SetPosition(int w, int h);
+  void CheckCollisionWithObstacle();
 
   ///
   /// Generate random number between min and max values.
