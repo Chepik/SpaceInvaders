@@ -79,3 +79,17 @@ public:
 private:
   std::string m_message;
 };
+
+class WrongLevelException : public std::exception
+{
+ public:
+  WrongLevelException(size_t level)
+  {
+    m_message = "Wrong level number. Level number: " + std::to_string(level);
+  }
+
+  virtual const char * what() const noexcept;
+
+ private:
+  std::string m_message;
+};

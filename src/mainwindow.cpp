@@ -7,6 +7,8 @@
 #include "game_window.hpp"
 #include "settingspage.hpp"
 #include "gameoverpage.hpp"
+#include "settings.hpp"
+#include "except.hpp"
 
 MainWindow::MainWindow(QWidget *parent) :
   QMainWindow(parent)
@@ -79,6 +81,8 @@ void MainWindow::moveToMenuPage()
 {
   qDebug() << "moveToMenuPage";
 
+  m_currentLevel = 1;
+
   setCurrentIndex(0);
 }
 
@@ -96,6 +100,13 @@ void MainWindow::moveToNextLevel()
   // Increase game level number.
   m_currentLevel++;
 
+  if (m_currentLevel > Settings::Instance().m_mainParameters.m_levelsNumber)
+  {
+    finishGame("Congratulations! You win!");
+
+    return;
+  }
+
   // Load the next game level.
   setCurrentIndex(1);
 }
@@ -104,6 +115,15 @@ void MainWindow::finishGame(QString message)
 {
   m_message = "Game over." + message;
 
-  // Stop the game.
-  setCurrentIndex(3);
+  if (m_currentLevel < Settings::Instance().m_mainParameters.m_levelsNumber)
+  {
+    moveToNextLevel();
+  }
+  else
+  {
+    m_currentLevel = 1;
+
+    // Stop the game.
+    setCurrentIndex(3);
+  }
 }
