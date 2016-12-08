@@ -10,13 +10,14 @@
    "ExplosionHeight" : 16,
    "ExplosionWidthBig" : 64,
    "ExplosionHeightBig" : 64,
+   "LevelsNumber" : 3,
    "Level" : 
    {
         "1" : 
         {
             "AliensNumber" : 8,
-            "AlienSpeed" : 1,
-            "AlienRate" : 10,
+            "AlienSpeed" : 100,
+            "AlienRate" : 1000,
             "AlienHealth" : 200,
             "AlienWidth" : 64,
             "AlienHeigth" : 64,
@@ -25,7 +26,8 @@
             "SpaceShipHealth": 800,
             "SpaceShipWidth" : 128,
             "SpaceShipHeigth" : 128,
-            "SpaceShipRate" : 20,
+            "SpaceShipRate" : 2000,
+            "SpaceShipSpeed" : 2000,
             "ObstacleNumber" : 8,
             "ObstacleHealth" : 400,
             "ObstacleWidth" : 64,
@@ -38,7 +40,7 @@
         {
             "AliensNumber" : 12,
             "AlienSpeed" : 2,
-            "AlienRate" : 10,
+            "AlienRate" : 1000,
             "AlienHealth" : 400,
             "AlienWidth" : 64,
             "AlienHeigth" : 64,
@@ -48,6 +50,7 @@
             "SpaceShipWidth" : 128,
             "SpaceShipHeigth" : 128,
             "SpaceShipRate" : 20,
+            "SpaceShipSpeed" : 2000,
             "ObstacleNumber" : 12,
             "ObstacleHealth" : 600,
             "ObstacleWidth" : 64,
@@ -60,7 +63,7 @@
         {
             "AliensNumber" : 12,
             "AlienSpeed" : 3,
-            "AlienRate" : 10,
+            "AlienRate" : 1000,
             "AlienHealth" : 600,
             "AlienWidth" : 64,
             "AlienHeigth" : 64,
@@ -70,6 +73,7 @@
             "SpaceShipWidth" : 128,
             "SpaceShipHeigth" : 128,
             "SpaceShipRate" : 20,
+            "SpaceShipSpeed" : 2000,
             "ObstacleNumber" : 16,
             "ObstacleHealth" : 800,
             "ObstacleWidth" : 64,

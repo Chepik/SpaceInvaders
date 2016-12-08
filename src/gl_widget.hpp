@@ -48,7 +48,8 @@ protected:
 
   void Update(float elapsedSeconds);
 
-  bool IsGameOver();
+  /// Set m_isGameOver to true if game is over.
+  void IsGameOver();
 
   /// Mouse and keyboard events.
   void mousePressEvent(QMouseEvent * e) override;
@@ -60,9 +61,9 @@ protected:
   void keyReleaseEvent(QKeyEvent * e) override;
 
   /// Create objects.
-  void AddObstacles(const std::string & level);
-  void AddSpaceShip(const std::string & level);
-  void AddAliens(std::string const & level);
+  void AddObstacles();
+  void AddSpaceShip();
+  void AddAliens();
   void AddStars();
 
   /// Render stage.
@@ -77,14 +78,15 @@ protected:
   void CheckHitAlien();
   void CheckHitSpaceShip();
   void KillSpaceShip(uint damage, QVector2D const position);
-  void SpaceShipBulletsLogic();
-  void AlienBulletsLogic();
-  void AlienLogic();
+  void SpaceShipBulletsLogic(float const & elapsedSeconds);
+  void AlienBulletsLogic(float const & elapsedSeconds);
+  void AlienLogic(float const & elapsedSeconds);
   void ShotAlien();
   void ExplosionLogic();
   void CheckHitObstacle();
   void StarLogic();
   void SetPosition(int w, int h);
+  void CheckSpaceShipCollision();
 
   ///
   /// Generate random number between min and max values.
@@ -95,15 +97,13 @@ protected:
   double Random(double min, double max);
 
 private:
-  // Read current level parameters from a settings file.
-  void ReadSettings(const std::string & level);
-
   int L2D(int px) const { return px * devicePixelRatio(); }
 
   GameWindow * m_mainWindow;
 
   unsigned int m_frames = 0;
   QTime m_time;
+  QTime m_timeFPS;
   QColor m_background;
   QSize m_screenSize;
 
@@ -120,12 +120,5 @@ private:
 
   std::default_random_engine m_generator;
 
-  uint m_damageBullet;
-  TSize m_sizeBullet;
-
-  uint m_lifetimeExplosion;
-  TSize m_sizeExplosion;
-  uint m_lifetimeExplosionBig;
-  TSize m_sizeExplosionBig;
-  uint m_rateAlien;
+  bool m_isGameOver = false;
 };

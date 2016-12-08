@@ -63,6 +63,6 @@ protected:
   std::pair<int,int> m_size;
 };
 
-using TSize = std::pair<int,int>;
+using TSize = std::pair<int, int>;
 using TGameEntityPtr = std::shared_ptr<GameEntity>;
 using TGameEntityConstPtr = std::shared_ptr<GameEntity const>;

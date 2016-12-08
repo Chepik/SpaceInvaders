@@ -79,6 +79,11 @@ void Alien::ReverseDirection()
   SetSpeed(-GetSpeed());
 }
 
+int Alien::GetAbsoluteSpeed() const
+{
+  return abs(m_speed);
+}
+
 std::ostream & operator << (std::ostream & os,
                             const Alien & obj)
 {
