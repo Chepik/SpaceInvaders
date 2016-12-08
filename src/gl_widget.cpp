@@ -140,6 +140,15 @@ void GLWidget::AddAliens()
     for (size_t i = 0; i < aliensNumber; i++)
     {
       m_space->AddAlien(std::make_shared<Alien>(
+//<<<<<<< HEAD
+//                          speed,
+//                          QVector2D(i * r, 500 + j*height),
+//                          m_rateAlien,
+//                          health,
+//                          Images::Instance().GetImageAlien(),
+//                          size,
+//                          frequency));
+//=======
           speed,
           QVector2D(i * r, 600 + j*height),
           Settings::Instance().m_alienParameters.m_rate,
@@ -147,6 +156,7 @@ void GLWidget::AddAliens()
           Images::Instance().GetImageAlien(),
           size,
           frequency));
+//>>>>>>> origin/develop
     }
   }
 }
@@ -562,6 +572,9 @@ void GLWidget::CheckHitAlien()
         ++it;
       }
     }
+
+//    qDebug()<<"lstBullet.size()="<<lstBullet.size();
+
     if (flag)
     {
       m_space->AddExplosion(std::make_shared<Explosion>(
@@ -576,6 +589,9 @@ void GLWidget::CheckHitAlien()
       ++itAlien;
     }
   }
+
+//  qDebug() <<"lstAlien.size() = " <<lstAlien.size();
+
 }
 
 void GLWidget::ShotAlien()
