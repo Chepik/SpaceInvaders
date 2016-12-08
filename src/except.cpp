@@ -35,3 +35,7 @@ const char *WriteFileException::what() const noexcept
 {
   return m_message.c_str();
 }
+const char * WrongLevelException::what() const noexcept
+{
+  return m_message.c_str();
+}
