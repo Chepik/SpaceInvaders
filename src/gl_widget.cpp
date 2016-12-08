@@ -195,7 +195,7 @@ void GLWidget::paintGL()
   float const elapsedSeconds = elapsedMilliseconds / 1000.0f;
   float const elapsedSecondsFPS = elapsedMillisecondsFPS / 1000.0f;
 
-  qDebug() << "elapsedSeconds = " << elapsedSeconds;
+//  qDebug() << "elapsedSeconds = " << elapsedSeconds;
 
   Update(elapsedSeconds);
 
