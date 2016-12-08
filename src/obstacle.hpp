@@ -10,13 +10,13 @@ public:
     : GameEntity("Obstacle")
   {}
 
-  Obstacle(uint const & health,
+  Obstacle(int const & health,
            QVector2D const & position)
     :GameEntity(position, "Obstacle"),
       m_health(health)
   {}
 
-  Obstacle(uint const & health,
+  Obstacle(int const & health,
            QVector2D const & position,
            std::shared_ptr<QImage> image,
            TSize const & size)
@@ -27,11 +27,11 @@ public:
   ~Obstacle() override;
 
   void Update() override;
-  uint GetHealth() const;
-  void SetHealth(uint const & health);
+  int GetHealth() const;
+  void SetHealth(int const & health);
 
 private:
-  uint m_health = 0;
+  int m_health = 0;
 };
 
 using TObstaclePtr = std::shared_ptr<Obstacle>;

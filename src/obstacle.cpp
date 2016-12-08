@@ -8,12 +8,12 @@ Obstacle::~Obstacle()
 
 }
 
-uint Obstacle::GetHealth() const
+int Obstacle::GetHealth() const
 {
   return m_health;
 }
 
-void Obstacle::SetHealth(uint const & health)
+void Obstacle::SetHealth(int const & health)
 {
   m_health = health;
 }

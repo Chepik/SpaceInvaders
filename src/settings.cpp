@@ -57,7 +57,7 @@ void Settings::LoadLevelSettings(std::string const & level)
     m_alienParameters.m_number = settings["Level"][level]["AliensNumber"].asUInt();
     m_alienParameters.m_speed = settings["Level"][level]["AlienSpeed"].asInt();
     m_alienParameters.m_rate = settings["Level"][level]["AlienRate"].asUInt();
-    m_alienParameters.m_health = settings["Level"][level]["AlienHealth"].asUInt();
+    m_alienParameters.m_health = settings["Level"][level]["AlienHealth"].asInt();
 
     m_alienParameters.m_size = std::make_pair(
         settings["Level"][level]["AlienWidth"].asInt(),
@@ -74,7 +74,7 @@ void Settings::LoadLevelSettings(std::string const & level)
         settings["Level"][level]["BulletHeight"].asInt());
 
     /// Space Ship parameters.
-    m_spaceShipParameters.m_health = settings["Level"][level]["SpaceShipHealth"].asUInt();
+    m_spaceShipParameters.m_health = settings["Level"][level]["SpaceShipHealth"].asInt();
     m_spaceShipParameters.m_speed = settings["Level"][level]["SpaceShipSpeed"].asUInt();
 
     m_spaceShipParameters.m_size = std::make_pair(
@@ -85,7 +85,7 @@ void Settings::LoadLevelSettings(std::string const & level)
 
     /// Obstacle parameters.
     m_obstacleParameters.m_number = settings["Level"][level]["ObstacleNumber"].asUInt();
-    m_obstacleParameters.m_health = settings["Level"][level]["ObstacleHealth"].asUInt();
+    m_obstacleParameters.m_health = settings["Level"][level]["ObstacleHealth"].asInt();
 
     m_obstacleParameters.m_size = std::make_pair(
         settings["Level"][level]["ObstacleWidth"].asInt(),

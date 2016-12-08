@@ -126,7 +126,7 @@ void GLWidget::AddAliens()
 {
   size_t aliensNumber = Settings::Instance().m_alienParameters.m_number;
   int speed = Settings::Instance().m_alienParameters.m_speed;
-  uint health = Settings::Instance().m_alienParameters.m_health;
+  int health = Settings::Instance().m_alienParameters.m_health;
   TSize size = Settings::Instance().m_alienParameters.m_size;
   size_t aliensRowNumber = Settings::Instance().m_alienParameters.m_rowNumber;
   uint frequency = Settings::Instance().m_alienParameters.m_frequency;
@@ -153,7 +153,7 @@ void GLWidget::AddAliens()
 
 void GLWidget::AddSpaceShip()
 {  
-  uint health = Settings::Instance().m_spaceShipParameters.m_health;
+  int health = Settings::Instance().m_spaceShipParameters.m_health;
   uint rate = Settings::Instance().m_spaceShipParameters.m_rate;
   TSize size = Settings::Instance().m_spaceShipParameters.m_size;
 
@@ -168,7 +168,7 @@ void GLWidget::AddSpaceShip()
 void GLWidget::AddObstacles()
 {  
   size_t obstaclesNumber = Settings::Instance().m_obstacleParameters.m_number;
-  uint health = Settings::Instance().m_obstacleParameters.m_health;
+  int health = Settings::Instance().m_obstacleParameters.m_health;
   TSize size = Settings::Instance().m_obstacleParameters.m_size;
 
   size_t width = Settings::Instance().m_obstacleParameters.m_width;
@@ -477,15 +477,19 @@ void GLWidget::CheckHitSpaceShip()
 
 void GLWidget::KillSpaceShip(uint damage, QVector2D const position)
 {
-  uint health = m_space->GetSpaceShip()->GetHealth();
-  if ((health-damage) > 0)
+  int health = m_space->GetSpaceShip()->GetHealth();
+
+  int health_updated = health - damage;
+
+  if (health_updated > 0)
   {
     m_space->AddExplosion(std::make_shared<Explosion>(
                            position,
                            Images::Instance().GetImageExplosion(),
                            Settings::Instance().m_explosionParameters.m_sizeBig,
                            Settings::Instance().m_explosionParameters.m_lifetimeBig));
-    m_space->GetSpaceShip()->SetHealth(health-damage);
+
+    m_space->GetSpaceShip()->SetHealth(health_updated);
   }
   else
   {
@@ -531,16 +535,21 @@ void GLWidget::CheckHitAlien()
       // then return false.
       if (Box2D::checkBoxes(alienBox,bulletBox))
       {
-        uint health = (*itAlien)->GetHealth();
+        int health = (*itAlien)->GetHealth();
+
         uint damage = (*it)->GetDamage();
-        if ((health-damage) > 0)
+
+        int health_updated = health - damage;
+
+        if (health_updated > 0)
         {
           m_space->AddExplosion(std::make_shared<Explosion>(
                                  positionAlien,
                                  Images::Instance().GetImageExplosion(),
                                  Settings::Instance().m_explosionParameters.m_size,
                                  Settings::Instance().m_explosionParameters.m_lifetime));
-          (*itAlien)->SetHealth(health-damage);
+
+          (*itAlien)->SetHealth(health_updated);
         }
         else
         {
@@ -842,16 +851,21 @@ void GLWidget::CheckHitObstacle()
       // then return false.
       if (Box2D::checkBoxes(obstacleBox, bulletBox))
       {
-        uint health = (*itObstacle)->GetHealth();
+        int health = (*itObstacle)->GetHealth();
+
         uint damage = (*it)->GetDamage();
-        if ((health-damage) > 0)
+
+        int health_updated = health - damage;
+
+        if (health_updated > 0)
         {
           m_space->AddExplosion(std::make_shared<Explosion>(
                                  positionObstacle,
                                  Images::Instance().GetImageExplosion(),
                                  Settings::Instance().m_explosionParameters.m_size,
                                  Settings::Instance().m_explosionParameters.m_lifetime));
-          (*itObstacle)->SetHealth(health-damage);
+
+          (*itObstacle)->SetHealth(health_updated);
         }
         else
         {
@@ -880,16 +894,21 @@ void GLWidget::CheckHitObstacle()
         // then return false.
         if (Box2D::checkBoxes(obstacleBox, bulletBox))
         {
-          uint health = (*itObstacle)->GetHealth();
+          int health = (*itObstacle)->GetHealth();
+
           uint damage = (*it)->GetDamage();
-          if ((health-damage) > 0)
+
+          int health_updated = health - damage;
+
+          if (health_updated > 0)
           {
             m_space->AddExplosion(std::make_shared<Explosion>(
                                    positionObstacle,
                                    Images::Instance().GetImageExplosion(),
                                    Settings::Instance().m_explosionParameters.m_size,
                                    Settings::Instance().m_explosionParameters.m_lifetime));
-            (*itObstacle)->SetHealth(health-damage);
+
+            (*itObstacle)->SetHealth(health_updated);
           }
           else
           {
@@ -994,7 +1013,7 @@ void GLWidget::CheckSpaceShipCollision()
     // then return false.
     if (Box2D::checkBoxes(spaceShipBox, obstacleBox))
     {
-      m_space->GetSpaceShip()->SetHealth(0.0f);
+      m_space->GetSpaceShip()->SetHealth(0);
 
       itObstacle = lstObstacles.erase(itObstacle);
     }
@@ -1022,7 +1041,7 @@ void GLWidget::CheckSpaceShipCollision()
     // then return false.
     if (Box2D::checkBoxes(spaceShipBox, alienBox))
     {
-      m_space->GetSpaceShip()->SetHealth(0.0f);
+      m_space->GetSpaceShip()->SetHealth(0);
 
       itAlien = lstAliens.erase(itAlien);
     }

@@ -14,7 +14,7 @@ public:
   Alien(int const & speed,
         QVector2D const & position,
         uint const & rate,
-        uint const & health)
+        int const & health)
     : GameEntityWithWeapon(position, "Alien", rate, health),
       m_speed(speed)
   {}
@@ -22,7 +22,7 @@ public:
   Alien(int const & speed,
         QVector2D const & position,
         uint const & rate,
-        uint const & health,
+        int const & health,
         std::shared_ptr<QImage> image,
         TSize const & size,
         uint const & frequency)
