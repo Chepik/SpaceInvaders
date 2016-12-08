@@ -104,6 +104,13 @@ void MainWindow::finishGame(QString message)
 {
   m_message = "Game over." + message;
 
-  // Stop the game.
-  setCurrentIndex(3);
+  if (m_currentLevel < 3)
+  {
+    moveToNextLevel();
+  }
+  else
+  {
+    // Stop the game.
+    setCurrentIndex(3);
+  }
 }
