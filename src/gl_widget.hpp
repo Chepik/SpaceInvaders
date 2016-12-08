@@ -77,7 +77,7 @@ protected:
   void CheckHitAlien();
   void CheckHitSpaceShip();
   void KillSpaceShip(uint damage, QVector2D const position);
-  void SpaceShipBulletsLogic();
+  void SpaceShipBulletsLogic(float const & elapsedSeconds);
   void AlienBulletsLogic();
   void AlienLogic(float const & elapsedSeconds);
   void ShotAlien();

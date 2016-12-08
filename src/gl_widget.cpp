@@ -298,7 +298,7 @@ void GLWidget::paintGL()
 
   ShotAlien();
 
-  SpaceShipBulletsLogic();
+  SpaceShipBulletsLogic(elapsedSeconds);
 
   AlienBulletsLogic();
 
@@ -804,14 +804,16 @@ double GLWidget::Random(double min, double max)
   return number;
 }
 
-void GLWidget::SpaceShipBulletsLogic()
+void GLWidget::SpaceShipBulletsLogic(float const & elapsedSeconds)
 {
   // Loop over space ship bullets and delete it if needed.
   std::list<TBulletPtr> & lst = m_space->GetSpaceShipBullets();
+
   uint rate = m_space->GetSpaceShip()->GetRate();
+
   for (auto it = begin(lst); it != end(lst);)
   {
-    (*it)->IncreaseY(rate);
+    (*it)->IncreaseY(elapsedSeconds * rate);
 
     if ((*it)->GetPosition().y() > Globals::Height)
     {
