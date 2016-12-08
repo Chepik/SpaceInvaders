@@ -115,6 +115,16 @@ void MainWindow::finishGame(QString message)
 {
   m_message = "Game over." + message;
 
+  if (message == "You lose!")
+  {
+    m_currentLevel = 1;
+
+    // Stop the game.
+    setCurrentIndex(3);
+
+    return;
+  }
+
   if (m_currentLevel < Settings::Instance().m_mainParameters.m_levelsNumber)
   {
     moveToNextLevel();
@@ -125,5 +135,7 @@ void MainWindow::finishGame(QString message)
 
     // Stop the game.
     setCurrentIndex(3);
+
+    return;
   }
 }
