@@ -61,9 +61,9 @@ protected:
   void keyReleaseEvent(QKeyEvent * e) override;
 
   /// Create objects.
-  void AddObstacles(const std::string & level);
-  void AddSpaceShip(const std::string & level);
-  void AddAliens(std::string const & level);
+  void AddObstacles();
+  void AddSpaceShip();
+  void AddAliens();
   void AddStars();
 
   /// Render stage.
@@ -97,9 +97,6 @@ protected:
   double Random(double min, double max);
 
 private:
-  // Read current level parameters from a settings file.
-  void ReadSettings(const std::string & level);
-
   int L2D(int px) const { return px * devicePixelRatio(); }
 
   GameWindow * m_mainWindow;
@@ -122,15 +119,6 @@ private:
   std::array<bool, 4> m_directions = {{ false, false, false, false }};
 
   std::default_random_engine m_generator;
-
-  uint m_damageBullet;
-  TSize m_sizeBullet;
-
-  uint m_lifetimeExplosion;
-  TSize m_sizeExplosion;
-  uint m_lifetimeExplosionBig;
-  TSize m_sizeExplosionBig;
-  uint m_rateAlien;
 
   bool m_isGameOver = false;
 };
