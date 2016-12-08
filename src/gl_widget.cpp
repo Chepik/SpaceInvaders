@@ -258,8 +258,13 @@ void GLWidget::AddObstacles(const std::string & level)
 
 void GLWidget::paintGL()
 {
-  int const elapsed = m_time.elapsed();
-  Update(elapsed / 1000.0f);
+  // Get time.
+  int const elapsedMilliseconds = m_time.elapsed();
+
+  // Convert from milliseconds to seconds.
+  float const elapsedSeconds = elapsedMilliseconds / 1000.0f;
+
+  Update(elapsedSeconds);
 
   QPainter painter;
   painter.begin(this);
@@ -320,10 +325,10 @@ void GLWidget::paintGL()
   glDisable(GL_BLEND);
   painter.endNativePainting();
 
-  if (elapsed != 0)
+  if (elapsedMilliseconds != 0)
   {
     QString framesPerSecond;
-    framesPerSecond.setNum(m_frames / (elapsed / 1000.0), 'f', 2);
+    framesPerSecond.setNum(m_frames / elapsedSeconds, 'f', 2);
     painter.setPen(Qt::white);
     painter.drawText(20, 40, framesPerSecond + " fps");
   }
