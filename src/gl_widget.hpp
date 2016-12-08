@@ -48,7 +48,8 @@ protected:
 
   void Update(float elapsedSeconds);
 
-  bool IsGameOver();
+  /// Set m_isGameOver to true if game is over.
+  void IsGameOver();
 
   /// Mouse and keyboard events.
   void mousePressEvent(QMouseEvent * e) override;
@@ -130,4 +131,6 @@ private:
   uint m_lifetimeExplosionBig;
   TSize m_sizeExplosionBig;
   uint m_rateAlien;
+
+  bool m_isGameOver = false;
 };

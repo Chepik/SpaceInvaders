@@ -34,7 +34,7 @@ void MainWindow::setCurrentIndex(int value)
   {
     layoutRootPageWidget->removeWidget(pageWidget);
 
-    delete pageWidget;
+    pageWidget->deleteLater();
     pageWidget = nullptr;
   }
 

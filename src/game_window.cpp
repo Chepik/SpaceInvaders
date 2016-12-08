@@ -1,6 +1,7 @@
 #include "game_window.hpp"
 
 #include <QApplication>
+#include <QtCore/QtCore>
 #include "gl_widget.hpp"
 
 typedef void (QWidget::*QWidgetVoidSlot)();
@@ -57,6 +58,6 @@ void GameWindow::on_nextLevelButtonClicked()
 
 void GameWindow::gameOver(QString message)
 {
-  delete m_glWidget;
+  m_glWidget->deleteLater();
   emit finishGame(message);
 }
