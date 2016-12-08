@@ -19,6 +19,7 @@ void Settings::LoadMainSettings()
     // MainParameters.
     m_mainParameters.m_difficulty = settings["Difficulty"].asUInt();
     m_mainParameters.m_speed = settings["Speed"].asUInt();
+    m_mainParameters.m_levelsNumber = settings["LevelsNumber"].asUInt();
 
     // StarParameters
     m_starParameters.m_number = settings["StarNumber"].asUInt();
