@@ -79,7 +79,7 @@ protected:
   void KillSpaceShip(uint damage, QVector2D const position);
   void SpaceShipBulletsLogic();
   void AlienBulletsLogic();
-  void AlienLogic();
+  void AlienLogic(float const & elapsedSeconds);
   void ShotAlien();
   void ExplosionLogic();
   void CheckHitObstacle();

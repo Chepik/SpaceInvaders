@@ -292,7 +292,7 @@ void GLWidget::paintGL()
 
   CheckHitSpaceShip();
 
-  AlienLogic();
+  AlienLogic(elapsedSeconds);
 
   CheckHitAlien();
 
@@ -849,20 +849,20 @@ void GLWidget::AlienBulletsLogic()
   //  qDebug() << "lst.size() = " << lst.size();
 }
 
-void GLWidget::AlienLogic()
+void GLWidget::AlienLogic(float const & elapsedSeconds)
 {
   // Loop over aliens.
-  std::list<TAlienPtr > & lst = m_space->GetAliens();
+  std::list<TAlienPtr> & lst = m_space->GetAliens();
 
   for (auto itAlien : lst)
   {
     if (itAlien->GetSpeed() > 0)
     {
-      itAlien->IncreaseX(5.0f*abs(itAlien->GetSpeed()));
+      itAlien->IncreaseX(elapsedSeconds * (itAlien->GetAbsolutSpeed()));
     }
     else
     {
-      itAlien->DecreaseX(5.0f*abs(itAlien->GetSpeed()));
+      itAlien->DecreaseX(elapsedSeconds * (itAlien->GetAbsolutSpeed()));
     }
   }
 }
