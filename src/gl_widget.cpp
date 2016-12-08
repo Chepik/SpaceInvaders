@@ -287,16 +287,12 @@ void GLWidget::paintGL()
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-  // It throws an error.
-//  if (IsGameOver())
-//  {
-//    return;
-//  }
-//
+  IsGameOver();
+
   ExplosionLogic();
 
   // It throws an error.
-//  CheckHitSpaceShip();
+  CheckHitSpaceShip();
 
   AlienLogic(elapsedSeconds);
 
@@ -356,7 +352,16 @@ void GLWidget::paintGL()
 
   ++m_frames;
 
-  update();
+  if (!m_isGameOver)
+  {
+    update();
+  }
+  else
+  {
+    emit gameOver("Congratulations! You win!");
+
+    return;
+  }
 }
 
 void GLWidget::resizeGL(int w, int h)
@@ -390,18 +395,14 @@ void GLWidget::Update(float elapsedSeconds)
   }
 }
 
-bool GLWidget::IsGameOver()
+void GLWidget::IsGameOver()
 {
   std::list<TAlienPtr> & lstAlien = m_space->GetAliens();
 
   if (lstAlien.empty())
   {
-    emit gameOver("Congratulations! You win!");
-
-    return true;
+    m_isGameOver = true;
   }
-
-  return false;
 }
 
 void GLWidget::RenderAlien()
