@@ -79,7 +79,7 @@ void Alien::ReverseDirection()
   SetSpeed(-GetSpeed());
 }
 
-int Alien::GetAbsolutSpeed() const
+int Alien::GetAbsoluteSpeed() const
 {
   return abs(m_speed);
 }

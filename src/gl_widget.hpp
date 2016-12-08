@@ -78,7 +78,7 @@ protected:
   void CheckHitSpaceShip();
   void KillSpaceShip(uint damage, QVector2D const position);
   void SpaceShipBulletsLogic(float const & elapsedSeconds);
-  void AlienBulletsLogic();
+  void AlienBulletsLogic(float const & elapsedSeconds);
   void AlienLogic(float const & elapsedSeconds);
   void ShotAlien();
   void ExplosionLogic();
@@ -105,6 +105,7 @@ private:
 
   unsigned int m_frames = 0;
   QTime m_time;
+  QTime m_timeFPS;
   QColor m_background;
   QSize m_screenSize;
 

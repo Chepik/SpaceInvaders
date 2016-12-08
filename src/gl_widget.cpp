@@ -260,9 +260,13 @@ void GLWidget::paintGL()
 {
   // Get time.
   int const elapsedMilliseconds = m_time.elapsed();
+  int const elapsedMillisecondsFPS = m_timeFPS.elapsed();
 
   // Convert from milliseconds to seconds.
   float const elapsedSeconds = elapsedMilliseconds / 1000.0f;
+  float const elapsedSecondsFPS = elapsedMillisecondsFPS / 1000.0f;
+
+  qDebug() << "elapsedSeconds = " << elapsedSeconds;
 
   Update(elapsedSeconds);
 
@@ -283,14 +287,16 @@ void GLWidget::paintGL()
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-  if (IsGameOver())
-  {
-    return;
-  }
-
+  // It throws an error.
+//  if (IsGameOver())
+//  {
+//    return;
+//  }
+//
   ExplosionLogic();
 
-  CheckHitSpaceShip();
+  // It throws an error.
+//  CheckHitSpaceShip();
 
   AlienLogic(elapsedSeconds);
 
@@ -300,7 +306,7 @@ void GLWidget::paintGL()
 
   SpaceShipBulletsLogic(elapsedSeconds);
 
-  AlienBulletsLogic();
+  AlienBulletsLogic(elapsedSeconds);
 
   CheckHitObstacle();
 
@@ -321,25 +327,35 @@ void GLWidget::paintGL()
   StarLogic();
 
   RenderStar();
+
+  // Free the resources.
   glDisable(GL_CULL_FACE);
   glDisable(GL_BLEND);
   painter.endNativePainting();
 
+  // Print FPS to the screen.
   if (elapsedMilliseconds != 0)
   {
     QString framesPerSecond;
-    framesPerSecond.setNum(m_frames / elapsedSeconds, 'f', 2);
+    framesPerSecond.setNum(m_frames / elapsedSecondsFPS, 'f', 2);
     painter.setPen(Qt::white);
     painter.drawText(20, 40, framesPerSecond + " fps");
   }
   painter.end();
 
+  // Restart main timer.
+  m_time.start();
+
   if (!(m_frames % 100))
   {
-    m_time.start();
+    // Restart FPS timer.
+    m_timeFPS.start();
+
     m_frames = 0;
   }
+
   ++m_frames;
+
   update();
 }
 
@@ -354,7 +370,7 @@ void GLWidget::resizeGL(int w, int h)
 
 void GLWidget::Update(float elapsedSeconds)
 {
-  float const kSpeed = 20.0f; // pixels per second.
+  float const kSpeed = 2000.0f; // pixels per second.
 
   if (m_directions[kUpDirection])
   {
@@ -829,13 +845,14 @@ void GLWidget::SpaceShipBulletsLogic(float const & elapsedSeconds)
   //  qDebug() << "lst.size() = " << lst.size();
 }
 
-void GLWidget::AlienBulletsLogic()
+void GLWidget::AlienBulletsLogic(float const & elapsedSeconds)
 {
   // Loop over space ship bullets and delete it if needed.
   std::list<TBulletPtr> & lst = m_space->GetAlienBullets();
+
   for (auto it = begin(lst); it != end(lst);)
   {
-    (*it)->DecreaseY(m_rateAlien);
+    (*it)->DecreaseY(elapsedSeconds * m_rateAlien);
 
     if ((*it)->GetPosition().y() == 0.0f)
     {
@@ -860,11 +877,11 @@ void GLWidget::AlienLogic(float const & elapsedSeconds)
   {
     if (itAlien->GetSpeed() > 0)
     {
-      itAlien->IncreaseX(elapsedSeconds * (itAlien->GetAbsolutSpeed()));
+      itAlien->IncreaseX(elapsedSeconds * (itAlien->GetAbsoluteSpeed()));
     }
     else
     {
-      itAlien->DecreaseX(elapsedSeconds * (itAlien->GetAbsolutSpeed()));
+      itAlien->DecreaseX(elapsedSeconds * (itAlien->GetAbsoluteSpeed()));
     }
   }
 }

@@ -37,7 +37,7 @@ public:
   void Move() override;
   void Update() override;
   int GetSpeed() const;
-  int GetAbsolutSpeed() const;
+  int GetAbsoluteSpeed() const;
   void SetSpeed(int const & rate);
   void IncreaseX(float const & value) override;
   void DecreaseX(float const & value) override;
