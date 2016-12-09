@@ -26,7 +26,7 @@ public slots:
   void exitFromGame();
   void moveToMenuPage();
   void moveToNextLevel();
-  void finishGame(GameState gameState);
+  void finishGame(GameState gameState, size_t);
 
 public:
   QWidget * rootPageWidget = nullptr;
@@ -37,4 +37,6 @@ public:
   size_t m_currentLevel = 1;
 
   QString m_message;
+
+  size_t m_finalScore = 0;
 };

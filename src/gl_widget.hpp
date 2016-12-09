@@ -34,7 +34,7 @@ class GLWidget : public QGLWidget, protected QOpenGLFunctions
 {
   Q_OBJECT
 signals:
-  void gameOver(GameState gameState);
+  void gameOver(GameState gameState, size_t score);
 
 public:
   GLWidget(GameWindow * parent,
@@ -126,4 +126,6 @@ private:
   std::default_random_engine m_generator;
 
   GameState m_gameState = GameState::STOP;
+
+  size_t m_score = 0;
 };

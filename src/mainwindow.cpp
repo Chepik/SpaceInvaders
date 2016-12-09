@@ -52,6 +52,7 @@ void MainWindow::setCurrentIndex(int value)
       break;
     case 3:
       pageWidget = new GameOverPage(this, m_message);
+      m_finalScore = 0;
       break;
     default:
       break;
@@ -104,12 +105,14 @@ void MainWindow::moveToNextLevel()
   setCurrentIndex(1);
 }
 
-void MainWindow::finishGame(GameState gameState)
+void MainWindow::finishGame(GameState gameState, size_t score)
 {
   switch (gameState)
   {
     case GameState::WIN:
     {
+      m_finalScore += score;
+
       // Move to next level.
       if (m_currentLevel < Settings::Instance().m_mainParameters.m_levelsNumber)
       {
@@ -117,9 +120,12 @@ void MainWindow::finishGame(GameState gameState)
       }
       else
       {
-        m_message = "Game over. Congratulations! You win!";
+        m_message = "Game over. Congratulations! You win!\nYour score: " \
+            + QString::number(m_finalScore);
 
         m_currentLevel = 1;
+
+        m_finalScore = 0;
 
         // Stop the game.
         setCurrentIndex(3);
@@ -129,9 +135,12 @@ void MainWindow::finishGame(GameState gameState)
     }
     case GameState::LOSE:
     {
-      m_message = "Game over. You lose!";
+      m_message = "Game over. You lose!\nYour score: " \
+            + QString::number(m_finalScore);
 
       m_currentLevel = 1;
+
+      m_finalScore = 0;
 
       // Stop the game.
       setCurrentIndex(3);

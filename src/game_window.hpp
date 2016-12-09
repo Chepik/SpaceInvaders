@@ -17,12 +17,12 @@ public:
 private slots:
   void on_menuButtonClicked();
   void on_nextLevelButtonClicked();
-  void gameOver(GameState gameState);
+  void gameOver(GameState gameState, size_t score);
 
 signals:
   void moveToMenuPage();
   void moveToNextLevel();
-  void finishGame(GameState gameState);
+  void finishGame(GameState gameState, size_t score);
 
 private:
   QTimer * m_timer = nullptr;

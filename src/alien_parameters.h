@@ -13,5 +13,6 @@ struct AlienParameters : SizeParameters
   TSize m_size = std::make_pair(0, 0);
   size_t m_rowNumber = 0;
   uint m_frequency = 0;
+  size_t m_score = 0;
 };
 
