@@ -520,11 +520,6 @@ void GLWidget::CheckHitAlien()
   std::list<TBulletPtr> & lstBullet = m_space->GetSpaceShipBullets();
   std::list<TAlienPtr> & lstAlien = m_space->GetAliens();
 
-//  if (lstAlien.empty())
-//  {
-//    emit gameOver("Congratulations! You win!");
-//  }
-
   for (auto itAlien = begin(lstAlien); itAlien != end(lstAlien);)
   {
     QVector2D positionAlien = (*itAlien)->GetPosition();
