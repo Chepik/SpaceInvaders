@@ -15,8 +15,6 @@ public:
   GameWindow(QMainWindow *parent, size_t const & level);
 
 private slots:
-  void on_menuButtonClicked();
-  void on_nextLevelButtonClicked();
   void gameOver(GameState gameState, size_t score);
 
 signals:
@@ -28,6 +26,4 @@ private:
   QTimer * m_timer = nullptr;
   QGridLayout * m_layout = nullptr;
   QGLWidget * m_glWidget = nullptr;
-  QPushButton * m_settingsButton = nullptr;
-  QPushButton * m_nextLevelButton = nullptr;
 };
