@@ -79,6 +79,13 @@ GLWidget::~GLWidget()
   doneCurrent();
 }
 
+void GLWidget::showEvent(QShowEvent * event)
+{
+  QWidget::showEvent(event);
+
+  this->setFocus();
+}
+
 void GLWidget::initializeGL()
 {
   initializeOpenGLFunctions();

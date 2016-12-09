@@ -42,6 +42,10 @@ public:
   ~GLWidget();
 
 protected:
+  ///
+  /// It needs to set focus for the widget.
+  ///
+  void showEvent(QShowEvent * event) override;
   void resizeGL(int w, int h) override;
   void paintGL() override;
   void initializeGL() override;

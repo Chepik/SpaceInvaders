@@ -42,8 +42,6 @@ GameWindow::GameWindow(QMainWindow *parent, size_t const & level)
           parent, SLOT(finishGame(QString)));
 
   m_timer->start();
-
-  setFocusPolicy(Qt::StrongFocus);
 }
 
 void GameWindow::on_menuButtonClicked()
