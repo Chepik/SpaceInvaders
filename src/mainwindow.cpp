@@ -113,12 +113,12 @@ void MainWindow::moveToNextLevel()
 
 void MainWindow::finishGame(GameState gameState, size_t score)
 {
+  m_finalScore += score;
+
   switch (gameState)
   {
     case GameState::WIN:
     {
-      m_finalScore += score;
-
       // Move to next level.
       if (m_currentLevel < Settings::Instance().m_mainParameters.m_levelsNumber)
       {
