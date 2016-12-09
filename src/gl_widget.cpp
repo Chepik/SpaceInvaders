@@ -353,11 +353,18 @@ void GLWidget::Update(float elapsedSeconds)
 
 void GLWidget::IsGameOver()
 {
-  std::list<TAlienPtr> & lstAlien = m_space->GetAliens();
-
-  if (lstAlien.empty())
+  if (m_space->GetSpaceShip()->GetHealth() <= 0)
   {
-    m_gameState = GameState::WIN;
+    m_gameState = GameState::LOSE;
+  }
+  else
+  {
+    std::list<TAlienPtr> & lstAlien = m_space->GetAliens();
+
+    if (lstAlien.empty())
+    {
+      m_gameState = GameState::WIN;
+    }
   }
 }
 
