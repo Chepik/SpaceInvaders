@@ -94,7 +94,7 @@ protected:
   /// Look here for more info:
   /// http://www.cplusplus.com/reference/random/uniform_real_distribution/
   ///
-  double Random(double min, double max);
+  float Random(float min, float max);
 
 private:
   int L2D(int px) const { return px * devicePixelRatio(); }

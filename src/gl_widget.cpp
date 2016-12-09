@@ -441,8 +441,8 @@ void GLWidget::AddStars()
                        size));
 
     RandomStar randomStar;
-    randomStar.m_periodStar = Random(0, 1);
-    randomStar.m_randomStar = std::make_pair(Random(0, 1), Random(0, 1));
+    randomStar.m_periodStar = Random(0.0f, 1.0f);
+    randomStar.m_randomStar = std::make_pair(Random(0.0f, 1.0f), Random(0.0f, 1.0f));
     m_random.push_back(randomStar);
   }
 }
@@ -600,9 +600,10 @@ void GLWidget::ShotAlien()
 
   for (auto it = begin(lst); it != end(lst); ++it)
   {
-    if( abs(m_space->GetSpaceShip()->GetPosition().x() - (*it)->GetPosition().x()) < Globals::Width/2 && Random(0,1) <= 0.5f)
+    if (abs(m_space->GetSpaceShip()->GetPosition().x()
+                - (*it)->GetPosition().x()) < Globals::Width / 2 && Random(0.0f, 1.0f) <= 0.5f)
     {
-      if((*it)->Shot())
+      if ((*it)->Shot())
       {
         std::shared_ptr<Bullet> bullet = std::make_shared<Bullet>(
               (*it)->GetPosition(),
@@ -754,7 +755,7 @@ void GLWidget::keyReleaseEvent(QKeyEvent * e)
   }
 }
 
-double GLWidget::Random(double min, double max)
+float GLWidget::Random(float min, float max)
 {
   std::uniform_real_distribution<double> distribution(min, max);
 
@@ -964,7 +965,7 @@ void GLWidget::StarLogic()
     }
     else
     {
-      (*it).m_randomStar = std::make_pair(Random(0,1), Random(0,1));
+      (*it).m_randomStar = std::make_pair(Random(0.0f, 1.0f), Random(0.0f, 1.0f));
       (*it).m_periodStar = 0.0f;
     }
   }
