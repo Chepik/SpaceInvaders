@@ -15,6 +15,9 @@ MenuPage::MenuPage(QWidget *parent) :
 
   connect(this, SIGNAL(exitFromGame()),
           parent, SLOT(exitFromGame()));
+
+  connect(this, SIGNAL(moveToScoresPage()),
+          parent, SLOT(moveToScoresPage()));
 }
 
 MenuPage::~MenuPage()
@@ -35,4 +38,9 @@ void MenuPage::on_startButton_clicked()
 void MenuPage::on_exitButton_clicked()
 {
   emit exitFromGame();
+}
+
+void MenuPage::on_scoresButton_clicked()
+{
+  emit moveToScoresPage();
 }

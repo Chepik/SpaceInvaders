@@ -9,6 +9,7 @@
 #include "gameoverpage.hpp"
 #include "settings.hpp"
 #include "except.hpp"
+#include "scorespage.h"
 
 MainWindow::MainWindow(QWidget *parent) :
   QMainWindow(parent)
@@ -55,6 +56,9 @@ void MainWindow::setCurrentIndex(int value)
     case 3:
       pageWidget = new GameOverPage(this, m_message);
       m_finalScore = 0;
+      break;
+    case 4:
+      pageWidget = new ScoresPage(this);
       break;
     default:
       break;
@@ -109,12 +113,12 @@ void MainWindow::moveToNextLevel()
 
 void MainWindow::finishGame(GameState gameState, size_t score)
 {
+  m_finalScore += score;
+
   switch (gameState)
   {
     case GameState::WIN:
     {
-      m_finalScore += score;
-
       // Move to next level.
       if (m_currentLevel < Settings::Instance().m_mainParameters.m_levelsNumber)
       {
@@ -160,4 +164,11 @@ void MainWindow::finishGame(GameState gameState, size_t score)
       return;
     }
   }
+}
+
+void MainWindow::moveToScoresPage()
+{
+  qDebug() << "moveToScoresPage";
+
+  setCurrentIndex(4);
 }
