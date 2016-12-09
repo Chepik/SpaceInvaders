@@ -25,6 +25,9 @@ MainWindow::MainWindow(QWidget *parent) :
   layoutRootPageWidget->addWidget(pageWidget);
 
   setCentralWidget(rootPageWidget);
+
+  this->setStyleSheet(
+    "background-image:url(\"data\/background.jpg\"); background-position: center;" );
 }
 
 MainWindow::~MainWindow()
