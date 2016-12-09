@@ -34,6 +34,13 @@
       </widget>
      </item>
      <item>
+      <widget class="QPushButton" name="scoresButton">
+       <property name="text">
+        <string>Scores</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="exitButton">
        <property name="text">
         <string>Exit</string>
