@@ -65,6 +65,7 @@ void Settings::LoadLevelSettings(std::string const & level)
 
     m_alienParameters.m_rowNumber = settings["Level"][level]["AlienRowNumber"].asUInt();
     m_alienParameters.m_frequency = settings["Level"][level]["AlienFrequency"].asUInt();
+    m_alienParameters.m_score = settings["Level"][level]["AlienScore"].asUInt();
 
     /// Bullet parameters.
     m_bulletParameters.m_damage = settings["Level"][level]["BulletDamage"].asUInt();
@@ -91,6 +92,7 @@ void Settings::LoadLevelSettings(std::string const & level)
         settings["Level"][level]["ObstacleWidth"].asInt(),
         settings["Level"][level]["ObstacleHeigth"].asInt());
 
+    m_obstacleParameters.m_score = settings["Level"][level]["ObstacleScore"].asUInt();
   }
   catch(ReadFileException const & ex)
   {

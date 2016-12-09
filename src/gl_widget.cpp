@@ -68,8 +68,8 @@ GLWidget::GLWidget(GameWindow * parent,
   setMinimumSize(Globals::Width, Globals::Height);
   setFocusPolicy(Qt::StrongFocus);
 
-  connect(this, SIGNAL(gameOver(GameState)),
-          parent, SLOT(gameOver(GameState)));
+  connect(this, SIGNAL(gameOver(GameState, size_t)),
+          parent, SLOT(gameOver(GameState, size_t)));
 
   m_gameState = GameState::RUNINIG;
 }
@@ -281,9 +281,18 @@ void GLWidget::paintGL()
   if (elapsedMilliseconds != 0)
   {
     QString framesPerSecond;
+    QString score;
+    QString life;
+
     framesPerSecond.setNum(m_frames / elapsedSecondsFPS, 'f', 2);
+
     painter.setPen(Qt::white);
+
+    int spaceShipHealth = m_space->GetSpaceShip()->GetHealth();
+
     painter.drawText(20, 40, framesPerSecond + " fps");
+    painter.drawText(20, 60, "score: " + QString::number(m_score));
+    painter.drawText(20, 80, "life: " + QString::number(spaceShipHealth));
   }
   painter.end();
 
@@ -307,7 +316,7 @@ void GLWidget::paintGL()
   }
   else
   {
-    emit gameOver(m_gameState);
+    emit gameOver(m_gameState, m_score);
   }
 }
 
@@ -585,7 +594,10 @@ void GLWidget::CheckHitAlien()
                              Images::Instance().GetImageExplosion(),
                              Settings::Instance().m_explosionParameters.m_sizeBig,
                              Settings::Instance().m_explosionParameters.m_lifetimeBig));
+
       itAlien = lstAlien.erase(itAlien);
+
+      m_score += Settings::Instance().m_alienParameters.m_score;
     }
     else
     {
@@ -712,9 +724,13 @@ void GLWidget::keyPressEvent(QKeyEvent * e)
   if (e->key() == Qt::Key_Backspace)
   {
     std::list<TAlienPtr> & lstAlien = m_space->GetAliens();
+    std::list<TObstaclePtr> & lstObstacles = m_space->GetObstacles();
 
     if (!lstAlien.empty())
     {
+      m_score += lstAlien.size() * Settings::Instance().m_alienParameters.m_score;
+      m_score += lstObstacles.size() * Settings::Instance().m_obstacleParameters.m_score;
+
       lstAlien.clear();
     }
   }
@@ -959,6 +975,8 @@ void GLWidget::CheckHitObstacle()
           Settings::Instance().m_explosionParameters.m_lifetimeBig));
 
       itObstacle = lstObstacles.erase(itObstacle);
+
+      m_score += Settings::Instance().m_obstacleParameters.m_score;
     }
     else
     {

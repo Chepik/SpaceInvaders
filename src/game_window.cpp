@@ -16,10 +16,10 @@ GameWindow::GameWindow(QMainWindow *parent, size_t const & level)
   m_timer->setInterval(10);
 
   m_settingsButton = new QPushButton("Menu", m_glWidget);
-  m_settingsButton->move(15, 50);
+  m_settingsButton->move(15, 100);
 
   m_nextLevelButton = new QPushButton("Next level", m_glWidget);
-  m_nextLevelButton->move(15, 80);
+  m_nextLevelButton->move(15, 130);
 
   setCentralWidget(m_glWidget);
 
@@ -38,8 +38,8 @@ GameWindow::GameWindow(QMainWindow *parent, size_t const & level)
   connect(this, SIGNAL(moveToNextLevel()),
           parent, SLOT(moveToNextLevel()));
 
-  connect(this, SIGNAL(finishGame(GameState)),
-          parent, SLOT(finishGame(GameState)));
+  connect(this, SIGNAL(finishGame(GameState, size_t)),
+          parent, SLOT(finishGame(GameState, size_t)));
 
   m_timer->start();
 }
@@ -54,9 +54,9 @@ void GameWindow::on_nextLevelButtonClicked()
   emit moveToNextLevel();
 }
 
-void GameWindow::gameOver(GameState gameState)
+void GameWindow::gameOver(GameState gameState, size_t score)
 {
   m_glWidget->deleteLater();
 
-  emit finishGame(gameState);
+  emit finishGame(gameState, score);
 }
