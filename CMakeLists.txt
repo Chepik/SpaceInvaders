@@ -5,10 +5,20 @@ add_definitions(--std=c++11)
 # Set up your project name.
 set(PROJECT_NAME SpaceInvaders)
 
+option(CUSTOM_QT_LOCATION "CUSTOM_QT_LOCATION" OFF)
+
 set(dir ${CMAKE_CURRENT_SOURCE_DIR})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${dir}/bin")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${dir}/bin")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${dir}/bin")
+
+
+if (UNIX)
+  if (CUSTOM_QT_LOCATION)
+    set(CMAKE_PREFIX_PATH $ENV{HOME}/Qt/5.7/gcc_64)
+  endif (CUSTOM_QT_LOCATION)
+endif(UNIX)
+
 
 set(CMAKE_AUTOMOC ON)
 SET(CMAKE_AUTOUIC ON)
@@ -51,24 +61,24 @@ set(PROJECT_TEST_NAME ${PROJECT_NAME}_test)
 include_directories(3party/googletest/googletest/include ${SOURCE_ROOT})
 
 # Set up testing project.
-set(TESTS_SOURCE_ROOT tests)
+#set(TESTS_SOURCE_ROOT tests)
 
-aux_source_directory(${TESTS_SOURCE_ROOT} TEST_SRC_FILES)
+#aux_source_directory(${TESTS_SOURCE_ROOT} TEST_SRC_FILES)
 
-set(TEST_SRC_FILES ${SRC_LIST} ${TEST_SRC_FILES})
+#set(TEST_SRC_FILES ${SRC_LIST} ${TEST_SRC_FILES})
 
-list(REMOVE_ITEM TEST_SRC_FILES src/main.cpp)
+#list(REMOVE_ITEM TEST_SRC_FILES src/main.cpp)
 
-qt5_wrap_cpp(QT_WRAPPED_TEST_SRC ${TEST_SRC_FILES})
+#qt5_wrap_cpp(QT_WRAPPED_TEST_SRC ${TEST_SRC_FILES})
 
-add_executable(${PROJECT_TEST_NAME} ${TEST_SRC_FILES} ${QT_WRAPPED_TEST_SRC} ${JSONCPP_SRC})
+#add_executable(${PROJECT_TEST_NAME} ${TEST_SRC_FILES} ${QT_WRAPPED_TEST_SRC} ${JSONCPP_SRC})
 
 # Link gtest and gtest_main libraries.
-target_link_libraries(${PROJECT_TEST_NAME} gtest gtest_main)
-qt5_use_modules(${PROJECT_TEST_NAME} Widgets OpenGL)
+#target_link_libraries(${PROJECT_TEST_NAME} gtest gtest_main)
+#qt5_use_modules(${PROJECT_TEST_NAME} Widgets OpenGL)
 
 # Finish tests setting up.
-add_test(test ${PROJECT_TEST_NAME})
+#add_test(test ${PROJECT_TEST_NAME})
 
 macro(copy_files GLOBPAT DESTINATION)
   file(GLOB COPY_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ${GLOBPAT})
@@ -79,5 +89,14 @@ macro(copy_files GLOBPAT DESTINATION)
   endforeach(FILENAME)
 endmacro(copy_files)
 
-set(DATA_FILES_LIST data/alien.png data/star.png)
-copy_files("${DATA_FILES_LIST}" ${CMAKE_CURRENT_BINARY_DIR})
+set(DATA_FILES_LIST
+  data/alien.png
+  data/star.png
+  data/space_ship.png
+  data/bullet.png
+  data/obstacle.png
+  data/explosion.png
+  data/settings.json
+  data/bullet_alien.png)
+
+copy_files("${DATA_FILES_LIST}" ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})

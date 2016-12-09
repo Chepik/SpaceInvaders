@@ -29,6 +29,4 @@ signals:
 
 private:
   Ui::SettingsPage *ui;
-
-  std::string settings_file_name = "settings.json";
 };

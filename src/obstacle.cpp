@@ -8,12 +8,12 @@ Obstacle::~Obstacle()
 
 }
 
-uint Obstacle::GetHealth() const
+int Obstacle::GetHealth() const
 {
   return m_health;
 }
 
-void Obstacle::SetHealth(uint const & health)
+void Obstacle::SetHealth(int const & health)
 {
   m_health = health;
 }
@@ -26,7 +26,7 @@ void Obstacle::Update()
 std::ostream & operator << (std::ostream & os,
                             const Obstacle & obj)
 {
-  os << "Obstacle [Position: " << obj.GetPosition()
-     << "; Health: " << obj.GetHealth() << "]";
+//  os << "Obstacle [Position: " << obj.GetPosition()
+//     << "; Health: " << obj.GetHealth() << "]";
   return os;
 }

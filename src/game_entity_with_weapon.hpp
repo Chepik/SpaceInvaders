@@ -13,11 +13,22 @@ public:
     : GameEntity(name)
   {}
 
-  GameEntityWithWeapon(Point2D const & position,
+  GameEntityWithWeapon(QVector2D const & position,
                        std::string const & name,
                        uint const & rate,
-                       uint const & health)
-    : GameEntity(position,name),
+                       int const & health)
+    : GameEntity(position, name),
+      m_rate(rate),
+      m_health(health)
+  {}  
+
+  GameEntityWithWeapon(QVector2D const & position,
+                       std::string const & name,
+                       uint const & rate,
+                       int const & health,
+                       std::shared_ptr<QImage> image,
+                       TSize const & size)
+    : GameEntity(position, name, image, size),
       m_rate(rate),
       m_health(health)
   {}
@@ -25,14 +36,14 @@ public:
   ~GameEntityWithWeapon() override;
 
   uint GetRate() const;
-  uint GetHealth() const;
+  int GetHealth() const;
   BulletManager const & GetBulletManager() const;
   void SetRate(uint const & rate);
-  void SetHealth(uint const & health);
+  void SetHealth(int const & health);
   void SetBulletManager(BulletManager const & bulletManager);
   
 protected:
   uint m_rate = 0;
-  uint m_health = 0;
+  int m_health = 0;
   BulletManager m_bulletManager;
 };

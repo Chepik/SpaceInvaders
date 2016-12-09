@@ -10,7 +10,7 @@
 #include <QDebug>
 
 #include "util.hpp"
-
+#include "constants.hpp"
 
 SettingsPage::SettingsPage(QWidget *parent) :
   QWidget(parent),
@@ -39,7 +39,7 @@ SettingsPage::SettingsPage(QWidget *parent) :
   {
     Json::Value settings;
 
-    settings = Util::ReadJson(settings_file_name);
+    settings = Util::ReadJson(Globals::SettingsFileName);
 
     int currentDifficulty = settings["Difficulty"].asInt();
     int currentSpeed = settings["Speed"].asInt();
@@ -49,7 +49,7 @@ SettingsPage::SettingsPage(QWidget *parent) :
     ui->comboBoxSpeed->setCurrentIndex(currentSpeed);
   }
   catch(std::exception ex) {
-    qDebug() << "Can't read settings fron a file!";
+    qDebug() << "Can't read settings from a file!";
   }
 }
 
@@ -68,10 +68,10 @@ void SettingsPage::on_saveButton_clicked()
   int currentDifficulty = ui->comboBoxDifficulty->currentIndex();
   int currentSpeed = ui->comboBoxSpeed->currentIndex();
 
-  Json::Value settings;
+  Json::Value settings = Util::ReadJson(Globals::SettingsFileName);
 
   settings["Difficulty"] = currentDifficulty;
   settings["Speed"] = currentSpeed;
 
-  Util::WriteJson(settings_file_name, settings);
+  Util::WriteJson(Globals::SettingsFileName, settings);
 }

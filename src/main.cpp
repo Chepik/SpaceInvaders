@@ -1,12 +1,16 @@
 #include <QApplication>
 #include <QMainWindow>
 #include <QSurfaceFormat>
+#include <QDebug>
 
 #include "mainwindow.hpp"
+#include "except.hpp"
+#include "images.hpp"
+#include "application.hpp"
 
 int main(int argc, char ** argv)
 {
-  QApplication a(argc, argv);
+  Application a(argc, argv);
 
   QSurfaceFormat format;
   format.setDepthBufferSize(24);

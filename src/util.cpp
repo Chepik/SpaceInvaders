@@ -9,6 +9,8 @@
 #include "json/json.h"
 #include "json/config.h"
 
+#include "except.hpp"
+
 
 void Util::WriteJson(std::string const &  file_name,
                      Json::Value const & out)
@@ -23,6 +25,10 @@ void Util::WriteJson(std::string const &  file_name,
 
     ofs.close();
   }
+  else
+  {
+    throw WriteFileException(file_name);
+  }
 }
 
 Json::Value Util::ReadJson(std::string const & file_name)
@@ -36,6 +42,10 @@ Json::Value Util::ReadJson(std::string const & file_name)
     ifs >> root;
 
     ifs.close();
+  }
+  else
+  {
+    throw ReadFileException(file_name);
   }
 
   return root;
