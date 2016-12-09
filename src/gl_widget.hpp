@@ -14,6 +14,7 @@
 #include "unordered_map"
 #include "images.hpp"
 #include "explosion.hpp"
+#include "game_state.hpp"
 
 class GameWindow;
 
@@ -33,7 +34,7 @@ class GLWidget : public QGLWidget, protected QOpenGLFunctions
 {
   Q_OBJECT
 signals:
-  void gameOver(QString message);
+  void gameOver(GameState gameState);
 
 public:
   GLWidget(GameWindow * parent,
@@ -125,4 +126,6 @@ private:
   std::default_random_engine m_generator;
 
   bool m_isGameOver = false;
+
+  GameState m_gameState = GameState::STOP;
 };

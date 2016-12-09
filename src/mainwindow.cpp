@@ -100,42 +100,53 @@ void MainWindow::moveToNextLevel()
   // Increase game level number.
   m_currentLevel++;
 
-  if (m_currentLevel > Settings::Instance().m_mainParameters.m_levelsNumber)
-  {
-    finishGame("Congratulations! You win!");
-
-    return;
-  }
-
   // Load the next game level.
   setCurrentIndex(1);
 }
 
-void MainWindow::finishGame(QString message)
+void MainWindow::finishGame(GameState gameState)
 {
-  m_message = "Game over." + message;
-
-  if (message == "You lose!")
+  switch (gameState)
   {
-    m_currentLevel = 1;
+    case GameState::WIN:
+    {
+      // Move to next level.
+      if (m_currentLevel < Settings::Instance().m_mainParameters.m_levelsNumber)
+      {
+        moveToNextLevel();
+      }
+      else
+      {
+        m_message = "Game over. Congratulations! You win!";
 
-    // Stop the game.
-    setCurrentIndex(3);
+        m_currentLevel = 1;
 
-    return;
-  }
+        // Stop the game.
+        setCurrentIndex(3);
+      }
 
-  if (m_currentLevel < Settings::Instance().m_mainParameters.m_levelsNumber)
-  {
-    moveToNextLevel();
-  }
-  else
-  {
-    m_currentLevel = 1;
+      return;
+    }
+    case GameState::LOSE:
+    {
+      m_message = "Game over. You lose!";
 
-    // Stop the game.
-    setCurrentIndex(3);
+      m_currentLevel = 1;
 
-    return;
+      // Stop the game.
+      setCurrentIndex(3);
+
+      return;
+    }
+    case GameState::MENU:
+    {
+      moveToMenuPage();
+
+      return;
+    }
+    case GameState::PAUSE:
+    {
+      return;
+    }
   }
 }
