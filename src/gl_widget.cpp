@@ -500,6 +500,7 @@ void GLWidget::CheckHitSpaceShip()
     if (Box2D::checkBoxes(spaceShipBox,bulletBox))
     {
       KillSpaceShip((*it)->GetDamage(),(*it)->GetPosition());
+      it->reset();
       it = lstBullet.erase(it);
     }
     else
@@ -584,6 +585,7 @@ void GLWidget::CheckHitAlien()
         {
           flag = true;
         }
+        it->reset();
         it = lstBullet.erase(it);
       }
       else
@@ -602,6 +604,7 @@ void GLWidget::CheckHitAlien()
                              Settings::Instance().m_explosionParameters.m_sizeBig,
                              Settings::Instance().m_explosionParameters.m_lifetimeBig));
 
+      itAlien->reset();
       itAlien = lstAlien.erase(itAlien);
 
       m_score += Settings::Instance().m_alienParameters.m_score;
@@ -647,6 +650,7 @@ void GLWidget::ExplosionLogic()
   {
     if ((*it)->ReduceLifeTime())
     {
+      it->reset();
       it = lst.erase(it);
     }
     else
@@ -812,6 +816,7 @@ void GLWidget::SpaceShipBulletsLogic(float const & elapsedSeconds)
 
     if ((*it)->GetPosition().y() > Globals::Height)
     {
+      it->reset();
       it = lst.erase(it);
     }
     else
@@ -835,6 +840,7 @@ void GLWidget::AlienBulletsLogic(float const & elapsedSeconds)
 
     if ((*it)->GetPosition().y() == 0.0f)
     {
+      it->reset();
       it = lst.erase(it);
     }
     else
@@ -923,6 +929,7 @@ void GLWidget::CheckHitObstacle()
         {
            flag = true;
         }
+        it->reset();
         it = lstBulletsAlien.erase(it);
         break;
       }
@@ -966,6 +973,7 @@ void GLWidget::CheckHitObstacle()
           {
              flag = true;
           }
+          it->reset();
           it = lstBulletsAlien.erase(it);
           break;
         }
@@ -981,6 +989,7 @@ void GLWidget::CheckHitObstacle()
           Settings::Instance().m_explosionParameters.m_sizeBig,
           Settings::Instance().m_explosionParameters.m_lifetimeBig));
 
+      itObstacle->reset();
       itObstacle = lstObstacles.erase(itObstacle);
 
       m_score += Settings::Instance().m_obstacleParameters.m_score;
@@ -1069,6 +1078,7 @@ void GLWidget::CheckSpaceShipCollision()
     {
       m_space->GetSpaceShip()->SetHealth(0);
 
+      itObstacle->reset();
       itObstacle = lstObstacles.erase(itObstacle);
     }
     else
@@ -1097,6 +1107,7 @@ void GLWidget::CheckSpaceShipCollision()
     {
       m_space->GetSpaceShip()->SetHealth(0);
 
+      itAlien->reset();
       itAlien = lstAliens.erase(itAlien);
     }
     else
