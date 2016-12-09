@@ -13,6 +13,8 @@
 MainWindow::MainWindow(QWidget *parent) :
   QMainWindow(parent)
 {
+  setMinimumSize(Globals::Width, Globals::Height);
+
   rootPageWidget = new QWidget;
 
   layoutRootPageWidget = new QVBoxLayout(rootPageWidget);
