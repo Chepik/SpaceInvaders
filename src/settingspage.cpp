@@ -44,6 +44,10 @@ SettingsPage::SettingsPage(QWidget *parent) :
     int currentDifficulty = settings["Difficulty"].asInt();
     int currentSpeed = settings["Speed"].asInt();
 
+    // Because it starts from 0.
+    currentDifficulty--;
+    currentSpeed--;
+
     // Set settings from the file if data is available.
     ui->comboBoxDifficulty->setCurrentIndex(currentDifficulty);
     ui->comboBoxSpeed->setCurrentIndex(currentSpeed);
@@ -68,10 +72,16 @@ void SettingsPage::on_saveButton_clicked()
   int currentDifficulty = ui->comboBoxDifficulty->currentIndex();
   int currentSpeed = ui->comboBoxSpeed->currentIndex();
 
+  // Because it starts from 0.
+  currentDifficulty++;
+  currentSpeed++;
+
   Json::Value settings = Util::ReadJson(Globals::SettingsFileName);
 
   settings["Difficulty"] = currentDifficulty;
   settings["Speed"] = currentSpeed;
 
   Util::WriteJson(Globals::SettingsFileName, settings);
+
+  emit moveToMenuPage();
 }

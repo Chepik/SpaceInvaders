@@ -98,4 +98,11 @@ void Settings::LoadLevelSettings(std::string const & level)
   {
     throw ReadSettingsException(Globals::SettingsFileName);
   }
+
+  /// Update parameters.
+  // Speed.
+  m_alienParameters.m_speed *= m_mainParameters.m_speed;
+  m_spaceShipParameters.m_speed *= m_mainParameters.m_speed;
+  // Difficulty.
+  m_alienParameters.m_rate *= m_mainParameters.m_difficulty;
 }

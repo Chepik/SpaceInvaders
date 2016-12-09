@@ -27,6 +27,7 @@ public slots:
   void moveToMenuPage();
   void moveToNextLevel();
   void finishGame(GameState gameState, size_t);
+  void moveToScoresPage();
 
 public:
   QWidget * rootPageWidget = nullptr;
