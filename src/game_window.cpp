@@ -38,8 +38,8 @@ GameWindow::GameWindow(QMainWindow *parent, size_t const & level)
   connect(this, SIGNAL(moveToNextLevel()),
           parent, SLOT(moveToNextLevel()));
 
-  connect(this, SIGNAL(finishGame(QString)),
-          parent, SLOT(finishGame(QString)));
+  connect(this, SIGNAL(finishGame(GameState)),
+          parent, SLOT(finishGame(GameState)));
 
   m_timer->start();
 }
@@ -54,8 +54,9 @@ void GameWindow::on_nextLevelButtonClicked()
   emit moveToNextLevel();
 }
 
-void GameWindow::gameOver(QString message)
+void GameWindow::gameOver(GameState gameState)
 {
   m_glWidget->deleteLater();
-  emit finishGame(message);
+
+  emit finishGame(gameState);
 }

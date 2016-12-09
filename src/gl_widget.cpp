@@ -68,8 +68,10 @@ GLWidget::GLWidget(GameWindow * parent,
   setMinimumSize(Globals::Width, Globals::Height);
   setFocusPolicy(Qt::StrongFocus);
 
-  connect(this, SIGNAL(gameOver(QString)),
-          parent, SLOT(gameOver(QString)));
+  connect(this, SIGNAL(gameOver(GameState)),
+          parent, SLOT(gameOver(GameState)));
+
+  m_gameState = GameState::RUNINIG;
 }
 
 GLWidget::~GLWidget()
@@ -298,15 +300,14 @@ void GLWidget::paintGL()
 
   ++m_frames;
 
-  if (!m_isGameOver)
+  // Check the game state and decide what to do next.
+  if (m_gameState == GameState::RUNINIG)
   {
     update();
   }
   else
   {
-    emit gameOver("Congratulations! You win!");
-
-    return;
+    emit gameOver(m_gameState);
   }
 }
 
@@ -347,7 +348,7 @@ void GLWidget::IsGameOver()
 
   if (lstAlien.empty())
   {
-    m_isGameOver = true;
+    m_gameState = GameState::WIN;
   }
 }
 
@@ -510,7 +511,7 @@ void GLWidget::KillSpaceShip(uint damage, QVector2D const position)
   }
   else
   {
-    emit gameOver("You lose!");
+    m_gameState = GameState::LOSE;
   }
 }
 
@@ -705,6 +706,14 @@ void GLWidget::wheelEvent(QWheelEvent * e)
 
 void GLWidget::keyPressEvent(QKeyEvent * e)
 {
+  // Exit to menu.
+  if (e->key() == Qt::Key_Escape)
+  {
+    m_gameState = GameState::MENU;
+  }
+
+  // Cheat code.
+  // Backspace button kills all enemies.
   if (e->key() == Qt::Key_Backspace)
   {
     std::list<TAlienPtr> & lstAlien = m_space->GetAliens();
@@ -714,6 +723,7 @@ void GLWidget::keyPressEvent(QKeyEvent * e)
       lstAlien.clear();
     }
   }
+
   if (e->key() == Qt::Key_Up)
   {
     m_directions[kUpDirection] = true;

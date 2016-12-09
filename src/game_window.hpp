@@ -5,6 +5,7 @@
 #include <QGridLayout>
 #include <QtOpenGL/QGLWidget>
 #include <QPushButton>
+#include "game_state.hpp"
 
 class GameWindow : public QMainWindow
 {
@@ -16,12 +17,12 @@ public:
 private slots:
   void on_menuButtonClicked();
   void on_nextLevelButtonClicked();
-  void gameOver(QString message);
+  void gameOver(GameState gameState);
 
 signals:
   void moveToMenuPage();
   void moveToNextLevel();
-  void finishGame(QString message);
+  void finishGame(GameState gameState);
 
 private:
   QTimer * m_timer = nullptr;

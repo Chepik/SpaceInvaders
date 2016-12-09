@@ -5,6 +5,7 @@
 #include <QPushButton>
 #include <QComboBox>
 #include <QString>
+#include "game_state.hpp"
 
 namespace Ui {
 class MainWindow;
@@ -25,7 +26,7 @@ public slots:
   void exitFromGame();
   void moveToMenuPage();
   void moveToNextLevel();
-  void finishGame(QString message);
+  void finishGame(GameState gameState);
 
 public:
   QWidget * rootPageWidget = nullptr;
