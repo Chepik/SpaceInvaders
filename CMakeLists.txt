@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 2.8)
 
-add_definitions(--std=c++11)
+if (UNIX)
+  add_definitions(--std=c++11)
+endif(UNIX)  
 
 # Set up your project name.
 set(PROJECT_NAME SpaceInvaders)
@@ -18,6 +20,12 @@ if (UNIX)
     set(CMAKE_PREFIX_PATH $ENV{HOME}/Qt/5.7/gcc_64)
   endif (CUSTOM_QT_LOCATION)
 endif(UNIX)
+
+if (MSVC)
+  if (CUSTOM_QT_LOCATION)
+    set(CMAKE_PREFIX_PATH "C:/Qt/5.7/msvc2015/lib/cmake")
+  endif (CUSTOM_QT_LOCATION)
+endif (MSVC)
 
 
 set(CMAKE_AUTOMOC ON)

@@ -7,7 +7,7 @@ BulletManager::~BulletManager()
 
 void BulletManager::Fire()
 {
-  if (not m_bulletList.empty())
+  if (!m_bulletList.empty())
   {
     m_bulletList.pop_front();
   }

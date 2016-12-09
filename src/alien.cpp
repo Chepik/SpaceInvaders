@@ -81,7 +81,7 @@ void Alien::ReverseDirection()
 
 int Alien::GetAbsoluteSpeed() const
 {
-  return abs(m_speed);
+  return abs(static_cast<int>(m_speed));
 }
 
 std::ostream & operator << (std::ostream & os,
